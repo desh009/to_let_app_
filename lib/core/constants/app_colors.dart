@@ -54,7 +54,13 @@ class AppColors {
   static const Color error = Color(0xFFE53935);
   static const Color warning = Color(0xFFFFA000);
   static const Color info = Color(0xFF00ACC1);
-
+  static const Color surfaceMuted = Color(
+    0xFFF7F7F7,
+  ); // stats box / chip background
+  static const Color borderMedium = Color(
+    0xFFDDDDDD,
+  ); // details screen বর্ডার/ডিভাইডার
+  static const Color iconMuted = Color(0xFF888888);
   // Borders & Dividers
   static const Color dividerLight = Color(0xFFEDE8E3);
   static const Color dividerDark = Color(0xFF2C2C2C);

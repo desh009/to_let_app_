@@ -1,7 +1,7 @@
 // screens/home/controllers/home_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
+import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';

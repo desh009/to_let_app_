@@ -130,7 +130,7 @@ abstract class AppStrings {
 
   // ==================== Messages Screen ====================
   // Header & Navigation
-  static const String version = 'V1';
+  
   
   // Filter Tabs
   static const String tabAll = 'All';

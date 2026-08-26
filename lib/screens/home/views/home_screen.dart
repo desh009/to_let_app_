@@ -21,7 +21,7 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final navController = Get.find<NavController>();
 
     return Scaffold(
@@ -61,7 +61,9 @@ class HomeScreen extends GetView<HomeController> {
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
-                                color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                                color: isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A),
                               ),
                             ),
                           ),
@@ -88,7 +90,9 @@ class HomeScreen extends GetView<HomeController> {
                       if (controller.isLoading.value) {
                         return SizedBox(
                           height: 180.h,
-                          child: const LoadingIndicator(message: 'Loading featured listings...'),
+                          child: const LoadingIndicator(
+                            message: 'Loading featured listings...',
+                          ),
                         );
                       }
 
@@ -100,7 +104,9 @@ class HomeScreen extends GetView<HomeController> {
                               'No featured properties in this category',
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                color: isDark
+                                    ? AppColors.textSecondaryDark
+                                    : AppColors.textSecondaryLight,
                               ),
                             ),
                           ),
@@ -116,20 +122,15 @@ class HomeScreen extends GetView<HomeController> {
                           itemCount: controller.featuredProperties.length,
                           itemBuilder: (context, index) {
                             final item = controller.featuredProperties[index];
-                            return Obx(
-                              () => FeaturedPropertyCard(
+                            return FeaturedPropertyCard(
                                 item: item,
-                                isFavorite: controller.isFavorite(item.id),
                                 onTap: () {
                                   // ✅ NavController ব্যবহার করে Navigate
                                   navController.toDetails(item);
                                   // অথবা সরাসরি
                                   // Get.toNamed(Routes.DETAILS, arguments: item);
                                 },
-                                onFavoriteToggle: () {
-                                  controller.toggleFavorite(item);
-                                },
-                              ),
+                              
                             );
                           },
                         ),
@@ -150,7 +151,9 @@ class HomeScreen extends GetView<HomeController> {
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
-                                color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                                color: isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A),
                               ),
                             ),
                           ),
@@ -158,10 +161,14 @@ class HomeScreen extends GetView<HomeController> {
                             height: 36.r,
                             width: 36.r,
                             decoration: BoxDecoration(
-                              color: isDark ? AppColors.surfaceDark : Colors.white,
+                              color: isDark
+                                  ? AppColors.surfaceDark
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(
-                                color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+                                color: isDark
+                                    ? AppColors.dividerDark
+                                    : AppColors.borderSubtle,
                               ),
                             ),
                             child: Icon(
@@ -179,7 +186,9 @@ class HomeScreen extends GetView<HomeController> {
                     Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(
-                          child: LoadingIndicator(message: 'Loading recommendations...'),
+                          child: LoadingIndicator(
+                            message: 'Loading recommendations...',
+                          ),
                         );
                       }
 
@@ -191,7 +200,9 @@ class HomeScreen extends GetView<HomeController> {
                               'No properties found',
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                color: isDark
+                                    ? AppColors.textSecondaryDark
+                                    : AppColors.textSecondaryLight,
                               ),
                             ),
                           ),
@@ -205,20 +216,13 @@ class HomeScreen extends GetView<HomeController> {
                         itemCount: controller.recommendedProperties.length,
                         itemBuilder: (context, index) {
                           final item = controller.recommendedProperties[index];
-                          return Obx(
-                            () => RecommendedPropertyCard(
-                              item: item,
-                              isFavorite: controller.isFavorite(item.id),
-                              onTap: () {
-                                // ✅ NavController ব্যবহার করে Navigate
-                                navController.toDetails(item);
-                                // অথবা সরাসরি
-                                // Get.toNamed(Routes.DETAILS, arguments: item);
-                              },
-                              onFavoriteToggle: () {
-                                controller.toggleFavorite(item);
-                              },
-                            ),
+                          return RecommendedPropertyCard(
+                            item: item,
+                            onTap: () {
+                              navController.toDetails(item);
+                              // অথবা সরাসরি
+                              // Get.toNamed(Routes.DETAILS, arguments: item);
+                            },
                           );
                         },
                       );

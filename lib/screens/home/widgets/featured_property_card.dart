@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../domain/entities/tolet_item.dart';
 
 class FeaturedPropertyCard extends StatelessWidget {
   final ToLetItem item;
-  final bool isFavorite;
   final VoidCallback onTap;
-  final VoidCallback onFavoriteToggle;
 
   const FeaturedPropertyCard({
     super.key,
     required this.item,
-    required this.isFavorite,
     required this.onTap,
-    required this.onFavoriteToggle,
   });
 
   @override
@@ -51,20 +48,30 @@ class FeaturedPropertyCard extends StatelessWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(24.r),
+                  ),
                   child: Container(
                     height: 155.h,
                     width: double.infinity,
-                    color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF0EFEB),
+                    color: isDark
+                        ? const Color(0xFF2C2C2C)
+                        : const Color(0xFFF0EFEB),
                     child: Image.network(
                       item.images.isNotEmpty
                           ? item.images.first
                           : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: isDark ? AppColors.surfaceDark : Colors.grey[200],
+                        color: isDark
+                            ? AppColors.surfaceDark
+                            : Colors.grey[200],
                         child: Center(
-                          child: Icon(Icons.apartment_rounded, size: 48.r, color: Colors.grey),
+                          child: Icon(
+                            Icons.apartment_rounded,
+                            size: 48.r,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -76,13 +83,18 @@ class FeaturedPropertyCard extends StatelessWidget {
                   top: 12.h,
                   left: 12.w,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 4.h,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.badgeGreenBg,
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
-                      item.badgeText.isNotEmpty ? item.badgeText : 'Available now',
+                      item.badgeText.isNotEmpty
+                          ? item.badgeText
+                          : 'Available now',
                       style: TextStyle(
                         color: AppColors.badgeGreenText,
                         fontSize: 11.sp,
@@ -110,14 +122,8 @@ class FeaturedPropertyCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
-                        size: 18.r,
-                        color: isFavorite ? AppColors.error : const Color(0xFF1E232A),
-                      ),
-                      onPressed: onFavoriteToggle,
+                    child: Center(
+                      child: AnimatedFavoriteButton(item: item, size: 18),
                     ),
                   ),
                 ),
@@ -148,7 +154,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 17.sp,
                                   fontWeight: FontWeight.w800,
-                                  color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                                  color: isDark
+                                      ? AppColors.textPrimaryDark
+                                      : const Color(0xFF1E232A),
                                 ),
                               ),
                             ),
@@ -157,7 +165,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                               '/ month',
                               style: TextStyle(
                                 fontSize: 11.sp,
-                                color: isDark ? AppColors.textSecondaryDark : const Color(0xFF8A8784),
+                                color: isDark
+                                    ? AppColors.textSecondaryDark
+                                    : const Color(0xFF8A8784),
                               ),
                             ),
                           ],
@@ -166,9 +176,14 @@ class FeaturedPropertyCard extends StatelessWidget {
                       if (item.isVerified) ...[
                         SizedBox(width: 6.w),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.5.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 7.w,
+                            vertical: 2.5.h,
+                          ),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF2C2A27) : AppColors.badgeGreyBg,
+                            color: isDark
+                                ? const Color(0xFF2C2A27)
+                                : AppColors.badgeGreyBg,
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
@@ -176,7 +191,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white70 : AppColors.badgeGreyText,
+                              color: isDark
+                                  ? Colors.white70
+                                  : AppColors.badgeGreyText,
                             ),
                           ),
                         ),
@@ -193,7 +210,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
-                      color: isDark ? AppColors.textSecondaryDark : const Color(0xFF8A8784),
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : const Color(0xFF8A8784),
                     ),
                   ),
                   SizedBox(height: 6.h),
@@ -205,7 +224,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                         '${item.bedrooms} beds',
                         style: TextStyle(
                           fontSize: 11.sp,
-                          color: isDark ? AppColors.textSecondaryDark : const Color(0xFF6B6864),
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : const Color(0xFF6B6864),
                         ),
                       ),
                       SizedBox(width: 8.w),
@@ -213,7 +234,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                         '${item.bathrooms} baths',
                         style: TextStyle(
                           fontSize: 11.sp,
-                          color: isDark ? AppColors.textSecondaryDark : const Color(0xFF6B6864),
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : const Color(0xFF6B6864),
                         ),
                       ),
                       SizedBox(width: 8.w),
@@ -223,7 +246,9 @@ class FeaturedPropertyCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 11.sp,
-                            color: isDark ? AppColors.textSecondaryDark : const Color(0xFF6B6864),
+                            color: isDark
+                                ? AppColors.textSecondaryDark
+                                : const Color(0xFF6B6864),
                           ),
                         ),
                       ),

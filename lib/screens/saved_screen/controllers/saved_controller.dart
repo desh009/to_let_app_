@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
+import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../../widgets/custom_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
