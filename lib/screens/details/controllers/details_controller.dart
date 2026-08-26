@@ -1,30 +1,23 @@
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
 import '../../../domain/entities/tolet_item.dart';
-import '../../../domain/repositories/tolet_repository.dart';
 
 class DetailsController extends GetxController {
-  final ToLetRepository repository;
-
-  DetailsController({required this.repository});
+  final FavoriteController favoriteController = Get.find<FavoriteController>();
 
   late final ToLetItem item;
-  final RxBool isFavorite = false.obs;
+
+  bool get isFavorite => favoriteController.isFavorite(item.id);
 
   @override
   void onInit() {
     super.onInit();
     if (Get.arguments is ToLetItem) {
       item = Get.arguments as ToLetItem;
-      _checkFavoriteStatus();
     }
   }
 
-  Future<void> _checkFavoriteStatus() async {
-    isFavorite.value = await repository.isFavorite(item.id);
-  }
-
   Future<void> toggleFavorite() async {
-    await repository.toggleFavorite(item.id);
-    isFavorite.value = !isFavorite.value;
+    await favoriteController.toggleFavorite(item);
   }
 }
