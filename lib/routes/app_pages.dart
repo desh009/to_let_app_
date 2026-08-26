@@ -1,6 +1,6 @@
-// ignore_for_file: constant_identifier_names
-
+// app_pages.dart
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/main_wrapper_screen/main_wrapper_screen.dart';
 import '../screens/details/bindings/details_binding.dart';
 import '../screens/details/views/details_screen.dart';
 import '../screens/home/bindings/home_binding.dart';
@@ -26,7 +26,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.HOME,
-      page: () => const HomeScreen(),
+      page: () => const MainWrapper(), // ✅ MainWrapper ব্যবহার করুন
       binding: HomeBinding(),
       transition: Transition.rightToLeft,
     ),

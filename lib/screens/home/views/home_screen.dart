@@ -1,18 +1,18 @@
+// screens/home/views/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/featured_property_card.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/floating_action_pills.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/home_header.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/home_search_bar.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/quick_search_categories.dart';
+import 'package:to_let_app_abandon/screens/home/widgets/recommended_property_card.dart';
+import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../routes/app_routes.dart';
 import '../../../widgets/custom_snackbar.dart';
 import '../../../widgets/loading_indicator.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
-import '../widgets/featured_property_card.dart';
-import '../widgets/floating_action_pills.dart';
-import '../widgets/home_header.dart';
-import '../widgets/home_search_bar.dart';
-import '../widgets/quick_search_categories.dart';
-import '../widgets/recommended_property_card.dart';
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
@@ -21,6 +21,8 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    
+    final navController = Get.find<NavController>();
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
@@ -34,17 +36,15 @@ class HomeScreen extends GetView<HomeController> {
               color: AppColors.primary,
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 110.h),
+                padding: EdgeInsets.only(bottom: 90.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 1. Header (Greeting & Notification)
                     const HomeHeader(),
 
-                    // 2. Search Bar & Filter Action
                     const HomeSearchBar(),
 
-                    // 3. Quick Search Categories
                     const QuickSearchCategories(),
 
                     SizedBox(height: 8.h),
@@ -121,10 +121,13 @@ class HomeScreen extends GetView<HomeController> {
                                 item: item,
                                 isFavorite: controller.isFavorite(item.id),
                                 onTap: () {
-                                  Get.toNamed(Routes.DETAILS, arguments: item);
+                                  // ✅ NavController ব্যবহার করে Navigate
+                                  navController.toDetails(item);
+                                  // অথবা সরাসরি
+                                  // Get.toNamed(Routes.DETAILS, arguments: item);
                                 },
                                 onFavoriteToggle: () {
-                                  controller.toggleFavorite(item.id);
+                                  controller.toggleFavorite(item);
                                 },
                               ),
                             );
@@ -207,10 +210,13 @@ class HomeScreen extends GetView<HomeController> {
                               item: item,
                               isFavorite: controller.isFavorite(item.id),
                               onTap: () {
-                                Get.toNamed(Routes.DETAILS, arguments: item);
+                                // ✅ NavController ব্যবহার করে Navigate
+                                navController.toDetails(item);
+                                // অথবা সরাসরি
+                                // Get.toNamed(Routes.DETAILS, arguments: item);
                               },
                               onFavoriteToggle: () {
-                                controller.toggleFavorite(item.id);
+                                controller.toggleFavorite(item);
                               },
                             ),
                           );
@@ -229,12 +235,18 @@ class HomeScreen extends GetView<HomeController> {
               right: 0,
               child: FloatingActionPills(
                 onPostListing: () {
+                  // ✅ NavController ব্যবহার করে Navigate
+                  // navController.toPostListing();
+                  // অথবা Snackbar দেখান
                   CustomSnackbar.showInfo(
                     title: 'Post a listing',
                     message: 'Redirecting to property submission form...',
                   );
                 },
                 onMapView: () {
+                  // ✅ NavController ব্যবহার করে Navigate
+                  // navController.toMapView();
+                  // অথবা Snackbar দেখান
                   CustomSnackbar.showInfo(
                     title: 'Map View',
                     message: 'Interactive Dhaka Map will open here...',
@@ -243,14 +255,6 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
           ],
-        ),
-      ),
-
-      // 7. Bottom Navigation Bar
-      bottomNavigationBar: Obx(
-        () => CustomBottomNavBar(
-          currentIndex: controller.currentNavIndex.value,
-          onTap: controller.changeNavTab,
         ),
       ),
     );

@@ -1,23 +1,17 @@
 import 'package:get/get.dart';
-import '../../../core/services/storage_service.dart';
+import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
 import '../../../domain/entities/tolet_item.dart';
-import '../../../domain/repositories/tolet_repository.dart';
 import '../../../widgets/custom_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 
 class SavedController extends GetxController {
-  final ToLetRepository repository;
-  final StorageService storageService;
+  final FavoriteController favoriteController = Get.find<FavoriteController>();
 
-  SavedController({
-    required this.repository,
-    required this.storageService,
-  });
-
-  final RxList<ToLetItem> savedItems = <ToLetItem>[].obs;
-  final RxList<String> favoriteIds = <String>[].obs;
-  final RxBool isLoading = false.obs;
   final RxString selectedFilter = 'All'.obs;
+
+  // নিজের savedItems না রেখে সরাসরি FavoriteController-এর রিঅ্যাক্টিভ লিস্ট রেফার করুন
+  RxList<ToLetItem> get savedItems => favoriteController.favoriteItems;
+  RxBool get isLoading => favoriteController.isLoading;
 
   List<String> get filterOptions {
     final cats = savedItems.map((e) => e.category).toSet().toList();
@@ -26,9 +20,7 @@ class SavedController extends GetxController {
 
   List<ToLetItem> get filteredItems {
     if (selectedFilter.value == 'All') return savedItems;
-    return savedItems
-        .where((e) => e.category == selectedFilter.value)
-        .toList();
+    return savedItems.where((e) => e.category == selectedFilter.value).toList();
   }
 
   int countByCategory(String cat) {
@@ -36,35 +28,11 @@ class SavedController extends GetxController {
     return savedItems.where((e) => e.category == cat).length;
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadSaved();
-  }
-
-  Future<void> loadSaved() async {
-    try {
-      isLoading.value = true;
-      final allProperties = await repository.getProperties();
-      final favs = await repository.getFavorites();
-      favoriteIds.assignAll(favs);
-      savedItems.assignAll(
-        allProperties.where((p) => favs.contains(p.id)).toList(),
-      );
-    } catch (e) {
-      CustomSnackbar.showError(
-        title: 'Error',
-        message: 'Failed to load saved listings: $e',
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   Future<void> removeFavorite(String id) async {
-    await repository.toggleFavorite(id);
-    favoriteIds.remove(id);
-    savedItems.removeWhere((p) => p.id == id);
+    final item = favoriteController.getFavoriteItem(id);
+    if (item != null) {
+      await favoriteController.toggleFavorite(item);
+    }
     CustomSnackbar.showInfo(
       title: AppStrings.removedFromSaved,
       message: 'Item removed from your saved listings.',
@@ -73,11 +41,7 @@ class SavedController extends GetxController {
   }
 
   Future<void> clearAll() async {
-    for (final item in List.from(savedItems)) {
-      await repository.toggleFavorite(item.id);
-    }
-    favoriteIds.clear();
-    savedItems.clear();
+    await favoriteController.clearAllFavorites();
     CustomSnackbar.showInfo(
       title: AppStrings.clearAll,
       message: 'All saved listings cleared.',

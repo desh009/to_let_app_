@@ -90,10 +90,10 @@ class DetailsScreen extends GetView<DetailsController> {
                             SizedBox(width: 8.w),
                             Obx(
                               () => _CircleButton(
-                                icon: controller.isFavorite.value
+                                icon: controller.isFavorite
                                     ? Icons.favorite
                                     : Icons.favorite_border,
-                                iconColor: controller.isFavorite.value
+                                iconColor: controller.isFavorite
                                     ? AppColors.error
                                     : Colors.white,
                                 onTap: controller.toggleFavorite,
@@ -380,10 +380,10 @@ class DetailsScreen extends GetView<DetailsController> {
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                         child: Icon(
-                          controller.isFavorite.value
+                          controller.isFavorite
                               ? Icons.favorite
                               : Icons.favorite_border_rounded,
-                          color: controller.isFavorite.value
+                          color: controller.isFavorite
                               ? AppColors.error
                               : const Color(0xFF888888),
                           size: 22.r,

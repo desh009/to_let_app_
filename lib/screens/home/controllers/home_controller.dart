@@ -1,34 +1,34 @@
+// screens/home/controllers/home_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
+import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../../domain/repositories/tolet_repository.dart';
-import '../../../routes/app_routes.dart';
-import '../../../widgets/custom_snackbar.dart';
 
 class HomeController extends GetxController {
   final ToLetRepository repository;
   final StorageService storageService;
+  
+  NavController get navController => Get.find<NavController>();
+  FavoriteController get favoriteController => Get.find<FavoriteController>();
 
   HomeController({
     required this.repository,
     required this.storageService,
   });
 
-  // Observables
   final RxList<ToLetItem> allProperties = <ToLetItem>[].obs;
   final RxList<ToLetItem> featuredProperties = <ToLetItem>[].obs;
   final RxList<ToLetItem> recommendedProperties = <ToLetItem>[].obs;
-  final RxList<String> favoriteIds = <String>[].obs;
   final RxBool isLoading = false.obs;
 
-  // Search & Filters
   final RxString selectedLocation = 'Dhaka, Bangladesh'.obs;
   final RxString selectedCategory = 'Family'.obs;
   final RxString searchQuery = ''.obs;
 
-  // Navigation & User Preferences
   final RxInt currentNavIndex = 0.obs;
   final RxBool isDarkMode = false.obs;
   final RxString savedUserName = 'Desh'.obs;
@@ -51,6 +51,14 @@ class HomeController extends GetxController {
     super.onInit();
     _loadUserPreferences();
     loadProperties();
+    _syncNavIndex();
+  }
+
+  void _syncNavIndex() {
+    currentNavIndex.value = navController.currentIndex.value;
+    ever(navController.currentIndex, (index) {
+      currentNavIndex.value = index;
+    });
   }
 
   void _loadUserPreferences() {
@@ -70,33 +78,26 @@ class HomeController extends GetxController {
       final properties = await repository.getProperties();
       allProperties.assignAll(properties);
 
-      final favs = await repository.getFavorites();
-      favoriteIds.assignAll(favs);
-
+      await favoriteController.loadFavorites();
       _filterSections();
     } catch (e) {
-      CustomSnackbar.showError(
-        title: 'Error',
-        message: 'Failed to load properties: $e',
-      );
+      // Silent - no snackbar
     } finally {
       isLoading.value = false;
     }
   }
 
   void _filterSections() {
-    // Featured properties: Items marked featured, optionally filtered by category
     final featured = allProperties.where((p) => p.isFeatured).toList();
     featuredProperties.assignAll(featured.isNotEmpty ? featured : allProperties.take(2).toList());
 
-    // Recommended properties: The remaining items or non-featured items
     final recommended = allProperties.where((p) => !p.isFeatured).toList();
     recommendedProperties.assignAll(recommended.isNotEmpty ? recommended : allProperties.skip(2).toList());
   }
 
   void selectCategory(String category) {
     if (selectedCategory.value == category) {
-      selectedCategory.value = ''; // toggle off
+      selectedCategory.value = '';
     } else {
       selectedCategory.value = category;
     }
@@ -122,46 +123,51 @@ class HomeController extends GetxController {
 
   void updateLocation(String location) {
     selectedLocation.value = location;
-    CustomSnackbar.showInfo(
-      title: 'Location Changed',
-      message: 'Now showing properties in $location',
-      duration: const Duration(seconds: 2),
-    );
   }
 
+  // ============ NAVIGATION METHODS ============
+  
   void changeNavTab(int index) {
-    currentNavIndex.value = index;
-    switch (index) {
-      case 1:
-        Get.toNamed(Routes.SAVED);
-        break;
-      case 2:
-        CustomSnackbar.showInfo(
-          title: 'Messages',
-          message: 'Messages screen coming soon!',
-        );
-        break;
-      case 3:
-        CustomSnackbar.showInfo(
-          title: 'Profile',
-          message: 'Profile screen coming soon!',
-        );
-        break;
-      default:
-        break;
-    }
+    navController.changeTab(index);
   }
 
-  Future<void> toggleFavorite(String id) async {
-    await repository.toggleFavorite(id);
-    if (favoriteIds.contains(id)) {
-      favoriteIds.remove(id);
-    } else {
-      favoriteIds.add(id);
-    }
+  void navigateToDetails(ToLetItem item) {
+    navController.toDetails(item);
   }
 
-  bool isFavorite(String id) => favoriteIds.contains(id);
+  void navigateToSaved() {
+    navController.toSaved();
+  }
+
+  void navigateToMessages() {
+    navController.toMessages();
+  }
+
+  void navigateToProfile() {
+    navController.toProfile();
+  }
+
+  void navigateToPostListing() {
+    // Silent navigation - no snackbar
+  }
+
+  void navigateToMapView() {
+    // Silent navigation - no snackbar
+  }
+
+  // ============ FAVORITE METHODS ============
+
+  Future<void> toggleFavorite(ToLetItem item) async {
+    await favoriteController.toggleFavorite(item);
+  }
+
+  bool isFavorite(String id) {
+    return favoriteController.isFavorite(id);
+  }
+
+  int get favoriteCount => favoriteController.favoriteCount;
+
+  // ============ THEME METHODS ============
 
   void toggleTheme() {
     isDarkMode.value = !isDarkMode.value;
@@ -169,14 +175,43 @@ class HomeController extends GetxController {
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
   }
 
+  // ============ PROFILE METHODS ============
+
   Future<void> updateUserProfile(String name, String phone) async {
     savedUserName.value = name;
     savedUserPhone.value = phone;
     await storageService.setString(StorageKeys.userName, name);
     await storageService.setString(StorageKeys.userPhone, phone);
-    CustomSnackbar.showSuccess(
-      title: 'Profile Updated',
-      message: 'Preferences saved to SharedPreferences successfully!',
-    );
+  }
+
+  // ============ SEARCH METHODS ============
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+    if (query.isNotEmpty) {
+      storageService.setString(StorageKeys.savedSearchQuery, query);
+    }
+  }
+
+  void clearSearch() {
+    searchQuery.value = '';
+    storageService.remove(StorageKeys.savedSearchQuery);
+  }
+
+  ToLetItem? getPropertyById(String id) {
+    try {
+      return allProperties.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> refreshData() async {
+    await loadProperties();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
   }
 }
