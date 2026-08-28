@@ -1,145 +1,157 @@
-// widgets/animated_favorite_button.dart
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// controllers/favorite_controller.dart
+import 'dart:async';
+
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/core/constants/app_colors.dart';
+import 'package:to_let_app_abandon/core/services/storage_service.dart';
 import 'package:to_let_app_abandon/domain/entities/tolet_item.dart';
-import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
+import 'package:to_let_app_abandon/domain/repositories/tolet_repository.dart';
 
-class AnimatedFavoriteButton extends StatefulWidget {
-  final ToLetItem item;
-  final double size;
-  final VoidCallback? onFavoriteChanged;
-
-  const AnimatedFavoriteButton({
-    super.key,
-    required this.item,
-    this.size = 28,
-    this.onFavoriteChanged,
-  });
-
-  @override
-  State<AnimatedFavoriteButton> createState() => _AnimatedFavoriteButtonState();
+// ★ animationEvents স্ট্রিমে যে ইভেন্ট অবজেক্ট পাঠানো হবে
+class FavoriteAnimationEvent {
+  final String itemId;
+  final bool isNowFavorite;
+  FavoriteAnimationEvent(this.itemId, this.isNowFavorite);
 }
 
-class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _rotationAnimation;
+class FavoriteController extends GetxController {
+  final ToLetRepository repository;
+  final StorageService storageService;
+
+  FavoriteController({
+    required this.repository,
+    required this.storageService,
+  });
+
+  // Observables
+  final RxList<String> favoriteIds = <String>[].obs;
+  final RxList<ToLetItem> favoriteItems = <ToLetItem>[].obs;
+  final RxBool isLoading = false.obs;
+
+  // Animation related
+  final RxString animatingId = ''.obs;
+  final RxBool isAnimating = false.obs;
+
+  // ★ animated_favourite_button.dart এই স্ট্রিমে লিসেন করে
+  final StreamController<FavoriteAnimationEvent> _animationEventsController =
+      StreamController<FavoriteAnimationEvent>.broadcast();
+  Stream<FavoriteAnimationEvent> get animationEvents =>
+      _animationEventsController.stream;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.5), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 1.5, end: 0.8), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 0.8, end: 1.2), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 1.2, end: 1.0), weight: 20),
-    ]).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-    ));
-
-    _rotationAnimation = Tween<double>(begin: 0, end: 0.2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+  void onInit() {
+    super.onInit();
+    loadFavorites();
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void onClose() {
+    // ★ স্ট্রিম বন্ধ না করলে মেমরি লিক হবে
+    _animationEventsController.close();
+    super.onClose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<FavoriteController>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  // Load favorites from storage
+  Future<void> loadFavorites() async {
+    try {
+      isLoading.value = true;
+      final saved = storageService.favoriteProperties;
+      favoriteIds.assignAll(saved);
 
-    return Obx(() {
-      final isFav = controller.isFavorite(widget.item.id);
-      final isAnimating = controller.isAnimating.value &&
-          controller.animatingId.value == widget.item.id;
-
-      // Trigger animation when favorite state changes
-      if (isAnimating && !_controller.isAnimating) {
-        _controller.forward(from: 0);
-      }
-
-      return GestureDetector(
-        onTap: () async {
-          await controller.toggleFavorite(widget.item);
-          widget.onFavoriteChanged?.call();
-        },
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: Transform.rotate(
-                angle: _rotationAnimation.value * (isFav ? 1 : -1),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Background pulse
-                    if (isAnimating)
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        width: widget.size.r * 2.5,
-                        height: widget.size.r * 2.5,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: (isFav ? AppColors.error : AppColors.primary)
-                              .withOpacity(0.1),
-                        ),
-                      ),
-                    
-                    // Heart Icon
-                    Icon(
-                      isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                      size: widget.size.r,
-                      color: isFav
-                          ? AppColors.error
-                          : (isDark
-                              ? AppColors.textSecondaryDark
-                              : AppColors.textSecondaryLight),
-                    ),
-                    
-                    // Sparkle particles
-                    if (isAnimating && isFav)
-                      ...List.generate(8, (index) {
-                        final angle = (index / 8) * 2 * 3.14159;
-                        final distance = (widget.size.r * 0.5) +
-                            (widget.size.r * 0.3 * _scaleAnimation.value);
-                        return Positioned(
-                          left: widget.size.r / 2 + distance * 0.7 * (1 + _scaleAnimation.value * 0.2),
-                          top: widget.size.r / 2 + distance * 0.7 * (1 + _scaleAnimation.value * 0.2),
-                          child: Opacity(
-                            opacity: 1 - _scaleAnimation.value,
-                            child: Container(
-                              width: 4.r,
-                              height: 4.r,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.error.withOpacity(0.6),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+      // Load full items if needed
+      final allProperties = await repository.getProperties();
+      favoriteItems.assignAll(
+        allProperties.where((p) => saved.contains(p.id)).toList(),
       );
-    });
+    } catch (e) {
+      // Silent error
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Check if item is favorite
+  bool isFavorite(String id) {
+    return favoriteIds.contains(id);
+  }
+
+  // Toggle favorite with animation
+  Future<void> toggleFavorite(ToLetItem item) async {
+    final id = item.id;
+
+    // ★ টগল করার আগেই নতুন স্টেট বের করে রাখছি, ইভেন্টে পাঠানোর জন্য
+    final bool willBeFavorite = !favoriteIds.contains(id);
+
+    // Start animation
+    animatingId.value = id;
+    isAnimating.value = true;
+
+    // Toggle logic
+    if (favoriteIds.contains(id)) {
+      // Remove from favorites
+      favoriteIds.remove(id);
+      favoriteItems.removeWhere((p) => p.id == id);
+
+      // Update storage
+      await storageService.setFavoriteProperties(favoriteIds);
+      await repository.toggleFavorite(id);
+    } else {
+      // Add to favorites
+      favoriteIds.add(id);
+      favoriteItems.add(item);
+
+      // Update storage
+      await storageService.setFavoriteProperties(favoriteIds);
+      await repository.toggleFavorite(id);
+    }
+
+    // ★ বাটনের অ্যানিমেশন ট্রিগার করার জন্য ইভেন্ট এমিট করা
+    _animationEventsController.add(
+      FavoriteAnimationEvent(id, willBeFavorite),
+    );
+
+    // End animation after a delay
+    await Future.delayed(const Duration(milliseconds: 400));
+    isAnimating.value = false;
+    animatingId.value = '';
+  }
+
+  // Remove from favorites (without animation)
+  Future<void> removeFavorite(String id) async {
+    if (favoriteIds.contains(id)) {
+      favoriteIds.remove(id);
+      favoriteItems.removeWhere((p) => p.id == id);
+      await storageService.setFavoriteProperties(favoriteIds);
+      await repository.toggleFavorite(id);
+    }
+  }
+
+  // Clear all favorites
+  Future<void> clearAllFavorites() async {
+    for (final item in List.from(favoriteItems)) {
+      await repository.toggleFavorite(item.id);
+    }
+    favoriteIds.clear();
+    favoriteItems.clear();
+    await storageService.setFavoriteProperties([]);
+  }
+
+  // Get favorite count
+  int get favoriteCount => favoriteIds.length;
+
+  // Check if favorite items are empty
+  bool get isEmpty => favoriteItems.isEmpty;
+
+  // Get favorite item by id
+  ToLetItem? getFavoriteItem(String id) {
+    try {
+      return favoriteItems.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Refresh favorites
+  Future<void> refreshFavorites() async {
+    await loadFavorites();
   }
 }

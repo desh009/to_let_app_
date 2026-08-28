@@ -7,6 +7,7 @@ import '../../../domain/entities/tolet_item.dart';
 import '../../../routes/app_routes.dart';
 import '../../../widgets/custom_snackbar.dart';
 import '../../../widgets/loading_indicator.dart';
+import '../../../widgets/nav/nav_controller.dart';
 import '../controllers/saved_controller.dart';
 
 class SavedScreen extends GetView<SavedController> {
@@ -15,9 +16,10 @@ class SavedScreen extends GetView<SavedController> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final navController = Get.find<NavController>();
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : const Color(0xFFF6F5F2),
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +40,7 @@ class SavedScreen extends GetView<SavedController> {
                             fontWeight: FontWeight.w800,
                             color: isDark
                                 ? AppColors.textPrimaryDark
-                                : const Color(0xFF1A1A1A),
+                                : AppColors.textPrimaryLight,
                           ),
                         ),
                         Obx(() => Text(
@@ -47,7 +49,7 @@ class SavedScreen extends GetView<SavedController> {
                                 fontSize: 13.sp,
                                 color: isDark
                                     ? AppColors.textSecondaryDark
-                                    : const Color(0xFF888888),
+                                    : AppColors.iconMuted,
                               ),
                             )),
                       ],
@@ -61,7 +63,7 @@ class SavedScreen extends GetView<SavedController> {
                             size: 24.r,
                             color: isDark
                                 ? AppColors.textSecondaryDark
-                                : const Color(0xFF888888),
+                                : AppColors.iconMuted,
                           ),
                           onPressed: () => _confirmClearAll(context),
                         )
@@ -97,14 +99,14 @@ class SavedScreen extends GetView<SavedController> {
                                 ? AppColors.primary
                                 : (isDark
                                     ? AppColors.surfaceDark
-                                    : Colors.white),
+                                    : AppColors.surfaceLight),
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
                               color: isSelected
                                   ? AppColors.primary
                                   : (isDark
                                       ? AppColors.dividerDark
-                                      : const Color(0xFFE0E0E0)),
+                                      : AppColors.borderMedium),
                             ),
                           ),
                           child: Text(
@@ -116,7 +118,7 @@ class SavedScreen extends GetView<SavedController> {
                                   ? Colors.white
                                   : (isDark
                                       ? AppColors.textSecondaryDark
-                                      : const Color(0xFF555555)),
+                                      : AppColors.textSecondaryLight),
                             ),
                           ),
                         ),
@@ -149,7 +151,7 @@ class SavedScreen extends GetView<SavedController> {
                           fontSize: 14.sp,
                           color: isDark
                               ? AppColors.textSecondaryDark
-                              : const Color(0xFF888888)),
+                              : AppColors.iconMuted),
                     ),
                   );
                 }
@@ -182,6 +184,7 @@ class SavedScreen extends GetView<SavedController> {
           ],
         ),
       ),
+      bottomNavigationBar: navController.bottomNavBar,
     );
   }
 
@@ -245,7 +248,7 @@ class _SavedCard extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(bottom: 14.h),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceDark : Colors.white,
+          color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
@@ -270,8 +273,8 @@ class _SavedCard extends StatelessWidget {
                       height: 88.r,
                       width: 88.r,
                       color: isDark
-                          ? const Color(0xFF2C2C2C)
-                          : const Color(0xFFF0EFEB),
+                          ? AppColors.dividerDark
+                          : AppColors.borderSubtle,
                       child: Image.network(
                         item.images.isNotEmpty
                             ? item.images.first
@@ -302,7 +305,7 @@ class _SavedCard extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                                 color: isDark
                                     ? AppColors.textPrimaryDark
-                                    : const Color(0xFF1A1A1A),
+                                    : AppColors.textPrimaryLight,
                               ),
                             ),
                             Text(
@@ -311,7 +314,7 @@ class _SavedCard extends StatelessWidget {
                                 fontSize: 11.sp,
                                 color: isDark
                                     ? AppColors.textSecondaryDark
-                                    : const Color(0xFF888888),
+                                    : AppColors.iconMuted,
                               ),
                             ),
                           ],
@@ -328,7 +331,7 @@ class _SavedCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: isDark
                                 ? AppColors.textPrimaryDark
-                                : const Color(0xFF1A1A1A),
+                                : AppColors.textPrimaryLight,
                           ),
                         ),
                         SizedBox(height: 3.h),
@@ -342,7 +345,7 @@ class _SavedCard extends StatelessWidget {
                             fontSize: 12.sp,
                             color: isDark
                                 ? AppColors.textSecondaryDark
-                                : const Color(0xFF888888),
+                                : AppColors.iconMuted,
                           ),
                         ),
                         SizedBox(height: 6.h),
@@ -356,7 +359,7 @@ class _SavedCard extends StatelessWidget {
                                   fontSize: 11.sp,
                                   color: isDark
                                       ? AppColors.textSecondaryDark
-                                      : const Color(0xFF666666)),
+                                      : AppColors.textSecondaryLight),
                             ),
                             _dot(),
                             Text(
@@ -365,7 +368,7 @@ class _SavedCard extends StatelessWidget {
                                   fontSize: 11.sp,
                                   color: isDark
                                       ? AppColors.textSecondaryDark
-                                      : const Color(0xFF666666)),
+                                      : AppColors.textSecondaryLight),
                             ),
                             _dot(),
                             Text(
@@ -376,8 +379,8 @@ class _SavedCard extends StatelessWidget {
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
                                 color: isAvailable
-                                    ? const Color(0xFF388E3C)
-                                    : const Color(0xFFE67E22),
+                                    ? AppColors.badgeGreenText
+                                    : AppColors.warning,
                               ),
                             ),
                           ],
@@ -403,8 +406,7 @@ class _SavedCard extends StatelessWidget {
             Divider(
               height: 1,
               thickness: 1,
-              color:
-                  isDark ? AppColors.dividerDark : const Color(0xFFF0F0F0),
+              color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
             ),
 
             // ── Action Buttons: Message | Call Owner ───────────
@@ -424,7 +426,7 @@ class _SavedCard extends StatelessWidget {
                           border: Border.all(
                             color: isDark
                                 ? AppColors.dividerDark
-                                : const Color(0xFFDDDDDD),
+                                : AppColors.borderMedium,
                             width: 1.5,
                           ),
                         ),
@@ -436,7 +438,7 @@ class _SavedCard extends StatelessWidget {
                               size: 16.r,
                               color: isDark
                                   ? AppColors.textSecondaryDark
-                                  : const Color(0xFF555555),
+                                  : AppColors.textSecondaryLight,
                             ),
                             SizedBox(width: 6.w),
                             Text(
@@ -446,7 +448,7 @@ class _SavedCard extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color: isDark
                                     ? AppColors.textSecondaryDark
-                                    : const Color(0xFF444444),
+                                    : AppColors.textSecondaryLight,
                               ),
                             ),
                           ],
@@ -504,7 +506,7 @@ class _SavedCard extends StatelessWidget {
   Widget _dot() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.w),
         child: Text('•',
-            style: TextStyle(fontSize: 10.sp, color: const Color(0xFFBBBBBB))),
+            style: TextStyle(fontSize: 10.sp, color: AppColors.borderMedium)),
       );
 }
 
@@ -523,7 +525,7 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.favorite_border_rounded,
             size: 64.r,
-            color: isDark ? AppColors.textSecondaryDark : const Color(0xFFCCCCCC),
+            color: isDark ? AppColors.textSecondaryDark : AppColors.borderMedium,
           ),
           SizedBox(height: 16.h),
           Text(
@@ -531,7 +533,7 @@ class _EmptyState extends StatelessWidget {
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.textPrimaryDark : const Color(0xFF444444),
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
             ),
           ),
           SizedBox(height: 8.h),
@@ -540,7 +542,7 @@ class _EmptyState extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13.sp,
-              color: isDark ? AppColors.textSecondaryDark : const Color(0xFF888888),
+              color: isDark ? AppColors.textSecondaryDark : AppColors.iconMuted,
             ),
           ),
         ],

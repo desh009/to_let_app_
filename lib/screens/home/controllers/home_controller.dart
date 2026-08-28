@@ -1,7 +1,7 @@
 // screens/home/controllers/home_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
+import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
@@ -11,14 +11,11 @@ import '../../../domain/repositories/tolet_repository.dart';
 class HomeController extends GetxController {
   final ToLetRepository repository;
   final StorageService storageService;
-  
+
   NavController get navController => Get.find<NavController>();
   FavoriteController get favoriteController => Get.find<FavoriteController>();
 
-  HomeController({
-    required this.repository,
-    required this.storageService,
-  });
+  HomeController({required this.repository, required this.storageService});
 
   final RxList<ToLetItem> allProperties = <ToLetItem>[].obs;
   final RxList<ToLetItem> featuredProperties = <ToLetItem>[].obs;
@@ -64,9 +61,13 @@ class HomeController extends GetxController {
   void _loadUserPreferences() {
     isDarkMode.value = storageService.getBool(StorageKeys.isDarkMode) ?? false;
     final storedName = storageService.getString(StorageKeys.userName);
-    savedUserName.value = (storedName != null && storedName.isNotEmpty) ? storedName : 'Desh';
-    savedUserPhone.value = storageService.getString(StorageKeys.userPhone) ?? '';
-    final lastSearch = storageService.getString(StorageKeys.savedSearchQuery) ?? '';
+    savedUserName.value = (storedName != null && storedName.isNotEmpty)
+        ? storedName
+        : 'Desh';
+    savedUserPhone.value =
+        storageService.getString(StorageKeys.userPhone) ?? '';
+    final lastSearch =
+        storageService.getString(StorageKeys.savedSearchQuery) ?? '';
     if (lastSearch.isNotEmpty) {
       searchQuery.value = lastSearch;
     }
@@ -89,10 +90,14 @@ class HomeController extends GetxController {
 
   void _filterSections() {
     final featured = allProperties.where((p) => p.isFeatured).toList();
-    featuredProperties.assignAll(featured.isNotEmpty ? featured : allProperties.take(2).toList());
+    featuredProperties.assignAll(
+      featured.isNotEmpty ? featured : allProperties.take(2).toList(),
+    );
 
     final recommended = allProperties.where((p) => !p.isFeatured).toList();
-    recommendedProperties.assignAll(recommended.isNotEmpty ? recommended : allProperties.skip(2).toList());
+    recommendedProperties.assignAll(
+      recommended.isNotEmpty ? recommended : allProperties.skip(2).toList(),
+    );
   }
 
   void selectCategory(String category) {
@@ -111,7 +116,9 @@ class HomeController extends GetxController {
     }
 
     final cat = selectedCategory.value.toLowerCase();
-    final matching = allProperties.where((item) => item.category.toLowerCase() == cat).toList();
+    final matching = allProperties
+        .where((item) => item.category.toLowerCase() == cat)
+        .toList();
 
     if (matching.isNotEmpty) {
       featuredProperties.assignAll(matching);
@@ -126,7 +133,7 @@ class HomeController extends GetxController {
   }
 
   // ============ NAVIGATION METHODS ============
-  
+
   void changeNavTab(int index) {
     navController.changeTab(index);
   }
@@ -143,9 +150,9 @@ class HomeController extends GetxController {
     navController.toMessages();
   }
 
-  void navigateToProfile() {
-    navController.toProfile();
-  }
+  // void navigateToProfile() {
+  //   navController.toProfile();
+  // }
 
   void navigateToPostListing() {
     // Silent navigation - no snackbar

@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
 import '../controller/massage_controller.dart';
 
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,80 +19,63 @@ class MessagesScreen extends StatelessWidget {
     return GetBuilder<MessagesController>(
       builder: (controller) {
         return Scaffold(
-          backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
-          appBar: _buildAppBar(isDark),
-          body: SafeArea(child: _buildBody(controller, isDark)),
+          backgroundColor: isDark
+              ? AppColors.backgroundDark
+              : AppColors.scaffoldBg,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Custom Header (AppBar-এর বদলে Custom Header)
+                _buildCustomHeader(context, isDark),
+
+                // Content Body
+                Expanded(child: _buildBody(controller, isDark)),
+              ],
+            ),
+          ),
         );
       },
     );
   }
 
-  PreferredSizeWidget _buildAppBar(bool isDark) {
-    return AppBar(
-      backgroundColor: isDark ? AppColors.surfaceDark : Colors.transparent,
-      elevation: 0,
-      toolbarHeight: 56.h,
-      leading: Padding(
-        padding: EdgeInsets.all(8.r),
-        child: CircleAvatar(
-          radius: 18.r,
-          backgroundColor: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              size: 20.r,
-            ),
-            onPressed: () => Get.find<MessagesController>().goBack(),
-          ),
-        ),
-      ),
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
+
+
+
+  Widget _buildCustomHeader(BuildContext context, bool isDark) {
+    return Container(
+      height: 56.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      color: isDark ? AppColors.surfaceDark : Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Messages',
-            style: TextStyle(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
-            ),
-          ),
-          SizedBox(width: 6.w),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Text(
-              'v1.0',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.bold,
+          // Back Button
+
+          // Title & Version Tag
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppStrings.messages,
+                style: TextStyle(
+                  color: isDark
+                      ? AppColors.textPrimaryDark
+                      : AppColors.textPrimaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
               ),
-            ),
+              SizedBox(width: 6.w),
+            ],
           ),
+
+          // More Options Button
         ],
       ),
-      centerTitle: true,
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 16.w),
-          child: CircleAvatar(
-            radius: 18.r,
-            backgroundColor: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
-            child: Icon(
-              Icons.more_horiz,
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              size: 20.r,
-            ),
-          ),
-        ),
-      ],
     );
   }
+
+
 
   Widget _buildBody(MessagesController controller, bool isDark) {
     return SingleChildScrollView(
@@ -116,6 +102,8 @@ class MessagesScreen extends StatelessWidget {
     );
   }
 
+
+
   Widget _buildFilterChips(MessagesController controller, bool isDark) {
     return Obx(
       () => Wrap(
@@ -127,13 +115,17 @@ class MessagesScreen extends StatelessWidget {
             label: Text(
               controller.tabs[index],
               style: TextStyle(
-                color: isSelected ? Colors.white : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight),
+                color: isSelected
+                    ? Colors.white
+                    : (isDark
+                          ? AppColors.textPrimaryDark
+                          : AppColors.textPrimaryLight),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 fontSize: 13.sp,
               ),
             ),
             selected: isSelected,
-            selectedColor: AppColors.primary,
+            selectedColor: AppColors.darkCharcoal,
             backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
             shape: StadiumBorder(
               side: BorderSide(
@@ -150,6 +142,8 @@ class MessagesScreen extends StatelessWidget {
       ),
     );
   }
+
+
 
   Widget _buildMessageTile(
     MessagesController controller,
@@ -181,11 +175,11 @@ class MessagesScreen extends StatelessWidget {
               children: [
                 message.isSystem
                     ? CircleAvatar(
-                        backgroundColor: isDark ? AppColors.dividerDark : AppColors.primary,
+                        backgroundColor: AppColors.darkCharcoal,
                         radius: 24.r,
                         child: Icon(
                           Icons.check,
-                          color: isDark ? AppColors.textPrimaryDark : Colors.white,
+                          color: Colors.white,
                           size: 20.r,
                         ),
                       )
@@ -200,7 +194,7 @@ class MessagesScreen extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.all(4.r),
                       decoration: const BoxDecoration(
-                        color: AppColors.error,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
                       constraints: BoxConstraints(
@@ -232,7 +226,9 @@ class MessagesScreen extends StatelessWidget {
                         child: Text(
                           message.title,
                           style: TextStyle(
-                            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                            color: isDark
+                                ? AppColors.textPrimaryDark
+                                : AppColors.textPrimaryLight,
                             fontWeight: FontWeight.bold,
                             fontSize: 14.sp,
                           ),
@@ -242,7 +238,9 @@ class MessagesScreen extends StatelessWidget {
                       Text(
                         message.time,
                         style: TextStyle(
-                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
                           fontSize: 12.sp,
                         ),
                       ),
@@ -252,7 +250,9 @@ class MessagesScreen extends StatelessWidget {
                   Text(
                     message.message,
                     style: TextStyle(
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
                       fontSize: 13.sp,
                     ),
                     maxLines: 2,
@@ -267,13 +267,17 @@ class MessagesScreen extends StatelessWidget {
                           vertical: 4.h,
                         ),
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+                          color: isDark
+                              ? AppColors.dividerDark
+                              : AppColors.scaffoldBg,
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
                           message.tag,
                           style: TextStyle(
-                            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                            color: isDark
+                                ? AppColors.textPrimaryDark
+                                : AppColors.textPrimaryLight,
                             fontSize: 11.sp,
                           ),
                         ),
@@ -284,7 +288,7 @@ class MessagesScreen extends StatelessWidget {
                           width: 6.r,
                           height: 6.r,
                           decoration: const BoxDecoration(
-                            color: AppColors.error,
+                            color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -329,18 +333,22 @@ class MessagesScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Need Help?',
+                    AppStrings.needHelp,
                     style: TextStyle(
-                      color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                      color: isDark
+                          ? AppColors.textPrimaryDark
+                          : AppColors.textPrimaryLight,
                       fontWeight: FontWeight.bold,
                       fontSize: 14.sp,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    'Contact our support team',
+                    AppStrings.contactSupport,
                     style: TextStyle(
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
                       fontSize: 12.sp,
                     ),
                   ),
@@ -349,7 +357,9 @@ class MessagesScreen extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
               size: 22.r,
             ),
           ],
