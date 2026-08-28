@@ -8,9 +8,7 @@ import '../../../widgets/nav/nav_controller.dart';
 class ProfileController extends GetxController {
   final StorageService storageService;
 
-  ProfileController({
-    required this.storageService,
-  });
+  ProfileController({required this.storageService});
 
   // Observables
   final RxString userName = ''.obs;
@@ -21,6 +19,8 @@ class ProfileController extends GetxController {
   final RxInt listingCount = 0.obs;
   final RxInt visitsCount = 0.obs;
 
+  final RxBool isDarkMode = false.obs;
+
   // Navigation
   NavController get navController => Get.find<NavController>();
 
@@ -29,12 +29,14 @@ class ProfileController extends GetxController {
     super.onInit();
     loadUserData();
     loadStats();
+    _loadThemePrefrence();
   }
 
   void loadUserData() {
     final name = storageService.getString(StorageKeys.userName) ?? 'Desh';
-    final phone = storageService.getString(StorageKeys.userPhone) ?? '+880123456789';
-    
+    final phone =
+        storageService.getString(StorageKeys.userPhone) ?? '+880123456789';
+
     userName.value = name;
     userPhone.value = phone;
     userEmail.value = '${name.toLowerCase()}@gmail.com';
@@ -49,6 +51,16 @@ class ProfileController extends GetxController {
 
   void goBack() {
     Get.back();
+  }
+
+  void _loadThemePrefrence() {
+    isDarkMode.value = storageService.getBool(StorageKeys.isDarkMode) ?? false;
+  }
+
+  void toogleDarkMode(bool value) {
+    isDarkMode.value = value;
+    storageService.setBool(StorageKeys.isDarkMode, value);
+    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
   }
 
   void navigateToSettings() {
@@ -77,10 +89,7 @@ class ProfileController extends GetxController {
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
@@ -89,10 +98,7 @@ class ProfileController extends GetxController {
               storageService.remove(StorageKeys.userPhone);
               Get.offAllNamed('/splash');
             },
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

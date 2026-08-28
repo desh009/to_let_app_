@@ -250,12 +250,8 @@ class ProfileScreen extends GetView<ProfileController> {
             onTap: controller.navigateToScheduledVisits,
           ),
           _buildDivider(isDark),
-          _buildMenuItem(
-            icon: Icons.credit_card_outlined,
-            title: AppStrings.payments,
-            isDark: isDark,
-            onTap: controller.navigateToPayments,
-          ),
+          Obx(() => _buildDarkModeToggle(isDark)),
+
           _buildDivider(isDark),
           _buildMenuItem(
             icon: Icons.settings_outlined,
@@ -269,6 +265,46 @@ class ProfileScreen extends GetView<ProfileController> {
             title: AppStrings.helpSupport,
             isDark: isDark,
             onTap: controller.navigateToHelpSupport,
+          ),
+        ],
+      ),
+    );
+  }
+
+   Widget _buildDarkModeToggle(bool isDark) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Row(
+        children: [
+          Container(
+            width: 36.r,
+            height: 36.r,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              controller.isDarkMode.value
+                  ? Icons.dark_mode_outlined
+                  : Icons.light_mode_outlined,
+              size: 18.r,
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Text(
+            'Dark Mode',
+            style: TextStyle(
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          Switch(
+            value: controller.isDarkMode.value,
+            activeColor: AppColors.primary,
+            onChanged: controller.toogleDarkMode,
           ),
         ],
       ),
