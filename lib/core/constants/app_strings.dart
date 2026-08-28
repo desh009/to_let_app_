@@ -162,4 +162,37 @@ abstract class AppStrings {
   static const String navSaved = 'Saved';
   static const String navMessages = 'Messages';
   static const String navProfile = 'Profile';
+
+
+  // massage details 
+
+
+
+  static const String version = 'V1';
+  
+  // Status & Role
+  static const String owner = 'Owner';
+  static const String online = 'Online';
+  static const String offline = 'Offline';
+  static const String ownerOnline = 'Owner • Online';
+
+  // Actions & Buttons
+  static const String view = 'View';
+  static const String send = 'Send';
+  static const String call = 'Call';
+
+  // Input Placeholders
+  static const String messageHint = 'Message...';
+  static String messageUserHint(String name) => 'Message $name...';
+
+  // Property Details Placeholder
+  static const String defaultPropertyTitle = 'Sunlit 2BHK in Banani';
+  static const String defaultPropertySpecs = '2bd • 2ba • 950 sqft';
+  static const String defaultPropertyPrice = '৳32,000 /mo';
+
+  // Help & Support Section
+
+  // Date Divider Labels
+  static const String today = 'Today';
+  static const String yesterday = 'Yesterday';
 }

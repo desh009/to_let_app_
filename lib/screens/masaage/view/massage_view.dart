@@ -9,6 +9,8 @@ import '../controller/massage_controller.dart';
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -35,6 +37,9 @@ class MessagesScreen extends StatelessWidget {
       },
     );
   }
+
+
+
 
   Widget _buildCustomHeader(BuildContext context, bool isDark) {
     return Container(
@@ -70,6 +75,8 @@ class MessagesScreen extends StatelessWidget {
     );
   }
 
+
+
   Widget _buildBody(MessagesController controller, bool isDark) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -94,6 +101,8 @@ class MessagesScreen extends StatelessWidget {
       ),
     );
   }
+
+
 
   Widget _buildFilterChips(MessagesController controller, bool isDark) {
     return Obx(
@@ -133,6 +142,8 @@ class MessagesScreen extends StatelessWidget {
       ),
     );
   }
+
+
 
   Widget _buildMessageTile(
     MessagesController controller,

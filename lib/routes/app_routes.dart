@@ -9,6 +9,8 @@ abstract class Routes {
   static const String SAVED = _Paths.SAVED;
   static const String MESSAGES = _Paths.MESSAGES;
   static const String PROFILE = _Paths.PROFILE;
+    static const String MESSAGES_DETAILS = _Paths.MESSAGES_DETAILS;
+
 
   // CamelCase aliases
   static const String splash = _Paths.SPLASH;
@@ -17,6 +19,8 @@ abstract class Routes {
   static const String saved = _Paths.SAVED;
   static const String messages = _Paths.MESSAGES;
   static const String profile = _Paths.PROFILE;
+    static const String messages_details = _Paths.MESSAGES_DETAILS;
+
 }
 
 abstract class _Paths {
@@ -28,4 +32,6 @@ abstract class _Paths {
   static const String SAVED = '/saved';
   static const String MESSAGES = '/messages';
   static const String PROFILE = '/profile';
+    static const String MESSAGES_DETAILS= '/messages-details';
+
 }

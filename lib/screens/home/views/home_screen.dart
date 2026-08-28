@@ -261,6 +261,7 @@ class HomeScreen extends GetView<HomeController> {
           ],
         ),
       ),
+      bottomNavigationBar: navController.bottomNavBar,
     );
   }
 }

@@ -1,5 +1,6 @@
 // controllers/messages_controller.dart
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/masaage/massage_details/view/massage_details_view.dart';
 
 class MessagesController extends GetxController {
   // Observable variables
@@ -70,7 +71,7 @@ class MessagesController extends GetxController {
   
   // Navigate to message details
   void navigateToMessageDetail(MessageTileData message) {
-    // Get.to(() => MessageDetailScreen(message: message));
+    Get.to(() => ChatDetailScreen(message: message));
     // Or use named routing
     // Get.toNamed('/message-detail', arguments: message);
   }
