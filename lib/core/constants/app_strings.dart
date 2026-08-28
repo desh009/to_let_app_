@@ -29,7 +29,8 @@ abstract class AppStrings {
   static const String featuredProperties = 'Featured properties';
   static const String recommendedForYou = 'Recommended for you';
   static const String viewAll = 'View all';
-  static const String noFeaturedProperties = 'No featured properties in this category';
+  static const String noFeaturedProperties =
+      'No featured properties in this category';
   static const String noPropertiesFound = 'No properties found';
   static const String loadingFeatured = 'Loading featured listings...';
   static const String loadingRecommendations = 'Loading recommendations...';
@@ -44,8 +45,10 @@ abstract class AppStrings {
   // Floating Action Pills
   static const String postListing = 'Post a listing';
   static const String mapView = 'Map View';
-  static const String redirectingToForm = 'Redirecting to property submission form...';
-  static const String interactiveMap = 'Interactive Dhaka Map will open here...';
+  static const String redirectingToForm =
+      'Redirecting to property submission form...';
+  static const String interactiveMap =
+      'Interactive Dhaka Map will open here...';
 
   // ==================== Details Screen ====================
   // App Bar
@@ -117,7 +120,8 @@ abstract class AppStrings {
   static const String saved = 'Saved';
   static const String savedSubtitle = 'properties saved for later';
   static const String noSavedProperties = 'No saved properties yet';
-  static const String noSavedSubtitle = 'Tap the heart icon on any listing to save it here.';
+  static const String noSavedSubtitle =
+      'Tap the heart icon on any listing to save it here.';
   static const String clearAll = 'Clear All';
   static const String clearAllConfirm = 'Remove all saved listings?';
   static const String message = 'Message';
@@ -130,8 +134,7 @@ abstract class AppStrings {
 
   // ==================== Messages Screen ====================
   // Header & Navigation
-  
-  
+
   // Filter Tabs
   static const String tabAll = 'All';
   static const String tabUnread = 'Unread';
@@ -139,12 +142,14 @@ abstract class AppStrings {
 
   // Sample Data Strings
   static const String rahmanOwner = 'Rahman • Owner';
-  static const String rahmanMsg = 'Yes, available for visit tomorrow? Let me know time';
+  static const String rahmanMsg =
+      'Yes, available for visit tomorrow? Let me know time';
   static const String tagSunlit2BHK = 'Sunlit 2BHK';
   static const String time2m = '2m';
 
   static const String ayeshaKhan = 'Ayesha Khan';
-  static const String ayeshaMsg = 'Modern Family House is still available, we can discuss';
+  static const String ayeshaMsg =
+      'Modern Family House is still available, we can discuss';
   static const String tagModernHouse = 'Modern House';
   static const String time1h = '1h';
 
@@ -163,13 +168,8 @@ abstract class AppStrings {
   static const String navMessages = 'Messages';
   static const String navProfile = 'Profile';
 
+  // massage details
 
-  // massage details 
-
-
-
-  static const String version = 'V1';
-  
   // Status & Role
   static const String owner = 'Owner';
   static const String online = 'Online';
@@ -195,4 +195,51 @@ abstract class AppStrings {
   // Date Divider Labels
   static const String today = 'Today';
   static const String yesterday = 'Yesterday';
+
+  //  post_listing
+
+  static const String propertyPhotos = 'PROPERTY PHOTOS';
+  static const String minPhotosHint = 'Min 3 photos';
+  static const String cover = 'Cover';
+  static const String addPhoto = 'Add photo';
+
+  static const String titleLabel = 'TITLE';
+  static const String monthlyRentLabel = 'MONTHLY RENT';
+  static const String bedroomsLabel = 'BEDROOMS';
+  static const String bathroomsLabel = 'BATHROOMS';
+
+  static const String defaultTitle = 'Sunlit 2BHK in Banani';
+  static const String defaultLocation = 'Road 11, Banani, Dhaka';
+  static const String defaultRent = '৳ 32,000';
+
+
+
+  // profile_scrren
+
+
+
+  // Profile Info
+  static const String userName = 'Desh';
+  static const String userEmail = 'desh.rahman@gmail.com';
+  static const String verifiedDhaka = 'Verified • Dhaka';
+
+  // Stats
+  static const String listing = 'LISTING';
+  static const String visits = 'VISITS';
+
+  // Menu Options
+  static const String myListings = 'My Listings';
+  static const String oneActive = '1 active';
+  static const String scheduledVisits = 'Scheduled Visits';
+  static const String tomorrowTime = 'Tomorrow 11AM';
+  static const String payments = 'Payments';
+  static const String helpSupport = 'Help & Support';
+
+
+
+
+
+
+
+
 }

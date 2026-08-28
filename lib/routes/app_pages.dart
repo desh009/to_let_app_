@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/binder/profile_binder.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/view/profile_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/binder/massage_binder.dart';
 import 'package:to_let_app_abandon/screens/masaage/controller/massage_controller.dart';
 import 'package:to_let_app_abandon/screens/masaage/massage_details/binder/massage_details_binder.dart';
@@ -58,6 +60,12 @@ class AppPages {
       page: () => ChatDetailScreen(message: Get.arguments as MessageTileData),
       binding: ChatBinding(),
       transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.PROFILE,
+      page: () => const ProfileScreen(),
+      binding: ProfileBinding(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }

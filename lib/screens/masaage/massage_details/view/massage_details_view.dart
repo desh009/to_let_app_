@@ -16,6 +16,7 @@ class ChatDetailScreen extends StatefulWidget {
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
+
 class _ChatBubbleData {
   final int id;
   final String text;
@@ -397,14 +398,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.darkCharcoal,
                       borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Text(
-                      AppStrings.version,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ],
