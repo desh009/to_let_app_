@@ -10,8 +10,10 @@ import '../../../widgets/loading_indicator.dart';
 import '../../../widgets/nav/nav_controller.dart';
 import '../controllers/saved_controller.dart';
 
+
 class SavedScreen extends GetView<SavedController> {
   const SavedScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,9 @@ class SavedScreen extends GetView<SavedController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Header ────────────────────────────────────────────────
+
+
+
             Padding(
               padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 4.h),
               child: Row(
@@ -55,8 +60,13 @@ class SavedScreen extends GetView<SavedController> {
                       ],
                     ),
                   ),
+
+
                   // Clear all trash icon
+
+                  
                   Obx(() => controller.savedItems.isNotEmpty
+
                       ? IconButton(
                           icon: Icon(
                             Icons.delete_outline_rounded,
@@ -155,6 +165,8 @@ class SavedScreen extends GetView<SavedController> {
                     ),
                   );
                 }
+
+
 
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
