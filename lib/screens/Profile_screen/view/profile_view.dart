@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
+import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 
@@ -13,7 +14,10 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final navController = Get.find<NavController>();
+
     return Scaffold(
+      bottomNavigationBar: navController.bottomNavBar,
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
       body: SafeArea(
         child: Column(
@@ -49,7 +53,6 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
 
             // Bottom Navigation Bar
-            _buildBottomNavigationBar(isDark),
           ],
         ),
       ),
@@ -76,10 +79,8 @@ class ProfileScreen extends GetView<ProfileController> {
                 ),
               ),
               SizedBox(width: 6.w),
-      
             ],
           ),
-         
         ],
       ),
     );
@@ -474,95 +475,4 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   // --- Bottom Navigation Bar ---
-  Widget _buildBottomNavigationBar(bool isDark) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home_outlined, AppStrings.navHome, 0, isDark),
-          _buildNavItem(Icons.favorite_border, AppStrings.navSaved, 1, isDark),
-          _buildNavItem(
-            Icons.chat_bubble_outline,
-            AppStrings.navMessages,
-            2,
-            isDark,
-          ),
-          _buildNavItem(
-            Icons.person,
-            AppStrings.navProfile,
-            3,
-            isDark,
-            isSelected: true,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(
-    IconData icon,
-    String label,
-    int index,
-    bool isDark, {
-    bool isSelected = false,
-  }) {
-    if (isSelected) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white, size: 18.r),
-            SizedBox(width: 6.w),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () => controller.changeTab(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isDark
-                ? AppColors.textSecondaryDark
-                : AppColors.textSecondaryLight,
-            size: 20.r,
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            label,
-            style: TextStyle(
-              color: isDark
-                  ? AppColors.textSecondaryDark
-                  : AppColors.textSecondaryLight,
-              fontSize: 10.sp,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
