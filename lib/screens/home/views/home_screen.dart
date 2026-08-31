@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/featured_property_card.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/floating_action_pills.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/home_header.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/home_search_bar.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/quick_search_categories.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/recommended_property_card.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/featured_property_card.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/floating_action_pills.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/home_header.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/home_search_bar.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/quick_search_categories.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/recommended_property_card.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../widgets/custom_snackbar.dart';
@@ -57,7 +57,7 @@ class HomeScreen extends GetView<HomeController> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Featured properties',
+                              'featured_properties'.tr,
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
@@ -72,7 +72,7 @@ class HomeScreen extends GetView<HomeController> {
                               controller.selectCategory('');
                             },
                             child: Text(
-                              'View all',
+                              'view_all'.tr,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
@@ -90,8 +90,8 @@ class HomeScreen extends GetView<HomeController> {
                       if (controller.isLoading.value) {
                         return SizedBox(
                           height: 180.h,
-                          child: const LoadingIndicator(
-                            message: 'Loading featured listings...',
+                          child: LoadingIndicator(
+                            message: 'loading_featured'.tr,
                           ),
                         );
                       }
@@ -101,7 +101,7 @@ class HomeScreen extends GetView<HomeController> {
                           padding: EdgeInsets.all(20.r),
                           child: Center(
                             child: Text(
-                              'No featured properties in this category',
+                              'no_featured_properties'.tr,
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 color: isDark
@@ -147,7 +147,7 @@ class HomeScreen extends GetView<HomeController> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Recommended for you',
+                              'recommended_for_you'.tr,
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
@@ -185,9 +185,9 @@ class HomeScreen extends GetView<HomeController> {
                     // Recommended Vertical List
                     Obx(() {
                       if (controller.isLoading.value) {
-                        return const Center(
+                        return Center(
                           child: LoadingIndicator(
-                            message: 'Loading recommendations...',
+                            message: 'loading_recommendations'.tr,
                           ),
                         );
                       }
@@ -197,7 +197,7 @@ class HomeScreen extends GetView<HomeController> {
                           padding: EdgeInsets.all(20.r),
                           child: Center(
                             child: Text(
-                              'No properties found',
+                              'no_properties_found'.tr,
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 color: isDark
@@ -239,21 +239,15 @@ class HomeScreen extends GetView<HomeController> {
               right: 0,
               child: FloatingActionPills(
                 onPostListing: () {
-                  // ✅ NavController ব্যবহার করে Navigate
-                  // navController.toPostListing();
-                  // অথবা Snackbar দেখান
-                  CustomSnackbar.showInfo(
-                    title: 'Post a listing',
-                    message: 'Redirecting to property submission form...',
-                  );
+                  navController.toPostListing();
                 },
                 onMapView: () {
                   // ✅ NavController ব্যবহার করে Navigate
                   // navController.toMapView();
                   // অথবা Snackbar দেখান
                   CustomSnackbar.showInfo(
-                    title: 'Map View',
-                    message: 'Interactive Dhaka Map will open here...',
+                    title: 'map_view'.tr,
+                    message: 'interactive_map'.tr,
                   );
                 },
               ),

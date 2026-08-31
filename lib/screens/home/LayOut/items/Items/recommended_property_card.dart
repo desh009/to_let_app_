@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../domain/entities/tolet_item.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../domain/entities/tolet_item.dart';
 
 class RecommendedPropertyCard extends StatelessWidget {
   final ToLetItem item;

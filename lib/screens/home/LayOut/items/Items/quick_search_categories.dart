@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/constants/app_colors.dart';
-import '../controllers/home_controller.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../controllers/home_controller.dart';
 
 class QuickSearchCategories extends StatelessWidget {
   const QuickSearchCategories({super.key});
@@ -15,25 +15,26 @@ class QuickSearchCategories extends StatelessWidget {
 
     final categories = [
       {
-        'title': 'Family',
+        'title': 'Family'.tr,
         'icon': Icons.family_restroom_rounded,
         'bgColor': isDark ? const Color(0xFF352420) : AppColors.catFamilyBg,
         'iconColor': AppColors.catFamilyIcon,
       },
       {
-        'title': 'Bachelor',
+        'title': 'Bachelor'.tr,
         'icon': Icons.group_outlined,
         'bgColor': isDark ? const Color(0xFF1E2D32) : AppColors.catBachelorBg,
         'iconColor': isDark ? Colors.cyan[300]! : AppColors.catBachelorIcon,
       },
+      
       {
-        'title': 'Sublet',
+        'title': 'Sublet'.tr,
         'icon': Icons.meeting_room_outlined,
         'bgColor': isDark ? const Color(0xFF332F20) : AppColors.catSubletBg,
         'iconColor': isDark ? Colors.amber[300]! : AppColors.catSubletIcon,
       },
       {
-        'title': 'Seat',
+        'title': 'Seat'.tr,
         'icon': Icons.single_bed_outlined,
         'bgColor': isDark ? const Color(0xFF2A2926) : AppColors.catSeatBg,
         'iconColor': isDark ? Colors.white70 : AppColors.catSeatIcon,
@@ -50,7 +51,7 @@ class QuickSearchCategories extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Quick search',
+                'Quick search'.tr,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w800,
@@ -62,7 +63,7 @@ class QuickSearchCategories extends StatelessWidget {
                   controller.selectCategory('');
                 },
                 child: Text(
-                  'See all',
+                  'See all'.tr,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,

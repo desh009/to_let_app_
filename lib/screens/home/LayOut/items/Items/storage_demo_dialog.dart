@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_text_field.dart';
-import '../controllers/home_controller.dart';
+import '../../../../../widgets/custom_button.dart';
+import '../../../../../widgets/custom_text_field.dart';
+import '../../../controllers/home_controller.dart';
 
 class StorageDemoDialog extends StatelessWidget {
   const StorageDemoDialog({super.key});

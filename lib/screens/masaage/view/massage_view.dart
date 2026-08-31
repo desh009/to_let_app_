@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../controller/massage_controller.dart';
@@ -14,11 +15,16 @@ class MessagesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final navController = Get.find<NavController>();
+
+
     Get.put(MessagesController(), permanent: false);
 
     return GetBuilder<MessagesController>(
       builder: (controller) {
         return Scaffold(
+          bottomNavigationBar: navController.bottomNavBar,
           backgroundColor: isDark
               ? AppColors.backgroundDark
               : AppColors.scaffoldBg,

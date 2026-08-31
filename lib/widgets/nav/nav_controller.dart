@@ -1,7 +1,7 @@
 // widgets/nav_contoller/nav_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/screens/home/widgets/custom_bottom_nav_bar.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/custom_bottom_nav_bar.dart';
 import '../../routes/app_routes.dart';
 
 class NavController extends GetxController {
@@ -12,11 +12,9 @@ class NavController extends GetxController {
   // All the tab-switching logic lives here, once — no need to repeat
   // switch/onTap code in every screen.
   Widget get bottomNavBar => Obx(
-        () => CustomBottomNavBar(
-          currentIndex: currentIndex.value,
-          onTap: _onNavTap,
-        ),
-      );
+    () =>
+        CustomBottomNavBar(currentIndex: currentIndex.value, onTap: _onNavTap),
+  );
 
   void _onNavTap(int index) {
     if (currentIndex.value == index) return;
@@ -32,7 +30,7 @@ class NavController extends GetxController {
         break;
       case 3:
         // Profile route not wired up yet — just update the highlighted tab.
-        changeTab(index);
+        toProfile();
         break;
     }
   }
@@ -61,13 +59,17 @@ class NavController extends GetxController {
     Get.offNamed(Routes.MESSAGES);
   }
 
-  // void toProfile() {
-  //   currentIndex.value = 3;
-  //   Get.offNamed(Routes.PROFILE);
-  // }
+  void toProfile() {
+    currentIndex.value = 3;
+    Get.offNamed(Routes.PROFILE);
+  }
 
   void toDetails(dynamic property) {
     Get.toNamed(Routes.DETAILS, arguments: property);
+  }
+
+  void toPostListing() {
+    Get.toNamed(Routes.POST_LISTING);
   }
 
   // Navigate with replacement
