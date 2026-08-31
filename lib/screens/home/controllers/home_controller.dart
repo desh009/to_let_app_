@@ -155,7 +155,7 @@ class HomeController extends GetxController {
   // }
 
   void navigateToPostListing() {
-    // Silent navigation - no snackbar
+    navController.toPostListing();
   }
 
   void navigateToMapView() {

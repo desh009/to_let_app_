@@ -68,6 +68,10 @@ class NavController extends GetxController {
     Get.toNamed(Routes.DETAILS, arguments: property);
   }
 
+  void toPostListing() {
+    Get.toNamed(Routes.POST_LISTING);
+  }
+
   // Navigate with replacement
   void toHomeAndRemoveAll() {
     currentIndex.value = 0;

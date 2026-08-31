@@ -22,7 +22,14 @@ class SplashController extends GetxController {
       await storageService.setBool(StorageKeys.isFirstTime, false);
     }
 
-    // Navigate to Home
-    Get.offNamed(Routes.HOME);
+    // Check login status
+    final isLoggedIn = storageService.getBool(StorageKeys.isLoggedIn) ?? false;
+
+    // Navigate to Login (or Home if already logged in)
+    if (isLoggedIn) {
+      Get.offNamed(Routes.HOME);
+    } else {
+      Get.offNamed(Routes.LOGIN);
+    }
   }
 }

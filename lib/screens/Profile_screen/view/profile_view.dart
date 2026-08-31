@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
+// AppStrings no longer needed here — replaced by GetX .tr keys
+// import '../../../core/constants/app_strings.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -69,7 +70,7 @@ class ProfileScreen extends GetView<ProfileController> {
           Row(
             children: [
               Text(
-                AppStrings.profile,
+                'profile'.tr,
                 style: TextStyle(
                   color: isDark
                       ? AppColors.textPrimaryDark
@@ -176,7 +177,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           ),
                           SizedBox(width: 6.w),
                           Text(
-                            AppStrings.verifiedDhaka,
+                            'verified_dhaka'.tr,
                             style: TextStyle(
                               color: isDark
                                   ? AppColors.textPrimaryDark
@@ -236,33 +237,29 @@ class ProfileScreen extends GetView<ProfileController> {
         children: [
           _buildMenuItem(
             icon: Icons.apartment_outlined,
-            title: AppStrings.myListings,
-            badgeText: AppStrings.oneActive,
+            title: 'my_listings'.tr,
+            badgeText: 'one_active'.tr,
             isDark: isDark,
             onTap: controller.navigateToMyListings,
           ),
           _buildDivider(isDark),
-          _buildMenuItem(
-            icon: Icons.calendar_today_outlined,
-            title: AppStrings.scheduledVisits,
-            badgeText: AppStrings.tomorrowTime,
-            isDark: isDark,
-            onTap: controller.navigateToScheduledVisits,
-          ),
-          _buildDivider(isDark),
-          Obx(() => _buildDarkModeToggle(isDark)),
 
+          // Language Toggle
+          _buildLanguageToggle(isDark),
+          _buildDivider(isDark),
+
+          Obx(() => _buildDarkModeToggle(isDark)),
           _buildDivider(isDark),
           _buildMenuItem(
             icon: Icons.settings_outlined,
-            title: AppStrings.settings,
+            title: 'settings'.tr,
             isDark: isDark,
             onTap: controller.navigateToSettings,
           ),
           _buildDivider(isDark),
           _buildMenuItem(
             icon: Icons.help_outline,
-            title: AppStrings.helpSupport,
+            title: 'help_support'.tr,
             isDark: isDark,
             onTap: controller.navigateToHelpSupport,
           ),
@@ -271,7 +268,73 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-   Widget _buildDarkModeToggle(bool isDark) {
+  // --- Language Toggle ---
+  Widget _buildLanguageToggle(bool isDark) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Row(
+        children: [
+          Container(
+            width: 36.r,
+            height: 36.r,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.language,
+              size: 18.r,
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Text(
+            'language'.tr,
+            style: TextStyle(
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+
+          // Language Dropdown
+          Obx(() {
+            return DropdownButton<String>(
+              value: controller.selectedLanguage.value,
+              underline: const SizedBox(),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+              ),
+              dropdownColor: isDark ? AppColors.surfaceDark : Colors.white,
+              style: TextStyle(
+                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                fontSize: 14.sp,
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'en',
+                  child: Text('English'),
+                ),
+                DropdownMenuItem(
+                  value: 'bn',
+                  child: Text('বাংলা'),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  controller.changeLanguage(value);
+                }
+              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDarkModeToggle(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       child: Row(
@@ -293,7 +356,7 @@ class ProfileScreen extends GetView<ProfileController> {
           ),
           SizedBox(width: 12.w),
           Text(
-            'Dark Mode',
+            'dark_mode'.tr,
             style: TextStyle(
               color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
               fontSize: 14.sp,
@@ -427,7 +490,7 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             SizedBox(width: 8.w),
             Text(
-              AppStrings.logout,
+              'logout'.tr,
               style: TextStyle(
                 color: isDark
                     ? AppColors.textPrimaryDark

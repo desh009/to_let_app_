@@ -1,0 +1,408 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../domain/entities/tolet_item.dart';
+import '../../home/controllers/home_controller.dart';
+
+class PostListingController extends GetxController {
+  final ImagePicker _picker = ImagePicker();
+
+  // Text Editing Controllers
+  late final TextEditingController titleController;
+  late final TextEditingController locationController;
+  late final TextEditingController rentController;
+  late final TextEditingController descriptionController;
+
+  // Property Photos (Supports both local file paths and network URLs)
+  final RxList<String> propertyPhotos = <String>[
+    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+  ].obs;
+
+  // Room counters
+  final RxInt bedrooms = 2.obs;
+  final RxInt bathrooms = 2.obs;
+
+  // Amenities switches
+  final RxBool hasLift = true.obs;
+  final RxBool hasParking = true.obs;
+  final RxBool hasGasLine = true.obs;
+  final RxBool hasWifi = false.obs;
+
+  // Direct Owner Checkbox
+  final RxBool isDirectOwner = true.obs;
+
+  // Loading indicator for publish
+  final RxBool isSubmitting = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    titleController = TextEditingController(text: 'Sunlit 2BHK in Banani');
+    locationController = TextEditingController(text: 'Road 11, Banani, Dhaka');
+    rentController = TextEditingController(text: '32,000');
+    descriptionController = TextEditingController(
+      text:
+          'Bright 2BHK on 4th floor, south-facing, 950 sqft. Lift, parking, gas included. 5 mins from Banani 11.',
+    );
+  }
+
+  // Room Count Adjustments
+  void incrementBedrooms() {
+    if (bedrooms.value < 10) bedrooms.value++;
+  }
+
+  void decrementBedrooms() {
+    if (bedrooms.value > 1) bedrooms.value--;
+  }
+
+  void incrementBathrooms() {
+    if (bathrooms.value < 10) bathrooms.value++;
+  }
+
+  void decrementBathrooms() {
+    if (bathrooms.value > 1) bathrooms.value--;
+  }
+
+  // Photo Management
+  void removePhoto(int index) {
+    if (index >= 0 && index < propertyPhotos.length) {
+      propertyPhotos.removeAt(index);
+    }
+  }
+
+  void setCoverPhoto(int index) {
+    if (index > 0 && index < propertyPhotos.length) {
+      final item = propertyPhotos.removeAt(index);
+      propertyPhotos.insert(0, item);
+    }
+  }
+
+  // Open Image Picker Source Selection
+  void showImagePickerSourceSheet() {
+    if (propertyPhotos.length >= 8) {
+      Get.snackbar(
+        'Limit Reached',
+        'You can upload a maximum of 8 photos.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+      );
+      return;
+    }
+
+    final isDark = Get.isDarkMode;
+
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E2228) : Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag Handle
+              Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : Colors.black12,
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'upload_photo_title'.tr,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF1E232A),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Camera Option
+                  _buildSourceTile(
+                    icon: Icons.camera_alt_rounded,
+                    label: 'camera'.tr,
+                    onTap: () {
+                      Get.back();
+                      pickFromCamera();
+                    },
+                    isDark: isDark,
+                  ),
+                  // Gallery Option
+                  _buildSourceTile(
+                    icon: Icons.photo_library_rounded,
+                    label: 'gallery'.tr,
+                    onTap: () {
+                      Get.back();
+                      pickFromGallery();
+                    },
+                    isDark: isDark,
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSourceTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required bool isDark,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 60.r,
+            height: 60.r,
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 28.r),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : const Color(0xFF1E232A),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Camera Picker
+  Future<void> pickFromCamera() async {
+    try {
+      final XFile? photo = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1400,
+      );
+      if (photo != null) {
+        if (propertyPhotos.length < 8) {
+          propertyPhotos.add(photo.path);
+        }
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Could not access camera: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Gallery Picker (Supports Multiple Images)
+  Future<void> pickFromGallery() async {
+    try {
+      final int remainingSlots = 8 - propertyPhotos.length;
+      if (remainingSlots <= 0) return;
+
+      final List<XFile> images = await _picker.pickMultiImage(
+        imageQuality: 85,
+        maxWidth: 1400,
+        limit: remainingSlots > 0 ? remainingSlots : null,
+      );
+
+      if (images.isNotEmpty) {
+        for (final img in images) {
+          if (propertyPhotos.length < 8) {
+            propertyPhotos.add(img.path);
+          }
+        }
+      }
+    } catch (e) {
+      // Fallback to single image picker
+      try {
+        final XFile? singleImage = await _picker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 85,
+          maxWidth: 1400,
+        );
+        if (singleImage != null && propertyPhotos.length < 8) {
+          propertyPhotos.add(singleImage.path);
+        }
+      } catch (err) {
+        Get.snackbar(
+          'Error',
+          'Could not pick images: $err',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    }
+  }
+
+  // Toggles
+  void toggleLift(bool val) => hasLift.value = val;
+  void toggleParking(bool val) => hasParking.value = val;
+  void toggleGasLine(bool val) => hasGasLine.value = val;
+  void toggleWifi(bool val) => hasWifi.value = val;
+  void toggleDirectOwner() => isDirectOwner.value = !isDirectOwner.value;
+
+  // Publish Listing Action
+  Future<void> publishListing() async {
+    final title = titleController.text.trim();
+    final location = locationController.text.trim();
+    final rentText =
+        rentController.text.replaceAll(',', '').replaceAll('৳', '').trim();
+    final rent = double.tryParse(rentText) ?? 32000;
+
+    if (title.isEmpty) {
+      Get.snackbar(
+        'Missing Title',
+        'Please enter a title for your property listing.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (location.isEmpty) {
+      Get.snackbar(
+        'Missing Location',
+        'Please enter a location.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (propertyPhotos.isEmpty) {
+      Get.snackbar(
+        'Photos Required',
+        'Please add at least 1 photo of the property.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    isSubmitting.value = true;
+    await Future.delayed(const Duration(milliseconds: 900));
+    isSubmitting.value = false;
+
+    // Create newly posted item
+    final newItem = ToLetItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      location: location,
+      price: rent,
+      bedrooms: bedrooms.value,
+      bathrooms: bathrooms.value,
+      squareFeet: 950,
+      description: descriptionController.text.trim(),
+      contactNumber: '+8801700000000',
+      images: List<String>.from(propertyPhotos),
+      category: 'Family',
+      badgeText: 'Featured',
+      isVerified: true,
+      isAvailable: true,
+      isFeatured: true,
+    );
+
+    // If HomeController is registered, prepend to listings
+    if (Get.isRegistered<HomeController>()) {
+      final homeController = Get.find<HomeController>();
+      homeController.featuredProperties.insert(0, newItem);
+      homeController.allProperties.insert(0, newItem);
+    }
+
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: AppColors.primaryLight,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.primary,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'listing_submitted'.tr,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'listing_submitted_msg'.tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondaryLight,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: () {
+                    Get.back(); // close dialog
+                    Get.back(); // return to previous screen
+                  },
+                  child: Text(
+                    'done'.tr,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  @override
+  void onClose() {
+    titleController.dispose();
+    locationController.dispose();
+    rentController.dispose();
+    descriptionController.dispose();
+    super.onClose();
+  }
+}

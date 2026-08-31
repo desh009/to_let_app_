@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
 import 'package:to_let_app_abandon/widgets/custom_floating_action%20button/custom_floating_action_button.dart';
 import 'core/bindings/initial_binding.dart';
 import 'core/constants/app_colors.dart';
@@ -23,13 +24,21 @@ Future<void> main() async {
   // Check saved theme preference
   final isDarkMode = storageService.getBool(StorageKeys.isDarkMode) ?? false;
 
-  runApp(MyApp(isDarkMode: isDarkMode));
+  // ✅ Check saved language preference — এটা মিসিং ছিল
+  final savedLang = storageService.getString(StorageKeys.language) ?? 'en';
+
+  runApp(MyApp(isDarkMode: isDarkMode, savedLang: savedLang));
 }
 
 class MyApp extends StatelessWidget {
   final bool isDarkMode;
+  final String savedLang; // ✅ নতুন field
 
-  const MyApp({super.key, this.isDarkMode = false});
+  const MyApp({
+    super.key,
+    this.isDarkMode = false,
+    this.savedLang = 'en', // ✅ default value
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +50,9 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
+          translations: AppTranslations(),
+          locale: Locale(savedLang), // ✅ এখন savedLang define করা আছে
+          fallbackLocale: const Locale('en'),
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,

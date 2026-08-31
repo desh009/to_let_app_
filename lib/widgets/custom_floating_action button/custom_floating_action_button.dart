@@ -2,20 +2,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-/// A floating action button docked to a screen edge like a shutter/tab.
-/// - Collapsed: mostly hidden behind the edge, only a small "point" peeks out.
-/// - Tap the point: it slides + pops fully out into view.
-/// - Tap again (while out): fires [onPressed], then tucks back in with animation.
-/// - Long-press (while out): fires [onLongPress] — reserved for voice/AI feature.
-/// - Drag: moves freely up/down and even across the screen while dragging,
-///   but on release it always snaps back to hug the LEFT or RIGHT edge.
-///
-/// Usage: place as the LAST child inside a full-screen `Stack`
-/// (e.g. your Scaffold's body, or globally via GetMaterialApp's builder).
+
 class ShutterFab extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
-  final VoidCallback? onLongPress; // ★ পরে ভয়েস/AI ফিচারের জন্য reserved
+  final VoidCallback? onLongPress; 
   final Color backgroundColor;
   final Color iconColor;
   final double buttonWidth;

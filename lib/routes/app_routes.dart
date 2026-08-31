@@ -10,6 +10,10 @@ abstract class Routes {
   static const String MESSAGES = _Paths.MESSAGES;
   static const String PROFILE = _Paths.PROFILE;
   static const String MESSAGES_DETAILS = _Paths.MESSAGES_DETAILS;
+  static const String POST_LISTING = _Paths.POST_LISTING;
+  static const String LOGIN = _Paths.LOGIN;
+  static const String REGISTER = _Paths.REGISTER;
+  static const String VERIFY_OTP = _Paths.VERIFY_OTP;
 
   // CamelCase aliases
   static const String splash = _Paths.SPLASH;
@@ -19,6 +23,10 @@ abstract class Routes {
   static const String messages = _Paths.MESSAGES;
   static const String profile = _Paths.PROFILE;
   static const String messages_details = _Paths.MESSAGES_DETAILS;
+  static const String post_listing = _Paths.POST_LISTING;
+  static const String login = _Paths.LOGIN;
+  static const String register = _Paths.REGISTER;
+  static const String verify_otp = _Paths.VERIFY_OTP;
 }
 
 abstract class _Paths {
@@ -31,4 +39,8 @@ abstract class _Paths {
   static const String MESSAGES = '/messages';
   static const String PROFILE = '/profile';
   static const String MESSAGES_DETAILS = '/messages-details';
+  static const String POST_LISTING = '/post-listing';
+  static const String LOGIN = '/login';
+  static const String REGISTER = '/register';
+  static const String VERIFY_OTP = '/verify-otp';
 }
