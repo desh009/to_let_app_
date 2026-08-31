@@ -115,6 +115,24 @@ abstract class AppStrings {
   static const String language = 'Language';
   static const String savedSearches = 'Saved Preferences';
 
+  // Profile Info
+  static const String userName = 'Desh';
+  static const String userEmail = 'desh.gmail.com';
+  static const String verifiedDhaka = 'Verified • Dhaka';
+
+  // Menu Options
+  static const String myListings = 'My Listings';
+  static const String oneActive = '1 active';
+  static const String english = 'English';
+  static const String helpSupport = 'Help & Support';
+
+  // Sub Settings Items
+  static const String appVersion = 'App Version';
+  static const String version = 'v1.0.0';
+  static const String shareApp = 'Share App';
+  static const String rateApp = 'Rate App';
+  static const String helpFaq = 'Help & FAQ';
+  static const String twoFactorAuth = 'Two-Factor Authentication';
   // ==================== Saved Screen ====================
   static const String savedListings = 'Saved Listings';
   static const String saved = 'Saved';
@@ -131,6 +149,41 @@ abstract class AppStrings {
   static const String removedFromSaved = 'Removed from saved';
   static const String addedToSaved = 'Added to saved';
   static const String filterAll = 'All';
+
+  static const String howCanWeHelp = 'How can we help you?';
+  static const String searchHelpSubtitle = 'Search our help center or contact us directly';
+  static const String searchHelpHint = 'Search for help...';
+  
+  // Section Titles
+  static const String contactUs = 'CONTACT US';
+  static const String helpTopics = 'HELP TOPICS';
+  static const String feedbackIssues = 'FEEDBACK & ISSUES';
+  static const String legal = 'LEGAL';
+
+  // Contact Items
+  static const String chatWithSupport = 'Chat with Support';
+  static const String online = 'Online';
+  static const String callUsNumber = 'Call Us - 09677-XXX XXX';
+  static const String emailSupport = 'Email Support - support@app.com';
+  static const String whatsAppSupport = 'WhatsApp Support';
+
+  // Help Topics Items
+  static const String faqs = 'FAQs';
+  static const String faqsCount = '24 articles';
+  static const String howToPostListing = 'How to Post a Listing?';
+  static const String howToContactOwner = 'How to Contact Owner?';
+  static const String paymentAndFees = 'Payment & Fees';
+  static const String safetyTips = 'Safety Tips';
+
+  // Feedback Items
+  static const String reportAProblem = 'Report a Problem';
+  static const String reportAListing = 'Report a Listing';
+  static const String requestAFeature = 'Request a Feature';
+
+  // Legal Items
+  static const String termsOfService = 'Terms of Service';
+  static const String privacyPolicy = 'Privacy Policy';
+  static const String communityGuidelines = 'Community Guidelines';
 
   // ==================== Messages Screen ====================
   // Header & Navigation
@@ -172,7 +225,6 @@ abstract class AppStrings {
 
   // Status & Role
   static const String owner = 'Owner';
-  static const String online = 'Online';
   static const String offline = 'Offline';
   static const String ownerOnline = 'Owner • Online';
 
@@ -219,21 +271,15 @@ abstract class AppStrings {
 
 
   // Profile Info
-  static const String userName = 'Desh';
-  static const String userEmail = 'desh.rahman@gmail.com';
-  static const String verifiedDhaka = 'Verified • Dhaka';
 
   // Stats
   static const String listing = 'LISTING';
   static const String visits = 'VISITS';
 
   // Menu Options
-  static const String myListings = 'My Listings';
-  static const String oneActive = '1 active';
   static const String scheduledVisits = 'Scheduled Visits';
   static const String tomorrowTime = 'Tomorrow 11AM';
   static const String payments = 'Payments';
-  static const String helpSupport = 'Help & Support';
 
 
 
