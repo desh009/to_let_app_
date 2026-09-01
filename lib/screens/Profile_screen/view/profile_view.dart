@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -16,18 +17,16 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   int _selectedNavIndex = 3;
   bool _isDarkMode = false;
-  
+
   // Accordion Expand States
   bool _isSettingsExpanded = false;
   bool _isHelpSupportExpanded = false;
 
-
-
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark || _isDarkMode;
-        final navController = Get.find<NavController>();
-
+    final isDark =
+        Theme.of(context).brightness == Brightness.dark || _isDarkMode;
+    final navController = Get.find<NavController>();
 
     return Scaffold(
       bottomNavigationBar: navController.bottomNavBar,
@@ -38,7 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildHeader(context, isDark),
             Expanded(
               child: SingleChildScrollView(
-                
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                 child: Center(
                   child: ConstrainedBox(
@@ -73,7 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             AppStrings.profile,
             style: TextStyle(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : AppColors.textPrimaryLight,
               fontWeight: FontWeight.bold,
               fontSize: 16.sp,
             ),
@@ -121,7 +121,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   AppStrings.userName,
                   style: TextStyle(
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
                     fontWeight: FontWeight.bold,
                     fontSize: 18.sp,
                   ),
@@ -130,15 +132,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   AppStrings.userEmail,
                   style: TextStyle(
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    color: isDark
+                        ? AppColors.textSecondaryDark
+                        : AppColors.textSecondaryLight,
                     fontSize: 12.sp,
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+                    color: isDark
+                        ? AppColors.backgroundDark
+                        : AppColors.scaffoldBg,
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Row(
@@ -156,7 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(
                         AppStrings.verifiedDhaka,
                         style: TextStyle(
-                          color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                          color: isDark
+                              ? AppColors.textPrimaryDark
+                              : AppColors.textPrimaryLight,
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -177,7 +188,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Icon(
               Icons.settings_outlined,
               size: 18.r,
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : AppColors.textPrimaryLight,
             ),
           ),
         ],
@@ -212,14 +225,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   AppStrings.english,
                   style: TextStyle(
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    color: isDark
+                        ? AppColors.textSecondaryDark
+                        : AppColors.textSecondaryLight,
                     fontSize: 13.sp,
                   ),
                 ),
                 SizedBox(width: 4.w),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                  color: isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondaryLight,
                   size: 18.r,
                 ),
               ],
@@ -256,7 +273,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       children: [
         InkWell(
-          onTap: () => setState(() => _isSettingsExpanded = !_isSettingsExpanded),
+          onTap: () =>
+              setState(() => _isSettingsExpanded = !_isSettingsExpanded),
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Padding(
@@ -267,20 +285,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: 36.r,
                   height: 36.r,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+                    color: isDark
+                        ? AppColors.backgroundDark
+                        : AppColors.scaffoldBg,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.settings_outlined,
                     size: 18.r,
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Text(
                   AppStrings.settings,
                   style: TextStyle(
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -291,7 +315,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   duration: const Duration(milliseconds: 300),
                   child: Icon(
                     Icons.chevron_right,
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    color: isDark
+                        ? AppColors.textSecondaryDark
+                        : AppColors.textSecondaryLight,
                     size: 18.r,
                   ),
                 ),
@@ -311,14 +337,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   isDark: isDark,
                   trailingText: AppStrings.version,
                 ),
-                _buildSubMenuItem(icon: Icons.share_outlined, title: AppStrings.shareApp, isDark: isDark),
-                _buildSubMenuItem(icon: Icons.star_border_outlined, title: AppStrings.rateApp, isDark: isDark),
-                _buildSubMenuItem(icon: Icons.quiz_outlined, title: AppStrings.helpFaq, isDark: isDark),
-                _buildSubMenuItem(icon: Icons.security_outlined, title: AppStrings.twoFactorAuth, isDark: isDark),
+                _buildSubMenuItem(
+                  icon: Icons.share_outlined,
+                  title: AppStrings.shareApp,
+                  isDark: isDark,
+                  onTap: () {
+                    // TODO: wire up share_plus Share.share(...) here
+                  },
+                ),
+                _buildSubMenuItem(
+                  icon: Icons.star_border_outlined,
+                  title: AppStrings.rateApp,
+                  isDark: isDark,
+                  onTap: () {
+                    // TODO: open store listing (in_app_review / url_launcher)
+                  },
+                ),
+                _buildSubMenuItem(
+                  icon: Icons.quiz_outlined,
+                  title: AppStrings.helpFaq,
+                  isDark: isDark,
+                  onTap: () => Get.toNamed('/help-faq'),
+                ),
+                _buildSubMenuItem(
+                  icon: Icons.security_outlined,
+                  title: AppStrings.twoFactorAuth,
+                  isDark: isDark,
+                  onTap: () => Get.toNamed('/two-factor-auth'),
+                ),
               ],
             ),
           ),
-          crossFadeState: _isSettingsExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: _isSettingsExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
         ),
       ],
@@ -330,7 +382,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       children: [
         InkWell(
-          onTap: () => setState(() => _isHelpSupportExpanded = !_isHelpSupportExpanded),
+          onTap: () =>
+              setState(() => _isHelpSupportExpanded = !_isHelpSupportExpanded),
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Padding(
@@ -341,20 +394,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: 36.r,
                   height: 36.r,
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+                    color: isDark
+                        ? AppColors.backgroundDark
+                        : AppColors.scaffoldBg,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.help_outline,
                     size: 18.r,
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Text(
                   AppStrings.helpSupport,
                   style: TextStyle(
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -365,7 +424,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   duration: const Duration(milliseconds: 300),
                   child: Icon(
                     Icons.chevron_right,
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    color: isDark
+                        ? AppColors.textSecondaryDark
+                        : AppColors.textSecondaryLight,
                     size: 18.r,
                   ),
                 ),
@@ -373,6 +434,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+
         AnimatedCrossFade(
           firstChild: const SizedBox.shrink(),
           secondChild: Container(
@@ -386,91 +448,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Top Search & Title Header
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppStrings.howCanWeHelp,
-                            style: TextStyle(
-                              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            AppStrings.searchHelpSubtitle,
-                            style: TextStyle(
-                              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                              fontSize: 11.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    CircleAvatar(
-                      radius: 14.r,
-                      backgroundColor: Colors.red.withOpacity(0.08),
-                      child: Icon(Icons.help_outline, size: 14.r, color: AppColors.primary),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-
-                // Search Field
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: AppStrings.searchHelpHint,
-                    hintStyle: TextStyle(
-                      fontSize: 12.sp,
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                    ),
-                    prefixIcon: Icon(Icons.search, size: 18.r, color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
-                    contentPadding: EdgeInsets.symmetric(vertical: 0.h),
-                    filled: true,
-                    fillColor: isDark ? AppColors.surfaceDark : Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.r),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
                 SizedBox(height: 16.h),
-
                 // SECTION 1: CONTACT US
                 _buildSectionHeader(AppStrings.contactUs, isDark),
                 SizedBox(height: 8.h),
+
                 _buildHelpItem(
-                  icon: Icons.chat_bubble_outline,
-                  title: AppStrings.chatWithSupport,
+                  icon: Icons.phone_outlined,
+                  title: AppStrings.callUsNumber,
                   isDark: isDark,
-                  badge: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 5.r,
-                          height: 5.r,
-                          decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(AppStrings.online, style: TextStyle(color: Colors.green, fontSize: 10.sp, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
+                  onTap: () => Get.toNamed('/call-support'),
                 ),
-                _buildHelpItem(icon: Icons.phone_outlined, title: AppStrings.callUsNumber, isDark: isDark),
-                _buildHelpItem(icon: Icons.email_outlined, title: AppStrings.emailSupport, isDark: isDark),
-                _buildHelpItem(icon: Icons.messenger_outline, title: AppStrings.whatsAppSupport, isDark: isDark),
+                _buildHelpItem(
+                  icon: Icons.email_outlined,
+                  title: AppStrings.emailSupport,
+                  isDark: isDark,
+                  onTap: () => Get.toNamed('/email-support'),
+                ),
 
                 SizedBox(height: 14.h),
 
@@ -482,29 +476,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: AppStrings.faqs,
                   subtitle: AppStrings.faqsCount,
                   isDark: isDark,
+                  // onTap: () => Get.toNamed('/faqs'),
                 ),
-                _buildHelpItem(icon: Icons.assignment_outlined, title: AppStrings.howToPostListing, isDark: isDark),
-                _buildHelpItem(icon: Icons.person_outline, title: AppStrings.howToContactOwner, isDark: isDark),
-                _buildHelpItem(icon: Icons.credit_card_outlined, title: AppStrings.paymentAndFees, isDark: isDark),
-                _buildHelpItem(icon: Icons.shield_outlined, title: AppStrings.safetyTips, isDark: isDark),
+
+                _buildHelpItem(
+                  icon: Icons.shield_outlined,
+                  title: AppStrings.safetyTips,
+                  isDark: isDark,
+                  // onTap: () => Get.toNamed('/safety-tips'),
+                ),
 
                 SizedBox(height: 14.h),
 
                 // SECTION 3: FEEDBACK & ISSUES
                 _buildSectionHeader(AppStrings.feedbackIssues, isDark),
                 SizedBox(height: 8.h),
-                _buildHelpItem(icon: Icons.flag_outlined, title: AppStrings.reportAProblem, isDark: isDark),
-                _buildHelpItem(icon: Icons.warning_amber_outlined, title: AppStrings.reportAListing, isDark: isDark),
-                _buildHelpItem(icon: Icons.lightbulb_outline, title: AppStrings.requestAFeature, isDark: isDark),
+                _buildHelpItem(
+                  icon: Icons.flag_outlined,
+                  title: AppStrings.reportAProblem,
+                  isDark: isDark,
+                  // onTap: () => Get.toNamed('/report-a-problem'),
+                ),
+
+                _buildHelpItem(
+                  icon: Icons.lightbulb_outline,
+                  title: AppStrings.requestAFeature,
+                  isDark: isDark,
+                  // onTap: () => Get.toNamed('/request-a-feature'),
+                ),
 
                 SizedBox(height: 14.h),
 
                 // SECTION 4: LEGAL
                 _buildSectionHeader(AppStrings.legal, isDark),
                 SizedBox(height: 8.h),
-                _buildHelpItem(icon: Icons.description_outlined, title: AppStrings.termsOfService, isDark: isDark),
-                _buildHelpItem(icon: Icons.lock_outline, title: AppStrings.privacyPolicy, isDark: isDark),
-                _buildHelpItem(icon: Icons.group_outlined, title: AppStrings.communityGuidelines, isDark: isDark),
+                _buildHelpItem(
+                  icon: Icons.description_outlined,
+                  title: AppStrings.termsOfService,
+                  isDark: isDark,
+                  // onTap: () => Get.toNamed('/terms-of-service'),
+                ),
+                _buildHelpItem(
+                  icon: Icons.lock_outline,
+                  title: AppStrings.privacyPolicy,
+                  isDark: isDark,
+                  // onTap: () => Get.toNamed('/privacy-policy'),
+                ),
 
                 SizedBox(height: 16.h),
 
@@ -512,12 +529,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Container(width: 30.w, height: 2.h, color: isDark ? AppColors.dividerDark : Colors.grey.shade300),
+                      Container(
+                        width: 30.w,
+                        height: 2.h,
+                        color: isDark
+                            ? AppColors.dividerDark
+                            : Colors.grey.shade300,
+                      ),
                       SizedBox(height: 6.h),
                       Text(
                         "App Version ${AppStrings.version}",
                         style: TextStyle(
-                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
                           fontSize: 10.sp,
                         ),
                       ),
@@ -527,7 +552,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          crossFadeState: _isHelpSupportExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: _isHelpSupportExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
         ),
       ],
@@ -548,76 +575,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // Helper Widget for Help Support List Item
+  // FIX: wrapped the Container in an InkWell so `onTap` actually fires.
   Widget _buildHelpItem({
     required IconData icon,
     required String title,
     String? subtitle,
     Widget? badge,
     required bool isDark,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 6.h),
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 14.r,
-            backgroundColor: Colors.red.withOpacity(0.06),
-            child: Icon(icon, size: 14.r, color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (subtitle != null) ...[
-                  SizedBox(height: 1.h),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 6.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.surfaceDark : Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 14.r,
+              backgroundColor: Colors.red.withOpacity(0.06),
+              child: Icon(
+                icon,
+                size: 14.r,
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    subtitle,
+                    title,
                     style: TextStyle(
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                      fontSize: 10.sp,
+                      color: isDark
+                          ? AppColors.textPrimaryDark
+                          : AppColors.textPrimaryLight,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                  if (subtitle != null) ...[
+                    SizedBox(height: 1.h),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: isDark
+                            ? AppColors.textSecondaryDark
+                            : AppColors.textSecondaryLight,
+                        fontSize: 10.sp,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          if (badge != null) ...[
-            badge,
-            SizedBox(width: 6.w),
+            if (badge != null) ...[badge, SizedBox(width: 6.w)],
+            Icon(
+              Icons.chevron_right,
+              size: 14.r,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
+            ),
           ],
-          Icon(
-            Icons.chevron_right,
-            size: 14.r,
-            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-          ),
-        ],
+        ),
       ),
     );
   }
 
   // Helper Widget for Sub Settings Menu Item
+  // FIX: wrapped in InkWell with a real onTap param (was hardcoded to `() {}`).
   Widget _buildSubMenuItem({
     required IconData icon,
     required String title,
     required bool isDark,
     String? trailingText,
+    VoidCallback? onTap,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8.h),
         child: Row(
@@ -625,14 +669,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Icon(
               icon,
               size: 16.r,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
             ),
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
                 title,
                 style: TextStyle(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textPrimaryLight,
+                  color: isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textPrimaryLight,
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -642,7 +690,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 trailingText,
                 style: TextStyle(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                  color: isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondaryLight,
                   fontSize: 11.sp,
                   fontWeight: FontWeight.bold,
                 ),
@@ -651,7 +701,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Icon(
                 Icons.chevron_right,
                 size: 14.r,
-                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                color: isDark
+                    ? AppColors.textSecondaryDark
+                    : AppColors.textSecondaryLight,
               ),
           ],
         ),
@@ -665,64 +717,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String? badgeText,
     Widget? trailingWidget,
     required bool isDark,
+    VoidCallback? onTap,
   }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: Row(
-        children: [
-          Container(
-            width: 36.r,
-            height: 36.r,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: 18.r,
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Text(
-            title,
-            style: TextStyle(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const Spacer(),
-          if (badgeText != null) ...[
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Row(
+          children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              width: 36.r,
+              height: 36.r,
               decoration: BoxDecoration(
                 color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(
-                  color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
-                ),
+                shape: BoxShape.circle,
               ),
-              child: Text(
-                badgeText,
-                style: TextStyle(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Icon(
+                icon,
+                size: 18.r,
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 12.w),
+            Text(
+              title,
+              style: TextStyle(
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Spacer(),
+            if (badgeText != null) ...[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.dividerDark
+                        : AppColors.borderSubtle,
+                  ),
+                ),
+                child: Text(
+                  badgeText,
+                  style: TextStyle(
+                    color: isDark
+                        ? AppColors.textSecondaryDark
+                        : AppColors.textSecondaryLight,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+            ],
+            if (trailingWidget != null)
+              trailingWidget
+            else
+              Icon(
+                Icons.chevron_right,
+                color: isDark
+                    ? AppColors.textSecondaryDark
+                    : AppColors.textSecondaryLight,
+                size: 18.r,
+              ),
           ],
-          if (trailingWidget != null)
-            trailingWidget
-          else
-            Icon(
-              Icons.chevron_right,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-              size: 18.r,
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -738,41 +804,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildLogoutButton(bool isDark) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 14.h),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+    return InkWell(
+      onTap: () {
+        // TODO: wire up your actual logout logic here
+      },
+      borderRadius: BorderRadius.circular(16.r),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.surfaceDark : Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.logout,
-            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-            size: 18.r,
-          ),
-          SizedBox(width: 8.w),
-          Text(
-            AppStrings.logout,
-            style: TextStyle(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.logout,
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : AppColors.textPrimaryLight,
+              size: 18.r,
             ),
-          ),
-        ],
+            SizedBox(width: 8.w),
+            Text(
+              AppStrings.logout,
+              style: TextStyle(
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-
-  
-
-
-
-
 }

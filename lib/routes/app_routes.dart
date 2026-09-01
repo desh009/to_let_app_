@@ -1,8 +1,5 @@
-// ignore_for_file: constant_identifier_names
-
 abstract class Routes {
   Routes._();
-
   static const String SPLASH = _Paths.SPLASH;
   static const String HOME = _Paths.HOME;
   static const String DETAILS = _Paths.DETAILS;
@@ -14,7 +11,8 @@ abstract class Routes {
   static const String LOGIN = _Paths.LOGIN;
   static const String REGISTER = _Paths.REGISTER;
   static const String VERIFY_OTP = _Paths.VERIFY_OTP;
-
+  static const String CALL_SUPPORT = _Paths.CALL_SUPPORT;
+  static const String EMAIL_SUPPORT = _Paths.EMAIL_SUPPORT;
   // CamelCase aliases
   static const String splash = _Paths.SPLASH;
   static const String home = _Paths.HOME;
@@ -27,11 +25,11 @@ abstract class Routes {
   static const String login = _Paths.LOGIN;
   static const String register = _Paths.REGISTER;
   static const String verify_otp = _Paths.VERIFY_OTP;
+  static const String call_support = _Paths.CALL_SUPPORT;
+  static const String email_support = _Paths.EMAIL_SUPPORT;
 }
-
 abstract class _Paths {
   _Paths._();
-
   static const String SPLASH = '/splash';
   static const String HOME = '/home';
   static const String DETAILS = '/details';
@@ -43,4 +41,6 @@ abstract class _Paths {
   static const String LOGIN = '/login';
   static const String REGISTER = '/register';
   static const String VERIFY_OTP = '/verify-otp';
+  static const String CALL_SUPPORT = '/call-support';
+  static const String EMAIL_SUPPORT = '/email-support';
 }

@@ -150,7 +150,6 @@ abstract class AppStrings {
   static const String addedToSaved = 'Added to saved';
   static const String filterAll = 'All';
 
-  static const String howCanWeHelp = 'How can we help you?';
   static const String searchHelpSubtitle = 'Search our help center or contact us directly';
   static const String searchHelpHint = 'Search for help...';
   
@@ -281,9 +280,44 @@ abstract class AppStrings {
   static const String tomorrowTime = 'Tomorrow 11AM';
   static const String payments = 'Payments';
 
+// Call Us Screen Strings
+  static const String callUs = 'Call Us';
+  static const String wereHereToHelp = "We're here to help";
+  static const String talkToSupportSubtext = 'Talk to our support executive directly.\nAverage wait time is 45 sec.';
+  
+  // Helpline Box
+  static const String helplineNumberTitle = 'HELPLINE NUMBER';
+  static const String helplineNumber = '09677-XXX XXX';
+  static const String availableTime = '9AM - 9PM';
+  
+  // Action Button
+  static const String callNow = 'Call Now';
+  
+  // Call Schedule Section
+  static const String callSchedule = 'Call Schedule';
+  static const String everyday = 'Everyday';
+  static const String everydayTime = '9AM - 9PM';
+  static const String friday = 'Friday';
+  static const String fridayTime = '10AM - 6PM';
 
-
-
+// Email Support Strings
+  static const String emailSupportTitle = 'Email Support';
+  static const String emailPageVersion = 'v1';
+  static const String responseWithinTime = 'Response within 12 hours';
+  static const String supportEmailAddress = 'support@app.com';
+  
+  static const String yourEmail = 'YOUR EMAIL';
+  static const String subject = 'SUBJECT';
+  
+  // Subject Dropdown Options (Payment option excluded)
+  static const String subjectListing = 'Listing';
+  static const String subjectAccount = 'Account';
+  static const String subjectOther = 'Other';
+  
+  static const String attachScreenshot = 'Attach screenshot';
+  static const String maxFileSize = '(max 5MB)';
+  static const String sendEmail = 'Send Email';
+  static const String ticketIdNote = 'Ticket ID will be generated: #EM-7573';
 
 
 

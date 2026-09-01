@@ -1,6 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/binder/call_support_binder.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/view/call_support_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/binder/email_support-binder.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/view/email_support_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/binder/profile_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/view/profile_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/binder/massage_binder.dart';
@@ -29,7 +33,7 @@ class AppPages {
 
   static const String INITIAL = Routes.SPLASH;
   static const String initial = Routes.SPLASH;
-
+  
   static final routes = [
     GetPage(
       name: Routes.SPLASH,
@@ -96,6 +100,18 @@ class AppPages {
       page: () => const PostListingScreen(),
       binding: PostListingBinding(),
       transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.CALL_SUPPORT,
+      page: () => const CallUsScreen(),
+      binding: CallUsBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.EMAIL_SUPPORT,
+      page: () => const EmailSupportScreen(),
+      binding: EmailSupportBinding(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }
