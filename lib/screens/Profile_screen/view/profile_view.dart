@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
+import 'package:to_let_app_abandon/core/utils/helper/action_helper.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -331,34 +331,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: EdgeInsets.only(left: 48.w, right: 16.w, bottom: 8.h),
             child: Column(
               children: [
-                _buildSubMenuItem(
-                  icon: Icons.info_outline,
-                  title: AppStrings.appVersion,
-                  isDark: isDark,
-                  trailingText: AppStrings.version,
-                ),
+           
                 _buildSubMenuItem(
                   icon: Icons.share_outlined,
                   title: AppStrings.shareApp,
                   isDark: isDark,
-                  onTap: () {
-                    // TODO: wire up share_plus Share.share(...) here
-                  },
+                  onTap: () => AppActionsHelper.shareApp(),
                 ),
                 _buildSubMenuItem(
                   icon: Icons.star_border_outlined,
                   title: AppStrings.rateApp,
                   isDark: isDark,
-                  onTap: () {
-                    // TODO: open store listing (in_app_review / url_launcher)
-                  },
+                  onTap: () => AppActionsHelper.rateApp(),
                 ),
-                _buildSubMenuItem(
-                  icon: Icons.quiz_outlined,
-                  title: AppStrings.helpFaq,
-                  isDark: isDark,
-                  onTap: () => Get.toNamed('/help-faq'),
-                ),
+            
                 _buildSubMenuItem(
                   icon: Icons.security_outlined,
                   title: AppStrings.twoFactorAuth,
@@ -457,7 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.phone_outlined,
                   title: AppStrings.callUsNumber,
                   isDark: isDark,
-                  onTap: () => Get.toNamed('/call-support'),
+                  onTap: () => Get.toNamed('/call-us'),
                 ),
                 _buildHelpItem(
                   icon: Icons.email_outlined,
@@ -476,14 +462,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: AppStrings.faqs,
                   subtitle: AppStrings.faqsCount,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/faqs'),
+                  onTap: () => Get.toNamed('/faqs'),
                 ),
 
                 _buildHelpItem(
                   icon: Icons.shield_outlined,
                   title: AppStrings.safetyTips,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/safety-tips'),
+                  onTap: () => Get.toNamed('/safety-tips'),
                 ),
 
                 SizedBox(height: 14.h),
@@ -495,14 +481,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.flag_outlined,
                   title: AppStrings.reportAProblem,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/report-a-problem'),
+                  onTap: () => Get.toNamed('/report-a-problem'),
                 ),
 
                 _buildHelpItem(
                   icon: Icons.lightbulb_outline,
                   title: AppStrings.requestAFeature,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/request-a-feature'),
+                  onTap: () => Get.toNamed('/request-a-feature'),
                 ),
 
                 SizedBox(height: 14.h),
@@ -514,13 +500,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.description_outlined,
                   title: AppStrings.termsOfService,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/terms-of-service'),
+                  onTap: () => Get.toNamed('/terms-of-service'),
                 ),
                 _buildHelpItem(
                   icon: Icons.lock_outline,
                   title: AppStrings.privacyPolicy,
                   isDark: isDark,
-                  // onTap: () => Get.toNamed('/privacy-policy'),
+                  onTap: () => Get.toNamed('/privacy-policy'),
                 ),
 
                 SizedBox(height: 16.h),

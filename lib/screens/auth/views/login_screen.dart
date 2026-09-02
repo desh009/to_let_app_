@@ -208,14 +208,7 @@ class LoginScreen extends GetView<AuthController> {
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () {
-                    Get.snackbar(
-                      'Forgot Password',
-                      'Password reset link will be sent to your number/email.',
-                      backgroundColor: AppColors.primary,
-                      colorText: Colors.white,
-                    );
-                  },
+                  onTap: () => Get.toNamed(Routes.FORGOT_PASSWORD),
                   child: Text(
                     'forgot_password'.tr,
                     style: TextStyle(

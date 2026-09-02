@@ -1,17 +1,26 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_factor_auth_screen.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/binder/call_support_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/view/call_support_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/binder/email_support-binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/view/email_support_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/privacy_and_policy/binder/privacy_policy_binding.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/privacy_and_policy/view/privacy_and_policy_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/report_problem_screen/binder/report_problem_binder.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/report_problem_screen/view/report_problem_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/terms_and_services_screen/binder/terms_and_controller_binder.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/terms_and_services_screen/view/terms_and_services_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/binder/profile_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/view/profile_view.dart';
+import 'package:to_let_app_abandon/screens/auth/controllers/auth_controller.dart';
 import 'package:to_let_app_abandon/screens/masaage/binder/massage_binder.dart';
 import 'package:to_let_app_abandon/screens/masaage/controller/massage_controller.dart';
 import 'package:to_let_app_abandon/screens/masaage/massage_details/binder/massage_details_binder.dart';
 import 'package:to_let_app_abandon/screens/masaage/massage_details/view/massage_details_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/view/massage_view.dart';
+import 'package:to_let_app_abandon/screens/auth/views/forgot_password_screen.dart';
 import '../screens/auth/bindings/auth_binding.dart';
 import '../screens/auth/views/login_screen.dart';
 import '../screens/auth/views/register_screen.dart';
@@ -33,7 +42,7 @@ class AppPages {
 
   static const String INITIAL = Routes.SPLASH;
   static const String initial = Routes.SPLASH;
-  
+
   static final routes = [
     GetPage(
       name: Routes.SPLASH,
@@ -56,6 +65,12 @@ class AppPages {
     GetPage(
       name: Routes.VERIFY_OTP,
       page: () => const VerifyOtpScreen(),
+      binding: AuthBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordScreen(),
       binding: AuthBinding(),
       transition: Transition.rightToLeft,
     ),
@@ -112,6 +127,33 @@ class AppPages {
       page: () => const EmailSupportScreen(),
       binding: EmailSupportBinding(),
       transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.REPORT_A_PROBLEM,
+      page: () => const ReportProblemScreen(),
+      binding: ReportProblemBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.TERMS_AND_SERVICES,
+      page: () => const TermsOfServiceScreen(),
+      binding: TermsOfServiceBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.PRIVACY_AND_POLICY,
+      page: () => const PrivacyPolicyScreen(),
+      binding: PrivacyPolicyBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: '/two-factor-auth',
+      page: () => const TwoFactorAuthScreen(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AuthController>()) {
+          Get.put(AuthController());
+        }
+      }),
     ),
   ];
 }

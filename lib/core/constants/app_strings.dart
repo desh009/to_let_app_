@@ -302,7 +302,6 @@ abstract class AppStrings {
 
 // Email Support Strings
   static const String emailSupportTitle = 'Email Support';
-  static const String emailPageVersion = 'v1';
   static const String responseWithinTime = 'Response within 12 hours';
   static const String supportEmailAddress = 'support@app.com';
   
@@ -321,5 +320,86 @@ abstract class AppStrings {
 
 
 
+// Report a Problem Strings
+  static const String reportAProblemTitle = 'Report a Problem';
+  static const String reportAnonymousNotice = 'Your report is anonymous. We act within 6 hours.';
+  
+  // Radio Options & Subtitles
+  static const String listingIsFake = 'Listing is fake';
+  static const String listingIsFakeSub = "Photos or info don't match reality";
+  
+  static const String ownerNotResponding = 'Owner not responding';
+  static const String ownerNotRespondingSub = 'No reply after 24 hours';
+  
+  static const String wrongPriceLocation = 'Wrong price / location';
+  static const String wrongPriceLocationSub = 'Price or map pin is incorrect';
+  
+  static const String fraudScam = 'Fraud / scam';
+  static const String fraudScamSub = 'Asked for advance outside app';
+  
+  static const String appBug = 'App bug';
+  static const String appBugSub = 'Crash, payment failed, etc.';
+  
+  // Form Field
+  static const String description = 'DESCRIPTION';
+  static const String reportHintText = 'What happened? Include listing ID if any...';
+  static const String submitReport = 'Submit Report';
 
+
+
+  // Terms of Service Strings
+  static const String termsOfServiceTitle = 'Terms of Service';
+
+  // Section 2
+  static const String userResponsibilitiesTitle = '2. User Responsibilities';
+  static const String userResponsibilitiesBody = 
+      'Users must provide accurate information. Fake listings will be removed and account banned. You must not upload content that violates Bangladesh Digital Security Act. Keep your OTP private.';
+
+  // Section 3
+  static const String listingRulesTitle = '3. Listing Rules';
+  static const String listingRule1 = 'Photos must be real, no stock images.';
+  static const String listingRule2 = 'Price must include service charge disclosure.';
+  static const String listingRule3 = 'Location pin must be within 50m accuracy.';
+  static const String listingRule4 = 'Verified badge requires document submission.';
+
+  // Section 4
+  static const String paymentsBrokerageTitle = '4. Payments & Brokerage';
+  static const String paymentsBrokerageBody = 
+      'Brokerage 0.5 month rent charged only after successful deal. All payments via SSLCommerz gateway. Refund policy as per section 4.2. Advance payment protection covers up to ৳50,000.';
+
+  // Bottom Notice Box
+  static const String termsContactNotice = 
+      'Questions? Email legal@prottek.com.bd or call our helpline. These terms are governed by laws of Bangladesh.';
+
+
+
+
+
+      static const String privacyPolicyTitle = 'Privacy Policy';
+
+  // Section 1
+  static const String dataWeCollectTitle = 'Data we collect';
+  static const String dataWeCollectBody = 
+      'We collect name, phone, NID (optional for verification), location, listing photos, payment info via gateway, device ID and usage analytics. We never store card CVV.';
+
+  // Section 2
+  static const String howWeUseTitle = 'How we use';
+  static const String howWeUseItem1 = 'To show relevant properties near you';
+  static const String howWeUseItem2 = 'To verify listings and prevent fraud';
+  static const String howWeUseItem3 = 'To process payments and refunds';
+  static const String howWeUseItem4 = 'To send visit reminders and updates';
+
+  // Section 3
+  static const String sharingTitle = 'Sharing';
+  static const String sharingBody = 
+      'We share data only with payment gateway, map provider (Mapbox) and law enforcement if required by Bangladesh law. We never sell your data to advertisers.';
+
+  // Section 4
+  static const String yourRightsTitle = 'Your rights';
+  static const String yourRightsBody = 
+      'You can request data deletion anytime via settings. Account deletion removes listings within 48h. You can export your data as JSON from Profile > Privacy.';
+
+  // Security Note Card
+  static const String securityNotice = 
+      'We use AES-256 encryption. All docs stored in Dhaka region servers. Certified by BASIS.';
 }

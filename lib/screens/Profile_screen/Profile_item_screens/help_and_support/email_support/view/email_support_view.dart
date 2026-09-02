@@ -174,14 +174,8 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Text(
-              AppStrings.emailPageVersion,
-              style: TextStyle(
-                fontSize: 11.sp,
-                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+          
+            
           ),
         ],
       ),
