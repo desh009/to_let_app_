@@ -61,6 +61,49 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
+          // 2.5 TENANT TYPE — ✅ NEW (Bachelor / Family / Seat / Sublet)
+          _buildLabel('tenant_type_label'.tr, labelColor),
+          SizedBox(height: 8.h),
+          Obx(
+            () => Row(
+              children: controller.tenantTypes.map((type) {
+                final isSelected = controller.selectedTenantType.value == type;
+                final isLast = type == controller.tenantTypes.last;
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () => controller.selectTenantType(type),
+                    child: Container(
+                      margin: EdgeInsets.only(right: isLast ? 0 : 8.w),
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      decoration: BoxDecoration(
+                        color: isSelected ? const Color(0xFF1E232A) : inputBg,
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: isSelected
+                              ? const Color(0xFF1E232A)
+                              : (isDark
+                                  ? const Color(0xFF2D3748)
+                                  : const Color(0xFFE2E8F0)),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          type,
+                          style: TextStyle(
+                            fontSize: 11.5.sp,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected ? Colors.white : textColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          SizedBox(height: 18.h),
+
           // 3. MONTHLY RENT
           _buildLabel('monthly_rent_label'.tr, labelColor),
           SizedBox(height: 8.h),
@@ -173,7 +216,7 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
-          // 5. DESCRIPTION
+          // 5. DESCRIPTION — ✅ enlarged (maxLines 3 → 5)
           _buildLabel('description_label'.tr, labelColor),
           SizedBox(height: 8.h),
           Container(
@@ -184,7 +227,8 @@ class PropertyInfoSection extends GetView<PostListingController> {
             ),
             child: TextField(
               controller: controller.descriptionController,
-              maxLines: 3,
+              maxLines: 5,
+              minLines: 5,
               style: TextStyle(
                 fontSize: 13.sp,
                 height: 1.4,

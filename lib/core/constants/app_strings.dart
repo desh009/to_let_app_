@@ -402,4 +402,46 @@ abstract class AppStrings {
   // Security Note Card
   static const String securityNotice = 
       'We use AES-256 encryption. All docs stored in Dhaka region servers. Certified by BASIS.';
+
+
+  static const String filterTitle = 'Filter';
+  static const String reset = 'Reset';
+  static const String applyFilter = 'Apply Filter';
+  static const String khulnaShiromoni = 'KHULNA • SHIROMONI';
+
+  // Location Section
+  static const String locationTitle = 'Location';
+  static const String locationSubtitle = 'City to Shiromoni highway';
+  static const String searchLocationHint = 'Search Khulna to Shiromoni...';
+  static const String southNorthHwy = 'SOUTH ➔ NORTH • KHULNA-JESSORE HWY';
+  static const String showingAreasCount = 'Showing 20 areas from Khulna City ➔ Shiromoni';
+  static const String homesCount = '124 homes';
+  
+  
+  // Tenant Type
+  static const String tenantTypeTitle = 'Tenant Type';
+
+  // Price Range
+  static const String priceRangeTitle = 'Price Range';
+  static const String minPrice = 'Min';
+  static const String maxPrice = 'Max';
+  
+  // Property Type
+  static const String propertyTypeTitle = 'Property Type';
+
+  // Bedrooms
+  static const String bedroomsTitle = 'Bedrooms';
+
+  // Furnishing
+  static const String furnishingTitle = 'Furnishing';
+
+  // Amenities
+  static const String amenitiesTitle = 'Amenities';
+  static const String selectedSuffix = 'selected';
+  
+  // Available From
+  static const String availableFromTitle = 'Available From';
+  static const String nextMonth = 'Next month';
+  
+  static const String endOfFilters = 'END OF FILTERS';
 }

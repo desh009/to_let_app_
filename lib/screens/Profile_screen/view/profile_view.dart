@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/utils/helper/action_helper.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -178,20 +179,115 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          Container(
-            width: 32.r,
-            height: 32.r,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.settings_outlined,
-              size: 18.r,
-              color: isDark
-                  ? AppColors.textPrimaryDark
-                  : AppColors.textPrimaryLight,
-            ),
+          _buildProfileMenuButton(isDark),
+        ],
+      ),
+    );
+  }
+
+  // --- Animated 3-dot menu: Edit Profile / Delete Account ---
+  Widget _buildProfileMenuButton(bool isDark) {
+    return PopupMenuButton<String>(
+      // Built-in fade + scale open animation
+      elevation: 6,
+      offset: Offset(0, 40.h),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      color: isDark ? AppColors.surfaceDark : Colors.white,
+      icon: Container(
+        width: 32.r,
+        height: 32.r,
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.more_vert,
+          size: 18.r,
+          color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+        ),
+      ),
+      onSelected: (value) {
+        if (value == 'edit') {
+          Get.toNamed('/edit-profile');
+        } else if (value == 'delete') {
+          _confirmDeleteAccount(isDark);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit_outlined, size: 18.r, color: AppColors.primary),
+              SizedBox(width: 10.w),
+              Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: isDark
+                      ? AppColors.textPrimaryDark
+                      : AppColors.textPrimaryLight,
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 18.r, color: Colors.red),
+              SizedBox(width: 10.w),
+              Text(
+                'Delete Account',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _confirmDeleteAccount(bool isDark) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        title: Text(
+          'Delete Account?',
+          style: TextStyle(
+            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+          ),
+        ),
+        content: Text(
+          'This will permanently delete your account, listings, and all data. This action cannot be undone.',
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: isDark
+                ? AppColors.textSecondaryDark
+                : AppColors.textSecondaryLight,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              // TODO: call your real delete-account API here, then
+              // navigate to login / onboarding and clear local session.
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -331,7 +427,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: EdgeInsets.only(left: 48.w, right: 16.w, bottom: 8.h),
             child: Column(
               children: [
-           
+                _buildSubMenuItem(
+                  icon: Icons.info_outline,
+                  title: AppStrings.appVersion,
+                  isDark: isDark,
+                  trailingText: AppStrings.version,
+                ),
                 _buildSubMenuItem(
                   icon: Icons.share_outlined,
                   title: AppStrings.shareApp,
@@ -344,7 +445,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   isDark: isDark,
                   onTap: () => AppActionsHelper.rateApp(),
                 ),
-            
+                _buildSubMenuItem(
+                  icon: Icons.quiz_outlined,
+                  title: AppStrings.helpFaq,
+                  isDark: isDark,
+                  onTap: () => Get.toNamed('/help-faq'),
+                ),
                 _buildSubMenuItem(
                   icon: Icons.security_outlined,
                   title: AppStrings.twoFactorAuth,

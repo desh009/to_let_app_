@@ -2,6 +2,10 @@
 
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_factor_auth_screen.dart';
+import 'package:to_let_app_abandon/screens/Filter_screen/controller/filter_controller.dart';
+import 'package:to_let_app_abandon/screens/Filter_screen/view/filter_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/edit_profile_controller.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/screen.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/binder/call_support_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/view/call_support_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/binder/email_support-binder.dart';
@@ -153,6 +157,22 @@ class AppPages {
         if (!Get.isRegistered<AuthController>()) {
           Get.put(AuthController());
         }
+      }),
+    ),
+
+    GetPage(
+      name: '/edit-profile',
+      page: () => const EditProfileScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(EditProfileController());
+      }),
+    ),
+
+    GetPage(
+      name: '/filter',
+      page: () => const FilterScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(FilterController());
       }),
     ),
   ];
