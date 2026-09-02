@@ -60,22 +60,6 @@ class PostListingScreen extends GetView<PostListingController> {
                 color: isDark ? Colors.white : const Color(0xFF1E232A),
               ),
             ),
-            SizedBox(width: 8.w),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E232A),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                'v1',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
           ],
         ),
         centerTitle: true,
@@ -83,23 +67,50 @@ class PostListingScreen extends GetView<PostListingController> {
           Padding(
             padding: EdgeInsets.only(right: 14.w),
             child: Center(
-              child: Container(
-                width: 38.r,
-                height: 38.r,
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E2228) : Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF2D3748)
-                        : const Color(0xFFE8ECEF),
-                    width: 1,
-                  ),
+              child: PopupMenuButton<String>(
+                offset: Offset(0, 44.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
-                child: Icon(
-                  Icons.more_horiz_rounded,
-                  size: 20.r,
-                  color: isDark ? Colors.white : const Color(0xFF1E232A),
+                onSelected: (value) {
+                  if (value == 'reset') {
+                    controller.resetForm();
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem<String>(
+                    value: 'reset',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.refresh_rounded,
+                          size: 18.r,
+                          color: Colors.redAccent,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text('reset'.tr),
+                      ],
+                    ),
+                  ),
+                ],
+                child: Container(
+                  width: 38.r,
+                  height: 38.r,
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1E2228) : Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF2D3748)
+                          : const Color(0xFFE8ECEF),
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.more_horiz_rounded,
+                    size: 20.r,
+                    color: isDark ? Colors.white : const Color(0xFF1E232A),
+                  ),
                 ),
               ),
             ),

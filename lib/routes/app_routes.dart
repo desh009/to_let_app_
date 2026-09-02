@@ -1,8 +1,5 @@
-// ignore_for_file: constant_identifier_names
-
 abstract class Routes {
   Routes._();
-
   static const String SPLASH = _Paths.SPLASH;
   static const String HOME = _Paths.HOME;
   static const String DETAILS = _Paths.DETAILS;
@@ -14,7 +11,14 @@ abstract class Routes {
   static const String LOGIN = _Paths.LOGIN;
   static const String REGISTER = _Paths.REGISTER;
   static const String VERIFY_OTP = _Paths.VERIFY_OTP;
-
+  static const String FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const String CALL_SUPPORT = _Paths.CALL_SUPPORT;
+  static const String EMAIL_SUPPORT = _Paths.EMAIL_SUPPORT;
+  static const String REPORT_A_PROBLEM = _Paths.REPORT_A_PROBLEM;
+  static const String TERMS_AND_SERVICES = _Paths.TERMS_AND_SERVICES;
+  static const String PRIVACY_AND_POLICY = _Paths.PRIVACY_AND_POLICY;
+  static const String TWO_FACTOR_AUTH = _Paths.TWO_FACTOR_AUTH;
+  static const String FILTER = _Paths.FILTER;
   // CamelCase aliases
   static const String splash = _Paths.SPLASH;
   static const String home = _Paths.HOME;
@@ -27,11 +31,17 @@ abstract class Routes {
   static const String login = _Paths.LOGIN;
   static const String register = _Paths.REGISTER;
   static const String verify_otp = _Paths.VERIFY_OTP;
+  static const String forgot_password = _Paths.FORGOT_PASSWORD;
+  static const String call_support = _Paths.CALL_SUPPORT;
+  static const String email_support = _Paths.EMAIL_SUPPORT;
+  static const String report_a_problem = _Paths.REPORT_A_PROBLEM;
+  static const String terms_and_services = _Paths.TERMS_AND_SERVICES;
+  static const String privacy_and_policy = _Paths.PRIVACY_AND_POLICY;
+  static const String two_factor_auth = _Paths.TWO_FACTOR_AUTH;
+  static const String filter = _Paths.FILTER;
 }
-
 abstract class _Paths {
   _Paths._();
-
   static const String SPLASH = '/splash';
   static const String HOME = '/home';
   static const String DETAILS = '/details';
@@ -43,4 +53,12 @@ abstract class _Paths {
   static const String LOGIN = '/login';
   static const String REGISTER = '/register';
   static const String VERIFY_OTP = '/verify-otp';
+  static const String FORGOT_PASSWORD = '/forgot-password';
+  static const String CALL_SUPPORT = '/call-support';
+  static const String EMAIL_SUPPORT = '/email-support';
+  static const String REPORT_A_PROBLEM = '/report-a-problem';
+  static const String TERMS_AND_SERVICES = '/terms-and-services';
+  static const String PRIVACY_AND_POLICY = '/privacy-and-policy';
+  static const String TWO_FACTOR_AUTH = '/two-factor-auth';
+  static const String FILTER = '/filter';
 }

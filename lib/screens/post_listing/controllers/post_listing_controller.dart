@@ -15,16 +15,20 @@ class PostListingController extends GetxController {
   late final TextEditingController rentController;
   late final TextEditingController descriptionController;
 
-  // Property Photos (Supports both local file paths and network URLs)
-  final RxList<String> propertyPhotos = <String>[
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-  ].obs;
+  // ✅ Property Photos — starts EMPTY, no default images
+  final RxList<String> propertyPhotos = <String>[].obs;
 
   // Room counters
   final RxInt bedrooms = 2.obs;
   final RxInt bathrooms = 2.obs;
+
+  // ✅ Tenant Type Selector (Bachelor / Family / Seat / Sublet)
+  final List<String> tenantTypes = const ['Bachelor', 'Family', 'Seat', 'Sublet'];
+  final RxString selectedTenantType = 'Family'.obs;
+
+  void selectTenantType(String type) {
+    selectedTenantType.value = type;
+  }
 
   // Amenities switches
   final RxBool hasLift = true.obs;
@@ -41,14 +45,14 @@ class PostListingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    titleController = TextEditingController(text: 'Sunlit 2BHK in Banani');
-    locationController = TextEditingController(text: 'Road 11, Banani, Dhaka');
-    rentController = TextEditingController(text: '32,000');
-    descriptionController = TextEditingController(
-      text:
-          'Bright 2BHK on 4th floor, south-facing, 950 sqft. Lift, parking, gas included. 5 mins from Banani 11.',
-    );
+    // ✅ No pre-filled demo values — form starts blank
+    titleController = TextEditingController();
+    locationController = TextEditingController();
+    rentController = TextEditingController();
+    descriptionController = TextEditingController();
   }
+
+
 
   // Room Count Adjustments
   void incrementBedrooms() {
@@ -262,6 +266,23 @@ class PostListingController extends GetxController {
   void toggleWifi(bool val) => hasWifi.value = val;
   void toggleDirectOwner() => isDirectOwner.value = !isDirectOwner.value;
 
+  // ✅ Reset the whole form — called from the 3-dot menu
+  void resetForm() {
+    titleController.clear();
+    locationController.clear();
+    rentController.clear();
+    descriptionController.clear();
+    propertyPhotos.clear();
+    bedrooms.value = 2;
+    bathrooms.value = 2;
+    selectedTenantType.value = 'Family';
+    hasLift.value = true;
+    hasParking.value = true;
+    hasGasLine.value = true;
+    hasWifi.value = false;
+    isDirectOwner.value = true;
+  }
+
   // Publish Listing Action
   Future<void> publishListing() async {
     final title = titleController.text.trim();
@@ -316,7 +337,7 @@ class PostListingController extends GetxController {
       description: descriptionController.text.trim(),
       contactNumber: '+8801700000000',
       images: List<String>.from(propertyPhotos),
-      category: 'Family',
+      category: selectedTenantType.value, // ✅ now uses the selected tenant type
       badgeText: 'Featured',
       isVerified: true,
       isAvailable: true,

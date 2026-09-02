@@ -40,7 +40,6 @@ class HomeScreen extends GetView<HomeController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1. Header (Greeting & Notification)
                     const HomeHeader(),
 
                     const HomeSearchBar(),

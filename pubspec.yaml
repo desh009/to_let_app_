@@ -38,6 +38,10 @@ dependencies:
   shared_preferences: ^2.3.5
   get_storage: ^2.1.1
   image_picker: ^1.1.2
+  url_launcher: ^6.3.2
+  share_plus: ^10.1.4   
+  in_app_review: ^2.0.12
+  pin_code_fields: ^9.4.0
 
 dev_dependencies:
   flutter_test:

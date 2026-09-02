@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/routes/app_routes.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../controllers/home_controller.dart';
 
@@ -98,7 +99,7 @@ class HomeSearchBar extends StatelessWidget {
           // Filter Button (Terracotta Square)
           InkWell(
             borderRadius: BorderRadius.circular(16.r),
-            onTap: () => _showFilterBottomSheet(context, controller),
+            onTap: () => Get.toNamed(Routes.FILTER), // Navigate to the filter screen
             child: Container(
               height: 52.h,
               width: 52.h,

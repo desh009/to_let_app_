@@ -14,11 +14,14 @@ class RegisterScreen extends GetView<AuthController> {
 
     final inputBg = isDark ? const Color(0xFF1E2228) : const Color(0xFFF7F8FA);
     final textColor = isDark ? Colors.white : const Color(0xFF1E232A);
-    final subtitleColor =
-        isDark ? const Color(0xFFA0AEC0) : const Color(0xFF7E8B9B);
+    final subtitleColor = isDark
+        ? const Color(0xFFA0AEC0)
+        : const Color(0xFF7E8B9B);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : const Color(0xFFFAF8F5),
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : const Color(0xFFFAF8F5),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -71,7 +74,6 @@ class RegisterScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 22.h),
 
-              // 3. Field 1: Full Name
               _buildLabel('full_name'.tr, textColor),
               SizedBox(height: 8.h),
               _buildInputField(
@@ -89,58 +91,84 @@ class RegisterScreen extends GetView<AuthController> {
               SizedBox(height: 16.h),
 
               // 4. Field 2: Phone number (Active Terracotta Border)
-              _buildLabel('phone_number'.tr, textColor),
-              SizedBox(height: 8.h),
-              Container(
-                height: 52.h,
-                padding: EdgeInsets.symmetric(horizontal: 14.w),
-                decoration: BoxDecoration(
-                  color: inputBg,
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(
-                    color: AppColors.primary,
-                    width: 1.5,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      '+880',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                        color: textColor,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    Icon(
-                      Icons.phone_android_rounded,
-                      size: 18.r,
-                      color: subtitleColor,
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: TextField(
-                        controller: controller.regPhoneController,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          hintText: '1XXX XXX XXX',
-                          hintStyle: TextStyle(
-                            fontSize: 14.sp,
-                            color: subtitleColor.withAlpha(150),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+             _buildLabel('phone_number'.tr, textColor),
+SizedBox(height: 8.h),
+
+TextField(
+  controller: controller.regPhoneController,
+  keyboardType: TextInputType.phone,
+  decoration: InputDecoration(
+    // ✅ Hint Text
+    hintText: 'phone_hint'.tr,
+    hintStyle: TextStyle(
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w400,
+      color: subtitleColor,
+    ),
+    
+    // ✅ Prefix এ +880 এবং Icon যোগ করুন
+    prefixIcon: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '+880',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+              color: textColor,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Icon(
+            Icons.phone_android_rounded,
+            size: 18.r,
+            color: subtitleColor,
+          ),
+        ],
+      ),
+    ),
+    prefixIconConstraints: const BoxConstraints(
+      minWidth: 0,
+      minHeight: 0,
+    ),
+    
+    // ✅ Background Color
+    filled: true,
+    fillColor: inputBg,
+    
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16.r),
+      borderSide: const BorderSide(
+        color: AppColors.primary,
+        width: 1.5,
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16.r),
+      borderSide: const BorderSide(
+        color: AppColors.primary,
+        width: 1.5,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16.r),
+      borderSide: const BorderSide(
+        color: AppColors.primary,
+        width: 2.0,
+      ),
+    ),
+    
+    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+    isDense: true,
+  ),
+  style: TextStyle(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
+    color: textColor,
+  ),
+),
               SizedBox(height: 16.h),
 
               // 5. Field 3: Email address
@@ -182,8 +210,7 @@ class RegisterScreen extends GetView<AuthController> {
               Obx(
                 () => Row(
                   children: List.generate(4, (index) {
-                    final isFilled =
-                        index < controller.passwordStrength.value;
+                    final isFilled = index < controller.passwordStrength.value;
                     return Expanded(
                       child: Container(
                         height: 3.5.h,
@@ -192,8 +219,8 @@ class RegisterScreen extends GetView<AuthController> {
                           color: isFilled
                               ? AppColors.primary
                               : (isDark
-                                  ? const Color(0xFF2D3748)
-                                  : const Color(0xFFE2E8F0)),
+                                    ? const Color(0xFF2D3748)
+                                    : const Color(0xFFE2E8F0)),
                           borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
@@ -242,8 +269,8 @@ class RegisterScreen extends GetView<AuthController> {
                             color: controller.isTermsAgreed.value
                                 ? AppColors.primary
                                 : (isDark
-                                    ? const Color(0xFF4A5568)
-                                    : const Color(0xFFCBD5E0)),
+                                      ? const Color(0xFF4A5568)
+                                      : const Color(0xFFCBD5E0)),
                             width: 1.5,
                           ),
                         ),
@@ -323,8 +350,9 @@ class RegisterScreen extends GetView<AuthController> {
                             height: 22.r,
                             child: const CircularProgressIndicator(
                               strokeWidth: 2.5,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : Text(
@@ -403,10 +431,7 @@ class RegisterScreen extends GetView<AuthController> {
       ),
       child: Row(
         children: [
-          if (prefixIcon != null) ...[
-            prefixIcon,
-            SizedBox(width: 10.w),
-          ],
+          if (prefixIcon != null) ...[prefixIcon, SizedBox(width: 10.w)],
           Expanded(
             child: TextField(
               controller: controller,

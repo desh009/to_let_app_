@@ -35,6 +35,35 @@ class AuthController extends GetxController {
   final RxString targetPhoneNumber = '+880 1712 345 678'.obs;
   final RxBool isVerifyingOtp = false.obs;
 
+  // ==================== FORGOT PASSWORD STATE ====================
+  late final TextEditingController forgotPasswordInputController;
+  late final TextEditingController forgotNewPasswordController;
+  late final TextEditingController forgotConfirmPasswordController;
+  final RxBool isForgotPasswordStep2 = false.obs;
+  final RxBool isSendingForgotOtp = false.obs;
+  final RxBool isResettingPassword = false.obs;
+  final RxBool isForgotNewPasswordHidden = true.obs;
+  final RxBool isForgotConfirmPasswordHidden = true.obs;
+  final RxList<String> forgotOtpDigits = <String>['', '', '', '', '', ''].obs;
+  final RxInt currentForgotOtpIndex = 0.obs;
+  final RxInt forgotResendCountdown = 45.obs;
+  final RxBool canResendForgotOtp = false.obs;
+  Timer? _forgotTimer;
+
+  // ==================== TWO-FACTOR AUTH STATE ====================
+  final RxBool isTwoFactorEnabled = false.obs;      // current saved state (from backend)
+  final RxBool isTwoFactorSetupStep2 = false.obs;   // false = intro/toggle view, true = OTP view
+  final RxBool isSendingTwoFactorOtp = false.obs;
+  final RxBool isVerifyingTwoFactorOtp = false.obs;
+  final RxBool isDisablingTwoFactor = false.obs;
+
+  final RxList<String> twoFactorOtpDigits = <String>[].obs;
+  final RxInt currentTwoFactorOtpIndex = 0.obs;
+
+  final RxBool canResendTwoFactorOtp = false.obs;
+  final RxInt twoFactorResendSeconds = 60.obs;
+  Timer? _twoFactorTimer;
+
   @override
   void onInit() {
     super.onInit();
@@ -49,6 +78,10 @@ class AuthController extends GetxController {
 
     regPasswordController.addListener(_updatePasswordStrength);
     startResendTimer();
+
+    forgotPasswordInputController = TextEditingController();
+    forgotNewPasswordController = TextEditingController();
+    forgotConfirmPasswordController = TextEditingController();
   }
 
   void _updatePasswordStrength() {
@@ -265,6 +298,132 @@ class AuthController extends GetxController {
     );
   }
 
+  // ==================== FORGOT PASSWORD ACTIONS ====================
+
+  void _startForgotResendTimer() {
+    _forgotTimer?.cancel();
+    forgotResendCountdown.value = 45;
+    canResendForgotOtp.value = false;
+    _forgotTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (forgotResendCountdown.value > 0) {
+        forgotResendCountdown.value--;
+      } else {
+        canResendForgotOtp.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  String get formattedForgotTimer {
+    final mins = (forgotResendCountdown.value ~/ 60).toString().padLeft(2, '0');
+    final secs = (forgotResendCountdown.value % 60).toString().padLeft(2, '0');
+    return '$mins:$secs';
+  }
+
+  void inputForgotOtpDigit(String digit) {
+    if (currentForgotOtpIndex.value < 6) {
+      forgotOtpDigits[currentForgotOtpIndex.value] = digit;
+      currentForgotOtpIndex.value++;
+    }
+  }
+
+  void deleteForgotOtpDigit() {
+    if (currentForgotOtpIndex.value > 0) {
+      currentForgotOtpIndex.value--;
+      forgotOtpDigits[currentForgotOtpIndex.value] = '';
+    }
+  }
+
+  Future<void> sendForgotPasswordOtp() async {
+    final input = forgotPasswordInputController.text.trim();
+    if (input.isEmpty) {
+      Get.snackbar(
+        'Required',
+        'Please enter your phone number or email.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+    isSendingForgotOtp.value = true;
+    await Future.delayed(const Duration(milliseconds: 800));
+    isSendingForgotOtp.value = false;
+    forgotOtpDigits.assignAll(['', '', '', '', '', '']);
+    currentForgotOtpIndex.value = 0;
+    _startForgotResendTimer();
+    isForgotPasswordStep2.value = true;
+    Get.snackbar(
+      'OTP Sent',
+      'A 6-digit code was sent to $input',
+      backgroundColor: AppColors.primary,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  void resendForgotOtp() {
+    if (!canResendForgotOtp.value) return;
+    _startForgotResendTimer();
+    Get.snackbar(
+      'Code Resent',
+      'A new OTP has been sent.',
+      backgroundColor: AppColors.primary,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  Future<void> resetPassword() async {
+    final code = forgotOtpDigits.join();
+    if (code.length < 6) {
+      Get.snackbar(
+        'Incomplete OTP',
+        'Please enter the full 6-digit code.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+    final newPass = forgotNewPasswordController.text.trim();
+    final confirmPass = forgotConfirmPasswordController.text.trim();
+    if (newPass.length < 6) {
+      Get.snackbar(
+        'Weak Password',
+        'Password must be at least 6 characters.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+    if (newPass != confirmPass) {
+      Get.snackbar(
+        'Mismatch',
+        'Passwords do not match.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+    isResettingPassword.value = true;
+    await Future.delayed(const Duration(milliseconds: 900));
+    isResettingPassword.value = false;
+    // Reset state
+    isForgotPasswordStep2.value = false;
+    forgotPasswordInputController.clear();
+    forgotNewPasswordController.clear();
+    forgotConfirmPasswordController.clear();
+    forgotOtpDigits.assignAll(['', '', '', '', '', '']);
+    currentForgotOtpIndex.value = 0;
+    Get.until((route) => route.settings.name == '/login');
+    Get.snackbar(
+      'Success!',
+      'Your password has been reset. Please log in.',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
   void socialLogin(String provider) async {
     isLoggingIn.value = true;
     await Future.delayed(const Duration(milliseconds: 600));
@@ -274,9 +433,131 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.HOME);
   }
 
+  // ==================== TWO-FACTOR AUTH ACTIONS ====================
+
+  String get formattedTwoFactorTimer {
+    final m = (twoFactorResendSeconds.value ~/ 60).toString().padLeft(2, '0');
+    final s = (twoFactorResendSeconds.value % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  /// Call this when the screen opens to sync with backend's real status.
+  Future<void> fetchTwoFactorStatus() async {
+    try {
+      // TODO: replace with your real API call
+      // final res = await _authRepository.getTwoFactorStatus();
+      // isTwoFactorEnabled.value = res.enabled;
+    } catch (e) {
+      // handle/log error
+    }
+  }
+
+  /// Step 1 -> Step 2: user taps "Enable" and we send an OTP to their
+  /// registered phone/email to confirm they own the account.
+  Future<void> sendTwoFactorOtp() async {
+    if (isSendingTwoFactorOtp.value) return;
+    isSendingTwoFactorOtp.value = true;
+    try {
+      // TODO: replace with your real API call
+      // await _authRepository.sendTwoFactorOtp();
+
+      isTwoFactorSetupStep2.value = true;
+      twoFactorOtpDigits.clear();
+      currentTwoFactorOtpIndex.value = 0;
+      _startTwoFactorResendTimer();
+    } catch (e) {
+      Get.snackbar('Error', 'Could not send OTP. Please try again.');
+    } finally {
+      isSendingTwoFactorOtp.value = false;
+    }
+  }
+
+  Future<void> resendTwoFactorOtp() async {
+    if (!canResendTwoFactorOtp.value) return;
+    await sendTwoFactorOtp();
+  }
+
+  void _startTwoFactorResendTimer() {
+    canResendTwoFactorOtp.value = false;
+    twoFactorResendSeconds.value = 60;
+    _twoFactorTimer?.cancel();
+    _twoFactorTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (twoFactorResendSeconds.value <= 1) {
+        canResendTwoFactorOtp.value = true;
+        t.cancel();
+      } else {
+        twoFactorResendSeconds.value--;
+      }
+    });
+  }
+
+  void inputTwoFactorOtpDigit(String digit) {
+    if (twoFactorOtpDigits.length >= 6) return;
+    twoFactorOtpDigits.add(digit);
+    currentTwoFactorOtpIndex.value = twoFactorOtpDigits.length;
+
+    if (twoFactorOtpDigits.length == 6) {
+      verifyTwoFactorOtp();
+    }
+  }
+
+  void deleteTwoFactorOtpDigit() {
+    if (twoFactorOtpDigits.isEmpty) return;
+    twoFactorOtpDigits.removeLast();
+    currentTwoFactorOtpIndex.value = twoFactorOtpDigits.length;
+  }
+
+  /// Final step: verify the OTP and actually flip 2FA ON in the backend.
+  Future<void> verifyTwoFactorOtp() async {
+    if (isVerifyingTwoFactorOtp.value) return;
+    isVerifyingTwoFactorOtp.value = true;
+    try {
+      final code = twoFactorOtpDigits.join();
+
+      // TODO: replace with your real API call
+      // final ok = await _authRepository.verifyTwoFactorOtp(code);
+      final bool ok = code.length == 6; // placeholder success check
+
+      if (ok) {
+        isTwoFactorEnabled.value = true;
+        isTwoFactorSetupStep2.value = false;
+        _twoFactorTimer?.cancel();
+        Get.back(); // close the 2FA screen and return to Profile
+        Get.snackbar('Two-Factor Authentication', 'Successfully enabled.');
+      } else {
+        Get.snackbar('Invalid Code', 'The OTP you entered is incorrect.');
+        twoFactorOtpDigits.clear();
+        currentTwoFactorOtpIndex.value = 0;
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Verification failed. Please try again.');
+    } finally {
+      isVerifyingTwoFactorOtp.value = false;
+    }
+  }
+
+  /// Turning 2FA OFF — normally you'd ask for password confirmation here
+  /// before disabling, since it lowers account security.
+  Future<void> disableTwoFactor() async {
+    if (isDisablingTwoFactor.value) return;
+    isDisablingTwoFactor.value = true;
+    try {
+      // TODO: replace with your real API call
+      // await _authRepository.disableTwoFactor();
+      isTwoFactorEnabled.value = false;
+      Get.snackbar('Two-Factor Authentication', 'Disabled.');
+    } catch (e) {
+      Get.snackbar('Error', 'Could not disable 2FA. Please try again.');
+    } finally {
+      isDisablingTwoFactor.value = false;
+    }
+  }
+
   @override
   void onClose() {
     _timer?.cancel();
+    _forgotTimer?.cancel();
+    _twoFactorTimer?.cancel();
     loginPhoneOrEmailController.dispose();
     loginPasswordController.dispose();
     regFullNameController.dispose();
@@ -284,6 +565,9 @@ class AuthController extends GetxController {
     regEmailController.dispose();
     regPasswordController.dispose();
     regConfirmPasswordController.dispose();
+    forgotPasswordInputController.dispose();
+    forgotNewPasswordController.dispose();
+    forgotConfirmPasswordController.dispose();
     super.onClose();
   }
 }
