@@ -55,7 +55,7 @@ abstract class AppStrings {
   static const String detailsTitle = 'Property Details';
   static const String share = 'Share';
   static const String sharingProperty = 'Sharing property...';
-
+  
   // Badges
   static const String availableNow = 'Available now';
   static const String noBrokerage = 'No brokerage';
@@ -91,7 +91,7 @@ abstract class AppStrings {
   static const String callingOwner = 'Calling owner...';
   static const String favoriteAdded = 'Added to favorites';
   static const String favoriteRemoved = 'Removed from favorites';
-
+  
   // ==================== Common ====================
   static const String noDataFound = 'No data found';
   static const String errorOccurred = 'An error occurred';
@@ -444,4 +444,23 @@ abstract class AppStrings {
   static const String nextMonth = 'Next month';
   
   static const String endOfFilters = 'END OF FILTERS';
+
+
+
+  // Notifications Header & Actions
+  static const String notificationsTitle = 'Notifications';
+  static const String swipeLeftToDelete = 'SWIPE LEFT TO DELETE';
+  static const String markAllAsRead = 'Mark all as read';
+  static const String unreadCountSuffix = 'unread';
+  static const String allUpToDate = "You're all up to date • Khulna rentals";
+
+  // Filter Chips
+  static const String filterUnread = 'Unread';
+  static const String filterRent = 'Rent';
+  static const String filterUpdates = 'Updates';
+
+  // Date Headers
+  static const String sectionToday = 'TODAY';
+  static const String sectionYesterday = 'YESTERDAY';
+  static const String sectionEarlier = 'EARLIER';
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
+import 'core/services/fcm_service.dart';
 import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
 import 'package:to_let_app_abandon/widgets/custom_floating_action%20button/custom_floating_action_button.dart';
 import 'core/bindings/initial_binding.dart';
@@ -14,6 +18,20 @@ import 'widgets/custom_snackbar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Register top-level background messaging handler
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // Initialize FCM Service
+  await Get.putAsync<FcmService>(
+    () => FcmService().init(),
+    permanent: true,
+  );
 
   // Initialize SharedPreferences via GetX Service
   final storageService = await Get.putAsync<StorageService>(
@@ -63,7 +81,7 @@ class MyApp extends StatelessWidget {
           builder: (context, child) {
             return Stack(
               children: [
-                if (child != null) child,
+                ?child,
 
                 // ★ Global Voice Assistant Shutter FAB (এখন placeholder)
                 ShutterFab(

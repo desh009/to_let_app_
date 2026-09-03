@@ -42,6 +42,9 @@ dependencies:
   share_plus: ^10.1.4   
   in_app_review: ^2.0.12
   pin_code_fields: ^9.4.0
+  firebase_core: ^4.14.0
+  firebase_messaging: ^16.6.0
+  flutter_local_notifications: ^22.3.0
 
 dev_dependencies:
   flutter_test:

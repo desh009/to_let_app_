@@ -25,6 +25,8 @@ import 'package:to_let_app_abandon/screens/masaage/massage_details/binder/massag
 import 'package:to_let_app_abandon/screens/masaage/massage_details/view/massage_details_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/view/massage_view.dart';
 import 'package:to_let_app_abandon/screens/auth/views/forgot_password_screen.dart';
+import 'package:to_let_app_abandon/screens/notification_screen/controller/notification_controlelr.dart';
+import 'package:to_let_app_abandon/screens/notification_screen/view/notification_view.dart';
 import '../screens/auth/bindings/auth_binding.dart';
 import '../screens/auth/views/login_screen.dart';
 import '../screens/auth/views/register_screen.dart';
@@ -151,7 +153,17 @@ class AppPages {
       transition: Transition.rightToLeft,
     ),
     GetPage(
-      name: '/two-factor-auth',
+      name: Routes.NOTIFICATIONS,
+      page: () => const NotificationsScreen(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<NotificationsController>()) {
+          Get.put(NotificationsController());
+        }
+      }),
+    ),
+
+    GetPage(
+      name: Routes.TWO_FACTOR_AUTH,
       page: () => const TwoFactorAuthScreen(),
       binding: BindingsBuilder(() {
         if (!Get.isRegistered<AuthController>()) {
