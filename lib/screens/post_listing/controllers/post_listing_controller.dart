@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:to_let_app_abandon/app/data/services/notification/notification_service.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../home/controllers/home_controller.dart';
@@ -15,14 +16,11 @@ class PostListingController extends GetxController {
   late final TextEditingController rentController;
   late final TextEditingController descriptionController;
 
-  // ✅ Property Photos — starts EMPTY, no default images
   final RxList<String> propertyPhotos = <String>[].obs;
 
-  // Room counters
   final RxInt bedrooms = 2.obs;
   final RxInt bathrooms = 2.obs;
 
-  // ✅ Tenant Type Selector (Bachelor / Family / Seat / Sublet)
   final List<String> tenantTypes = const ['Bachelor', 'Family', 'Seat', 'Sublet'];
   final RxString selectedTenantType = 'Family'.obs;
 
@@ -30,31 +28,24 @@ class PostListingController extends GetxController {
     selectedTenantType.value = type;
   }
 
-  // Amenities switches
   final RxBool hasLift = true.obs;
   final RxBool hasParking = true.obs;
   final RxBool hasGasLine = true.obs;
   final RxBool hasWifi = false.obs;
 
-  // Direct Owner Checkbox
   final RxBool isDirectOwner = true.obs;
 
-  // Loading indicator for publish
   final RxBool isSubmitting = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // ✅ No pre-filled demo values — form starts blank
     titleController = TextEditingController();
     locationController = TextEditingController();
     rentController = TextEditingController();
     descriptionController = TextEditingController();
   }
 
-
-
-  // Room Count Adjustments
   void incrementBedrooms() {
     if (bedrooms.value < 10) bedrooms.value++;
   }
@@ -71,7 +62,6 @@ class PostListingController extends GetxController {
     if (bathrooms.value > 1) bathrooms.value--;
   }
 
-  // Photo Management
   void removePhoto(int index) {
     if (index >= 0 && index < propertyPhotos.length) {
       propertyPhotos.removeAt(index);
@@ -85,7 +75,6 @@ class PostListingController extends GetxController {
     }
   }
 
-  // Open Image Picker Source Selection
   void showImagePickerSourceSheet() {
     if (propertyPhotos.length >= 8) {
       Get.snackbar(
@@ -112,7 +101,6 @@ class PostListingController extends GetxController {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag Handle
               Container(
                 width: 40.w,
                 height: 4.h,
@@ -134,7 +122,6 @@ class PostListingController extends GetxController {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Camera Option
                   _buildSourceTile(
                     icon: Icons.camera_alt_rounded,
                     label: 'camera'.tr,
@@ -144,7 +131,6 @@ class PostListingController extends GetxController {
                     },
                     isDark: isDark,
                   ),
-                  // Gallery Option
                   _buildSourceTile(
                     icon: Icons.photo_library_rounded,
                     label: 'gallery'.tr,
@@ -197,7 +183,6 @@ class PostListingController extends GetxController {
     );
   }
 
-  // Camera Picker
   Future<void> pickFromCamera() async {
     try {
       final XFile? photo = await _picker.pickImage(
@@ -219,7 +204,6 @@ class PostListingController extends GetxController {
     }
   }
 
-  // Gallery Picker (Supports Multiple Images)
   Future<void> pickFromGallery() async {
     try {
       final int remainingSlots = 8 - propertyPhotos.length;
@@ -239,7 +223,6 @@ class PostListingController extends GetxController {
         }
       }
     } catch (e) {
-      // Fallback to single image picker
       try {
         final XFile? singleImage = await _picker.pickImage(
           source: ImageSource.gallery,
@@ -259,14 +242,12 @@ class PostListingController extends GetxController {
     }
   }
 
-  // Toggles
   void toggleLift(bool val) => hasLift.value = val;
   void toggleParking(bool val) => hasParking.value = val;
   void toggleGasLine(bool val) => hasGasLine.value = val;
   void toggleWifi(bool val) => hasWifi.value = val;
   void toggleDirectOwner() => isDirectOwner.value = !isDirectOwner.value;
 
-  // ✅ Reset the whole form — called from the 3-dot menu
   void resetForm() {
     titleController.clear();
     locationController.clear();
@@ -337,7 +318,7 @@ class PostListingController extends GetxController {
       description: descriptionController.text.trim(),
       contactNumber: '+8801700000000',
       images: List<String>.from(propertyPhotos),
-      category: selectedTenantType.value, // ✅ now uses the selected tenant type
+      category: selectedTenantType.value,
       badgeText: 'Featured',
       isVerified: true,
       isAvailable: true,
@@ -350,6 +331,12 @@ class PostListingController extends GetxController {
       homeController.featuredProperties.insert(0, newItem);
       homeController.allProperties.insert(0, newItem);
     }
+
+    // ✅ Notification পাঠান — fire-and-forget, publish flow block করবে না
+    NotificationApiService.notifyNewListing(
+      listingTitle: title,
+      listingId: newItem.id,
+    );
 
     Get.dialog(
       Dialog(
@@ -398,8 +385,8 @@ class PostListingController extends GetxController {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   onPressed: () {
-                    Get.back(); // close dialog
-                    Get.back(); // return to previous screen
+                    Get.back();
+                    Get.back();
                   },
                   child: Text(
                     'done'.tr,
