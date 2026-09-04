@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../routes/app_routes.dart';
 import '../../../controllers/home_controller.dart';
 
 class QuickSearchCategories extends StatelessWidget {
@@ -16,130 +15,119 @@ class QuickSearchCategories extends StatelessWidget {
 
     final categories = [
       {
-        'title': 'Family'.tr,
-        'icon': Icons.family_restroom_rounded,
-        'bgColor': isDark ? const Color(0xFF352420) : AppColors.catFamilyBg,
-        'iconColor': AppColors.catFamilyIcon,
+        'id': 'Family',
+        'title': 'Family',
+        'icon': Icons.groups_rounded,
       },
       {
-        'title': 'Bachelor'.tr,
-        'icon': Icons.group_outlined,
-        'bgColor': isDark ? const Color(0xFF1E2D32) : AppColors.catBachelorBg,
-        'iconColor': isDark ? Colors.cyan.shade300 : AppColors.catBachelorIcon,
-      },
-      
-      {
-        'title': 'Sublet'.tr,
-        'icon': Icons.meeting_room_outlined,
-        'bgColor': isDark ? const Color(0xFF332F20) : AppColors.catSubletBg,
-        'iconColor': isDark ? Colors.amber.shade300 : AppColors.catSubletIcon,
+        'id': 'Bachelor',
+        'title': 'Bachelor Male',
+        'icon': Icons.person_rounded,
       },
       {
-        'title': 'Seat'.tr,
-        'icon': Icons.single_bed_outlined,
-        'bgColor': isDark ? const Color(0xFF2A2926) : AppColors.catSeatBg,
-        'iconColor': isDark ? Colors.white70 : AppColors.catSeatIcon,
+        'id': 'Bachelor Female',
+        'title': 'Bachelor Female',
+        'icon': Icons.person_2_rounded,
+      },
+      {
+        'id': 'Sublet',
+        'title': 'Sublet',
+        'icon': Icons.meeting_room_rounded,
+      },
+      {
+        'id': 'Seat',
+        'title': 'Seat',
+        'icon': Icons.bed_rounded,
       },
     ];
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title & See all
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Quick search'.tr,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w800,
-                  color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
-                ),
-              ),
-              InkWell(
+    return SizedBox(
+      height: 44.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final cat = categories[index];
+          final id = cat['id'] as String;
+          final title = cat['title'] as String;
+          final icon = cat['icon'] as IconData;
+
+          return Obx(() {
+            final selectedCat = controller.selectedCategory.value;
+            final isSelected = selectedCat.toLowerCase() == id.toLowerCase();
+
+            return Padding(
+              padding: EdgeInsets.only(right: 10.w),
+              child: GestureDetector(
                 onTap: () {
-                  if (controller.selectedCategory.value.isNotEmpty) {
-                    controller.selectCategory('');
-                  } else {
-                    Get.toNamed(Routes.FILTER_RESULTS);
-                  }
+                  controller.selectCategory(id);
                 },
-                child: Text(
-                  'See all'.tr,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-
-          // Categories Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: categories.map((cat) {
-              final title = cat['title'] as String;
-              final icon = cat['icon'] as IconData;
-              final bgColor = cat['bgColor'] as Color;
-              final iconColor = cat['iconColor'] as Color;
-
-              return Obx(() {
-                final isSelected = controller.selectedCategory.value.toLowerCase() == title.toLowerCase();
-
-                return InkWell(
-                  borderRadius: BorderRadius.circular(20.r),
-                  onTap: () => controller.selectCategory(title),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 68.w,
-                        height: 68.w,
-                        decoration: BoxDecoration(
-                          color: bgColor,
-                          borderRadius: BorderRadius.circular(20.r),
-                          border: isSelected
-                              ? Border.all(color: AppColors.primary, width: 2)
-                              : null,
-                          boxShadow: [
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primary
+                        : (isDark ? AppColors.surfaceDark : Colors.white),
+                    borderRadius: BorderRadius.circular(30.r),
+                    border: isSelected
+                        ? null
+                        : Border.all(
+                            color: isDark
+                                ? AppColors.dividerDark
+                                : const Color(0xFFE2E8F0),
+                            width: 1,
+                          ),
+                    boxShadow: isSelected
+                        ? [
                             BoxShadow(
-                              color: Colors.black.withAlpha(isDark ? 15 : 6),
-                              blurRadius: 6.r,
+                              color: AppColors.primary.withAlpha(80),
+                              blurRadius: 8.r,
+                              offset: Offset(0, 3.h),
+                            )
+                          ]
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(isDark ? 10 : 4),
+                              blurRadius: 4.r,
                               offset: Offset(0, 2.h),
                             ),
                           ],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            icon,
-                            color: isSelected ? AppColors.primary : iconColor,
-                            size: 28.r,
-                          ),
-                        ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        icon,
+                        size: 16.r,
+                        color: isSelected
+                            ? Colors.white
+                            : (isDark
+                                ? AppColors.textSecondaryDark
+                                : const Color(0xFF555555)),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(width: 6.w),
                       Text(
                         title,
                         style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontSize: 13.sp,
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                           color: isSelected
-                              ? AppColors.primary
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              ? Colors.white
+                              : (isDark
+                                  ? AppColors.textPrimaryDark
+                                  : const Color(0xFF1E232A)),
                         ),
                       ),
                     ],
                   ),
-                );
-              });
-            }).toList(),
-          ),
-        ],
+                ),
+              ),
+            );
+          });
+        },
       ),
     );
   }

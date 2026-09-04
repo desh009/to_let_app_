@@ -6,6 +6,7 @@ import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/featured_prop
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/floating_action_pills.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/home_header.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/home_search_bar.dart';
+import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/limited_offer_banner.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/quick_search_categories.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/recommended_property_card.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends GetView<HomeController> {
     final navController = Get.find<NavController>();
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+      backgroundColor: isDark ? AppColors.backgroundDark : const Color(0xFFFAF8F5),
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -45,11 +46,17 @@ class HomeScreen extends GetView<HomeController> {
 
                     const HomeSearchBar(),
 
+                    SizedBox(height: 4.h),
+
+                    // 1. Horizontal Category Pills Row
                     const QuickSearchCategories(),
 
-                    SizedBox(height: 8.h),
+                    // 2. Limited Offer Banner Card
+                    const LimitedOfferBanner(),
 
-                    // 4. Featured Properties Section
+                    SizedBox(height: 4.h),
+
+                    // 3. Near You / Featured Properties Section Header
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Row(
@@ -57,10 +64,10 @@ class HomeScreen extends GetView<HomeController> {
                         children: [
                           Expanded(
                             child: Text(
-                              'featured_properties'.tr,
+                              'Near you - Khulna to Shiromoni',
                               style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w800,
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w900,
                                 color: isDark
                                     ? AppColors.textPrimaryDark
                                     : const Color(0xFF1E232A),
@@ -72,19 +79,29 @@ class HomeScreen extends GetView<HomeController> {
                               controller.selectCategory('');
                               Get.toNamed(Routes.FILTER_RESULTS);
                             },
-                            child: Text(
-                              'view_all'.tr,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'See all'.tr,
+                                  style: TextStyle(
+                                    fontSize: 13.5.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 15.r,
+                                  color: AppColors.primary,
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 14.h),
+                    SizedBox(height: 12.h),
 
                     // Featured Horizontal Carousel
                     Obx(() {
@@ -115,91 +132,63 @@ class HomeScreen extends GetView<HomeController> {
                       }
 
                       return SizedBox(
-                        height: 310.h,
+                        height: 220.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.only(left: 20.w, right: 4.w),
+                          padding: EdgeInsets.only(left: 20.w, right: 6.w),
                           itemCount: controller.featuredProperties.length,
                           itemBuilder: (context, index) {
                             final item = controller.featuredProperties[index];
                             return FeaturedPropertyCard(
-                                item: item,
-                                onTap: () {
-                                  // ✅ NavController ব্যবহার করে Navigate
-                                  navController.toDetails(item);
-                                  // অথবা সরাসরি
-                                  // Get.toNamed(Routes.DETAILS, arguments: item);
-                                },
-                              
+                              item: item,
+                              onTap: () {
+                                navController.toDetails(item);
+                              },
                             );
                           },
                         ),
                       );
                     }),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 20.h),
 
-                    // 5. Recommended for you Section
+                    // 4. Recommended for you Section Header
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              'recommended_for_you'.tr,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w800,
-                                color: isDark
-                                    ? AppColors.textPrimaryDark
-                                    : const Color(0xFF1E232A),
-                              ),
+                          Text(
+                            'recommended_for_you'.tr,
+                            style: TextStyle(
+                              fontSize: 17.5.sp,
+                              fontWeight: FontWeight.w900,
+                              color: isDark
+                                  ? AppColors.textPrimaryDark
+                                  : const Color(0xFF1E232A),
                             ),
                           ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  controller.selectCategory('');
-                                  Get.toNamed(Routes.FILTER_RESULTS);
-                                },
-                                child: Text(
-                                  'view_all'.tr,
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 5.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF352420)
+                                  : const Color(0xFFFDF0ED),
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Text(
+                              'BASED ON FILTER',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primary,
+                                letterSpacing: 0.4,
                               ),
-                              SizedBox(width: 10.w),
-                              InkWell(
-                                onTap: () => Get.toNamed(Routes.FILTER),
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Container(
-                                  height: 36.r,
-                                  width: 36.r,
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? AppColors.surfaceDark
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(
-                                      color: isDark
-                                          ? AppColors.dividerDark
-                                          : AppColors.borderSubtle,
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.tune_rounded,
-                                    size: 18.r,
-                                    color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -244,8 +233,6 @@ class HomeScreen extends GetView<HomeController> {
                             item: item,
                             onTap: () {
                               navController.toDetails(item);
-                              // অথবা সরাসরি
-                              // Get.toNamed(Routes.DETAILS, arguments: item);
                             },
                           );
                         },
@@ -256,7 +243,7 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
 
-            // 6. Floating Dual Action Pills (Post Listing & Map View)
+            // Floating Dual Action Pills (Post Listing & Map View)
             Positioned(
               bottom: 8.h,
               left: 0,
@@ -266,9 +253,6 @@ class HomeScreen extends GetView<HomeController> {
                   navController.toPostListing();
                 },
                 onMapView: () {
-                  // ✅ NavController ব্যবহার করে Navigate
-                  // navController.toMapView();
-                  // অথবা Snackbar দেখান
                   CustomSnackbar.showInfo(
                     title: 'map_view'.tr,
                     message: 'interactive_map'.tr,

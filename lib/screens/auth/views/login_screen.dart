@@ -123,14 +123,9 @@ class LoginScreen extends GetView<AuthController> {
                           fontWeight: FontWeight.w600,
                           color: textColor,
                         ),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           isDense: true,
-                          hintText: '1712 345 678',
-                          hintStyle: TextStyle(
-                            fontSize: 14.sp,
-                            color: subtitleColor.withAlpha(150),
-                          ),
                         ),
                       ),
                     ),
@@ -174,14 +169,9 @@ class LoginScreen extends GetView<AuthController> {
                             fontWeight: FontWeight.w600,
                             color: textColor,
                           ),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             isDense: true,
-                            hintText: '•••••••••',
-                            hintStyle: TextStyle(
-                              fontSize: 16.sp,
-                              color: subtitleColor.withAlpha(150),
-                            ),
                           ),
                         ),
                       ),

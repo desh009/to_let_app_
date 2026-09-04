@@ -154,9 +154,9 @@ class AppTranslations extends Translations {
       'amenity_gas_line': 'Gas Line',
       'amenity_wifi': 'Wi-Fi Included',
       'no_brokerage_owner': 'No brokerage • Direct owner',
-      'publish_listing_btn': 'Publish Listing — ৳500',
+      'publish_listing_btn': 'Publish Listing',
       'publish_review_notice':
-          'Listing will be reviewed in 2 hours • ৳500 fee for 30 days featured • Refundable if not approved',
+          'Listing will be reviewed and live within 2 hours',
       'listing_submitted': 'Listing Submitted!',
       'listing_submitted_msg':
           'Your listing is under review and will be live within 2 hours.',
@@ -356,9 +356,9 @@ class AppTranslations extends Translations {
       'amenity_gas_line': 'গ্যাস লাইন',
       'amenity_wifi': 'ওয়াইফাই অন্তর্ভুক্ত',
       'no_brokerage_owner': 'কোনো ব্রোকারেজ নেই • সরাসরি মালিক',
-      'publish_listing_btn': 'লিস্টিং পাবলিশ করুন — ৳৫০০',
+      'publish_listing_btn': 'লিস্টিং পাবলিশ করুন',
       'publish_review_notice':
-          'লিস্টিং ২ ঘণ্টার মধ্যে পর্যালোচনা করা হবে • ৩০ দিন ফিচারের জন্য ৳৫০০ ফি • অনুমোদন না হলে রিফান্ডযোগ্য',
+          'আপনার লিস্টিং ২ ঘণ্টার মধ্যে পর্যালোচনা করে লাইভ করা হবে',
       'listing_submitted': 'লিস্টিং সাবমিট হয়েছে!',
       'listing_submitted_msg':
           'আপনার লিস্টিং পর্যালোচনায় রয়েছে এবং ২ ঘণ্টার মধ্যে লাইভ হবে।',

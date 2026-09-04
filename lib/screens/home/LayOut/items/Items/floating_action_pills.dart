@@ -43,7 +43,7 @@ class FloatingActionPills extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.add, color: Colors.white, size: 20.r),
+                      Icon(Icons.add_rounded, color: Colors.white, size: 20.r),
                       SizedBox(width: 6.w),
                       Text(
                         'Post a listing',

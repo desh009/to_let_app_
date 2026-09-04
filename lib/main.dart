@@ -14,12 +14,16 @@ import 'core/constants/storage_keys.dart';
 import 'core/services/storage_service.dart';
 import 'core/theme/app_theme.dart';
 import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
 import 'widgets/custom_snackbar.dart';
+
+// ValueNotifier to track current route for GlobalFloatingFab
+final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase (এটা লাগবেই, তুলনামূলক দ্রুত)
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -27,7 +31,7 @@ Future<void> main() async {
   // Register top-level background messaging handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Initialize SharedPreferences via GetX Service — UI বানানোর আগে দরকার (theme/lang জানতে)
+  // Initialize SharedPreferences via GetX Service
   final storageService = await Get.putAsync<StorageService>(
     () => StorageService().init(),
     permanent: true,
@@ -39,11 +43,9 @@ Future<void> main() async {
   // Check saved language preference
   final savedLang = storageService.getString(StorageKeys.language) ?? 'en';
 
-  // ✅ আগে App রান করে UI দেখান — এতে app সাথে সাথে খুলবে
   runApp(MyApp(isDarkMode: isDarkMode, savedLang: savedLang));
 
-  // ✅ FCM init এখন background এ চলবে (permission popup + token fetch),
-  // UI render হওয়া block করবে না
+  // Initialize FCM in background
   Get.putAsync<FcmService>(
     () => FcmService().init(),
     permanent: true,
@@ -79,24 +81,64 @@ class MyApp extends StatelessWidget {
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
           initialBinding: InitialBinding(),
-          // ★ পুরো অ্যাপের উপরে global overlay হিসেবে ShutterFab বসানো হলো
+          navigatorObservers: [
+            GetObserver((routing) {
+              if (routing?.current != null && routing!.current.isNotEmpty) {
+                currentRouteNotifier.value = routing.current;
+              }
+            }),
+          ],
           builder: (context, child) {
             return Stack(
               children: [
                 if (child != null) child,
 
-                // ★ Global Voice Assistant Shutter FAB (এখন placeholder)
-                ShutterFab(
-                  icon: Icons.mic_none_rounded,
-                  backgroundColor: AppColors.primary,
-                  onPressed: () {
-                    CustomSnackbar.showInfo(
-                      title: 'Voice Assistant',
-                      message: 'Voice feature coming soon...',
-                    );
-                  },
-                ),
+                // Global Voice Assistant Shutter FAB
+                const GlobalFloatingFab(),
               ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class GlobalFloatingFab extends StatelessWidget {
+  const GlobalFloatingFab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: currentRouteNotifier,
+      builder: (context, currentRoute, child) {
+        final activeRoute = currentRoute.isEmpty ? Get.currentRoute : currentRoute;
+        final hideOnRoutes = [
+          Routes.LOGIN,
+          Routes.REGISTER,
+          Routes.VERIFY_OTP,
+          Routes.FORGOT_PASSWORD,
+          Routes.SPLASH,
+          Routes.TWO_FACTOR_AUTH,
+          '/login',
+          '/register',
+          '/verify-otp',
+          '/forgot-password',
+          '/splash',
+          '/two-factor-auth',
+        ];
+
+        if (hideOnRoutes.contains(activeRoute)) {
+          return const SizedBox.shrink();
+        }
+
+        return ShutterFab(
+          icon: Icons.mic_none_rounded,
+          backgroundColor: AppColors.primary,
+          onPressed: () {
+            CustomSnackbar.showInfo(
+              title: 'Voice Assistant',
+              message: 'Voice feature coming soon...',
             );
           },
         );

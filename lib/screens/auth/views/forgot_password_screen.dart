@@ -151,14 +151,9 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                       fontWeight: FontWeight.w600,
                       color: textColor,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
-                      hintText: 'e.g. 01712345678 or email@mail.com',
-                      hintStyle: TextStyle(
-                        fontSize: 13.sp,
-                        color: subtitleColor.withAlpha(150),
-                      ),
                     ),
                   ),
                 ),
@@ -484,14 +479,9 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                         fontWeight: FontWeight.w600,
                         color: textColor,
                       ),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         isDense: true,
-                        hintText: 'Enter new password',
-                        hintStyle: TextStyle(
-                          fontSize: 13.sp,
-                          color: subtitleColor.withAlpha(150),
-                        ),
                       ),
                     ),
                   ),
@@ -543,14 +533,9 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                         fontWeight: FontWeight.w600,
                         color: textColor,
                       ),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         isDense: true,
-                        hintText: 'Re-enter new password',
-                        hintStyle: TextStyle(
-                          fontSize: 13.sp,
-                          color: subtitleColor.withAlpha(150),
-                        ),
                       ),
                     ),
                   ),

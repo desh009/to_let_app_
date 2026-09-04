@@ -19,26 +19,31 @@ class FeaturedPropertyCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final bedText = item.bedrooms > 0 ? '${item.bedrooms} beds' : 'Seat';
+    final badgeText = '$bedText • ${item.category}';
+    final locationName = item.location.split(',').first.trim();
+    final bhkTitle = item.bedrooms > 0 ? '${item.bedrooms}BHK • $locationName' : item.title;
+
     return Container(
-      width: 275.w,
-      margin: EdgeInsets.only(right: 16.w),
+      width: 245.w,
+      margin: EdgeInsets.only(right: 14.w),
       decoration: BoxDecoration(
         color: isDark ? AppColors.surfaceDark : Colors.white,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(22.r),
         border: Border.all(
-          color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+          color: isDark ? AppColors.dividerDark : const Color(0xFFF0F0F0),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(isDark ? 30 : 8),
-            blurRadius: 16.r,
-            offset: Offset(0, 6.h),
+            color: Colors.black.withAlpha(isDark ? 30 : 10),
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(22.r),
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,10 +54,11 @@ class FeaturedPropertyCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(24.r),
+                    top: Radius.circular(22.r),
+                    bottom: Radius.circular(16.r),
                   ),
                   child: Container(
-                    height: 155.h,
+                    height: 145.h,
                     width: double.infinity,
                     color: isDark
                         ? const Color(0xFF2C2C2C)
@@ -69,7 +75,7 @@ class FeaturedPropertyCard extends StatelessWidget {
                         child: Center(
                           child: Icon(
                             Icons.apartment_rounded,
-                            size: 48.r,
+                            size: 44.r,
                             color: Colors.grey,
                           ),
                         ),
@@ -78,25 +84,32 @@ class FeaturedPropertyCard extends StatelessWidget {
                   ),
                 ),
 
-                // Available Now Badge (Top-Left)
+                // Floating Beds & Category Pill Badge (Bottom-Left)
                 Positioned(
-                  top: 12.h,
-                  left: 12.w,
+                  bottom: 10.h,
+                  left: 10.w,
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,
-                      vertical: 4.h,
+                      vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.badgeGreenBg,
+                      color: isDark
+                          ? const Color(0xFF1E232A).withAlpha(230)
+                          : Colors.white.withAlpha(245),
                       borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(20),
+                          blurRadius: 4.r,
+                          offset: Offset(0, 2.h),
+                        ),
+                      ],
                     ),
                     child: Text(
-                      item.badgeText.isNotEmpty
-                          ? item.badgeText
-                          : 'Available now',
+                      badgeText,
                       style: TextStyle(
-                        color: AppColors.badgeGreenText,
+                        color: isDark ? Colors.white : const Color(0xFF1E232A),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                       ),
@@ -109,21 +122,21 @@ class FeaturedPropertyCard extends StatelessWidget {
                   top: 10.h,
                   right: 10.w,
                   child: Container(
-                    height: 36.r,
-                    width: 36.r,
+                    height: 34.r,
+                    width: 34.r,
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(235),
+                      color: Colors.white.withAlpha(240),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(20),
+                          color: Colors.black.withAlpha(25),
                           blurRadius: 6.r,
                           offset: Offset(0, 2.h),
                         ),
                       ],
                     ),
                     child: Center(
-                      child: AnimatedFavoriteButton(item: item, size: 18),
+                      child: AnimatedFavoriteButton(item: item, size: 17),
                     ),
                   ),
                 ),
@@ -132,127 +145,53 @@ class FeaturedPropertyCard extends StatelessWidget {
 
             // Content Section
             Padding(
-              padding: EdgeInsets.all(12.r),
+              padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 14.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Price and Verified badge
+                  // Price
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Flexible(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                '৳${item.price.toStringAsFixed(0)}',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 17.sp,
-                                  fontWeight: FontWeight.w800,
-                                  color: isDark
-                                      ? AppColors.textPrimaryDark
-                                      : const Color(0xFF1E232A),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              '/ month',
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                color: isDark
-                                    ? AppColors.textSecondaryDark
-                                    : const Color(0xFF8A8784),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        '৳${item.price.toStringAsFixed(0)}',
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w900,
+                          color: isDark
+                              ? AppColors.textPrimaryDark
+                              : const Color(0xFF1E232A),
                         ),
                       ),
-                      if (item.isVerified) ...[
-                        SizedBox(width: 6.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 7.w,
-                            vertical: 2.5.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF2C2A27)
-                                : AppColors.badgeGreyBg,
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          child: Text(
-                            'Verified',
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? Colors.white70
-                                  : AppColors.badgeGreyText,
-                            ),
-                          ),
+                      SizedBox(width: 3.w),
+                      Text(
+                        '/mo',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : const Color(0xFF7E8B9B),
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 3.h),
 
-                  // Location
+                  // Subtitle (e.g. 2BHK • Sonadanga)
                   Text(
-                    item.location,
+                    bhkTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 13.5.sp,
+                      fontWeight: FontWeight.w700,
                       color: isDark
-                          ? AppColors.textSecondaryDark
-                          : const Color(0xFF8A8784),
+                          ? AppColors.textPrimaryDark
+                          : const Color(0xFF1E232A),
                     ),
-                  ),
-                  SizedBox(height: 6.h),
-
-                  // Specs (beds, baths, sqft)
-                  Row(
-                    children: [
-                      Text(
-                        '${item.bedrooms} beds',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: isDark
-                              ? AppColors.textSecondaryDark
-                              : const Color(0xFF6B6864),
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        '${item.bathrooms} baths',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: isDark
-                              ? AppColors.textSecondaryDark
-                              : const Color(0xFF6B6864),
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Flexible(
-                        child: Text(
-                          '${item.squareFeet.toStringAsFixed(0)} sqft',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 11.sp,
-                            color: isDark
-                                ? AppColors.textSecondaryDark
-                                : const Color(0xFF6B6864),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
