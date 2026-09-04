@@ -19,6 +19,7 @@ abstract class Routes {
   static const String PRIVACY_AND_POLICY = _Paths.PRIVACY_AND_POLICY;
   static const String TWO_FACTOR_AUTH = _Paths.TWO_FACTOR_AUTH;
   static const String FILTER = _Paths.FILTER;
+  static const String FILTER_RESULTS = _Paths.FILTER_RESULTS;
   static const String NOTIFICATIONS = _Paths.NOTIFICATIONS;
 
   // CamelCase aliases
@@ -41,6 +42,7 @@ abstract class Routes {
   static const String privacy_and_policy = _Paths.PRIVACY_AND_POLICY;
   static const String two_factor_auth = _Paths.TWO_FACTOR_AUTH;
   static const String filter = _Paths.FILTER;
+  static const String filter_results = _Paths.FILTER_RESULTS;
   static const String notifications = _Paths.NOTIFICATIONS;
 }
 abstract class _Paths {
@@ -64,4 +66,5 @@ abstract class _Paths {
   static const String PRIVACY_AND_POLICY = '/privacy-and-policy';
   static const String TWO_FACTOR_AUTH = '/two-factor-auth';
   static const String FILTER = '/filter';
+  static const String FILTER_RESULTS = '/filter-results';
   static const String NOTIFICATIONS = '/notifications';}

@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import '../../data/models/tolet_model.dart';
+import '../../routes/app_routes.dart';
+import '../../screens/notifications/controllers/notifications_controller.dart';
 
 /// Top-level background message handler required by Firebase Messaging
 @pragma('vm:entry-point')
@@ -112,6 +115,17 @@ class FcmService extends GetxService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Received foreground message: ${message.notification?.title}');
       _showLocalNotification(message);
+
+      if (message.notification != null) {
+        if (Get.isRegistered<NotificationsController>()) {
+          NotificationsController.to.addNotification(
+            title: message.notification!.title ?? 'New Notification',
+            body: message.notification!.body ?? '',
+            propertyId: message.data['listingId'] ?? message.data['propertyId'],
+            type: message.data['type'] ?? 'listing',
+          );
+        }
+      }
     });
 
     // 2. Message opened app (from background state)
@@ -154,19 +168,24 @@ class FcmService extends GetxService {
             presentSound: true,
           ),
         ),
-        payload: message.data.isNotEmpty ? message.data.toString() : null,
+        payload: message.data['listingId'] ?? message.data['propertyId'] ?? '',
       );
     }
   }
 
   void _handleNotificationPayload(String? payload) {
-    if (payload != null && payload.isNotEmpty) {
-      // Custom notification payload handling logic
+    if (Get.isRegistered<NotificationsController>()) {
+      final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == payload) ??
+          ToLetModel.sampleData.first;
+      Get.toNamed(Routes.DETAILS, arguments: sample);
     }
   }
 
   void _handleMessageData(Map<String, dynamic> data) {
-    // Custom navigation or deep linking logic when notification is tapped
+    final propertyId = data['listingId'] ?? data['propertyId'];
+    final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == propertyId) ??
+        ToLetModel.sampleData.first;
+    Get.toNamed(Routes.DETAILS, arguments: sample);
   }
 
   /// Subscribe to a topic for broadcast notifications

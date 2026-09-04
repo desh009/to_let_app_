@@ -6,6 +6,9 @@ import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_f
 // import 'package:to_let_app_abandon/screens/Filter_screen/view/filter_view.dart';
 // import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/edit_profile_controller.dart';
 // import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/screen.dart';
+import '../screens/filter/views/filter_results_screen.dart';
+import '../screens/notifications/views/notifications_screen.dart';
+import '../screens/notifications/controllers/notifications_controller.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/binder/call_support_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/call_support/view/call_support_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/binder/email_support-binder.dart';
@@ -33,6 +36,8 @@ import '../screens/auth/views/register_screen.dart';
 import '../screens/auth/views/verify_otp_screen.dart';
 import '../screens/details/bindings/details_binding.dart';
 import '../screens/details/views/details_screen.dart';
+import '../screens/filter/bindings/filter_binding.dart';
+import '../screens/filter/views/filter_screen.dart';
 import '../screens/home/bindings/home_binding.dart';
 import '../screens/home/views/home_screen.dart';
 import '../screens/post_listing/bindings/post_listing_binding.dart';
@@ -152,15 +157,14 @@ class AppPages {
       binding: PrivacyPolicyBinding(),
       transition: Transition.rightToLeft,
     ),
-    // GetPage(
-    //   name: Routes.NOTIFICATIONS,
-    //   page: () => const NotificationsScreen(),
-    //   binding: BindingsBuilder(() {
-    //     if (!Get.isRegistered<NotificationsController>()) {
-    //       Get.put(NotificationsController());
-    //     }
-    //   }),
-    // ),
+    GetPage(
+      name: Routes.NOTIFICATIONS,
+      page: () => const NotificationsScreen(),
+      binding: BindingsBuilder(() {
+        NotificationsController.to;
+      }),
+      transition: Transition.rightToLeft,
+    ),
 
     GetPage(
       name: Routes.TWO_FACTOR_AUTH,
@@ -180,12 +184,18 @@ class AppPages {
     //   }),
     // ),
 
-    // GetPage(
-    //   name: '/filter',
-    //   page: () => const FilterScreen(),
-    //   binding: BindingsBuilder(() {
-    //     Get.put(FilterController());
-    //   }),
-    // ),
+
+    GetPage(
+      name: Routes.FILTER,
+      page: () => const FilterScreen(),
+      binding: FilterBinding(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.FILTER_RESULTS,
+      page: () => const FilterResultsScreen(),
+      binding: FilterBinding(),
+      transition: Transition.rightToLeft,
+    ),
   ];
 }

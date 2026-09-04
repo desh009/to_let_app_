@@ -10,6 +10,7 @@ import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/quick_search_
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/recommended_property_card.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../routes/app_routes.dart';
 import '../../../widgets/custom_snackbar.dart';
 import '../../../widgets/loading_indicator.dart';
 import '../controllers/home_controller.dart';
@@ -69,6 +70,7 @@ class HomeScreen extends GetView<HomeController> {
                           InkWell(
                             onTap: () {
                               controller.selectCategory('');
+                              Get.toNamed(Routes.FILTER_RESULTS);
                             },
                             child: Text(
                               'view_all'.tr,
@@ -156,25 +158,48 @@ class HomeScreen extends GetView<HomeController> {
                               ),
                             ),
                           ),
-                          Container(
-                            height: 36.r,
-                            width: 36.r,
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppColors.surfaceDark
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(
-                                color: isDark
-                                    ? AppColors.dividerDark
-                                    : AppColors.borderSubtle,
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  controller.selectCategory('');
+                                  Get.toNamed(Routes.FILTER_RESULTS);
+                                },
+                                child: Text(
+                                  'view_all'.tr,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Icon(
-                              Icons.tune_rounded,
-                              size: 18.r,
-                              color: const Color(0xFF1E232A),
-                            ),
+                              SizedBox(width: 10.w),
+                              InkWell(
+                                onTap: () => Get.toNamed(Routes.FILTER),
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Container(
+                                  height: 36.r,
+                                  width: 36.r,
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? AppColors.surfaceDark
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    border: Border.all(
+                                      color: isDark
+                                          ? AppColors.dividerDark
+                                          : AppColors.borderSubtle,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.tune_rounded,
+                                    size: 18.r,
+                                    color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

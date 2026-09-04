@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/routes/app_routes.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../routes/app_routes.dart';
 import '../../../controllers/home_controller.dart';
 
-class HomeSearchBar extends StatelessWidget {
+class HomeSearchBar extends StatefulWidget {
   const HomeSearchBar({super.key});
 
   @override
+  State<HomeSearchBar> createState() => _HomeSearchBarState();
+}
+
+class _HomeSearchBarState extends State<HomeSearchBar> {
+  late final TextEditingController _searchController;
+  late final HomeController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<HomeController>();
+    _searchController = TextEditingController(text: controller.searchQuery.value);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomeController>();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -18,79 +38,97 @@ class HomeSearchBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
       child: Row(
         children: [
-          // Location Selector Box
+          // Search Input Field Box
           Expanded(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16.r),
-              onTap: () => _showLocationPicker(context, controller),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.surfaceDark : Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.dividerDark
-                        : AppColors.borderSubtle,
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(isDark ? 20 : 6),
-                      blurRadius: 8.r,
-                      offset: Offset(0, 2.h),
-                    ),
-                  ],
+            child: Container(
+              height: 52.h,
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.surfaceDark : Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: isDark
+                      ? AppColors.dividerDark
+                      : AppColors.borderSubtle,
+                  width: 1,
                 ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.search_rounded,
-                      size: 22.r,
-                      color: const Color(0xFF8A8784),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(isDark ? 20 : 6),
+                    blurRadius: 8.r,
+                    offset: Offset(0, 2.h),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 12.w),
+                  Container(
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF322521) : AppColors.primaryLight,
+                      shape: BoxShape.circle,
                     ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'LOCATION',
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.8,
-                              color: isDark
-                                  ? AppColors.textSecondaryDark
-                                  : const Color(0xFF8A8784),
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Obx(
-                            () => Text(
-                              controller.selectedLocation.value,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: isDark
-                                    ? AppColors.textPrimaryDark
-                                    : const Color(0xFF1E232A),
-                              ),
-                            ),
-                          ),
-                        ],
+                    child: Icon(
+                      Icons.search_rounded,
+                      size: 18.r,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) {
+                        controller.updateSearchQuery(val);
+                      },
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? AppColors.textPrimaryDark
+                            : const Color(0xFF1E232A),
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'search_hint'.tr,
+                        hintStyle: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : const Color(0xFF8A8784),
+                        ),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                     ),
-                    Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: const Color(0xFF8A8784),
-                      size: 20.r,
-                    ),
-                  ],
-                ),
+                  ),
+                  Obx(() {
+                    if (controller.searchQuery.value.isNotEmpty) {
+                      return InkWell(
+                        onTap: () {
+                          _searchController.clear();
+                          controller.clearSearch();
+                        },
+                        borderRadius: BorderRadius.circular(20.r),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.r),
+                          child: Icon(
+                            Icons.cancel_rounded,
+                            color: isDark
+                                ? AppColors.textSecondaryDark
+                                : const Color(0xFF8A8784),
+                            size: 18.r,
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                  SizedBox(width: 8.w),
+                ],
               ),
             ),
           ),
@@ -99,7 +137,7 @@ class HomeSearchBar extends StatelessWidget {
           // Filter Button (Terracotta Square)
           InkWell(
             borderRadius: BorderRadius.circular(16.r),
-            onTap: () => Get.toNamed(Routes.FILTER), // Navigate to the filter screen
+            onTap: () => Get.toNamed(Routes.FILTER),
             child: Container(
               height: 52.h,
               width: 52.h,
@@ -119,113 +157,6 @@ class HomeSearchBar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showLocationPicker(BuildContext context, HomeController controller) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Select Preferred Location',
-                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 12.h),
-              ...controller.availableLocations.map(
-                (loc) => ListTile(
-                  leading: const Icon(
-                    Icons.location_on_outlined,
-                    color: AppColors.primary,
-                  ),
-                  title: Text(
-                    loc,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  trailing: controller.selectedLocation.value == loc
-                      ? const Icon(Icons.check, color: AppColors.primary)
-                      : null,
-                  onTap: () {
-                    controller.updateLocation(loc);
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showFilterBottomSheet(BuildContext context, HomeController controller) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(24.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Filter Properties',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                'Property Category',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
-              ),
-              SizedBox(height: 8.h),
-              Wrap(
-                spacing: 8.w,
-                children: ['Family', 'Bachelor', 'Sublet', 'Seat'].map((cat) {
-                  return Obx(
-                    () => ChoiceChip(
-                      label: Text(cat, style: TextStyle(fontSize: 13.sp)),
-                      selected: controller.selectedCategory.value == cat,
-                      selectedColor: AppColors.primaryLight,
-                      onSelected: (_) {
-                        controller.selectCategory(cat);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

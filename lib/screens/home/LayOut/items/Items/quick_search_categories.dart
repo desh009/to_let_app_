@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../routes/app_routes.dart';
 import '../../../controllers/home_controller.dart';
 
 class QuickSearchCategories extends StatelessWidget {
@@ -24,14 +25,14 @@ class QuickSearchCategories extends StatelessWidget {
         'title': 'Bachelor'.tr,
         'icon': Icons.group_outlined,
         'bgColor': isDark ? const Color(0xFF1E2D32) : AppColors.catBachelorBg,
-        'iconColor': isDark ? Colors.cyan[300]! : AppColors.catBachelorIcon,
+        'iconColor': isDark ? Colors.cyan.shade300 : AppColors.catBachelorIcon,
       },
       
       {
         'title': 'Sublet'.tr,
         'icon': Icons.meeting_room_outlined,
         'bgColor': isDark ? const Color(0xFF332F20) : AppColors.catSubletBg,
-        'iconColor': isDark ? Colors.amber[300]! : AppColors.catSubletIcon,
+        'iconColor': isDark ? Colors.amber.shade300 : AppColors.catSubletIcon,
       },
       {
         'title': 'Seat'.tr,
@@ -60,7 +61,11 @@ class QuickSearchCategories extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  controller.selectCategory('');
+                  if (controller.selectedCategory.value.isNotEmpty) {
+                    controller.selectCategory('');
+                  } else {
+                    Get.toNamed(Routes.FILTER_RESULTS);
+                  }
                 },
                 child: Text(
                   'See all'.tr,

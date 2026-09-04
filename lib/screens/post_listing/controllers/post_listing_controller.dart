@@ -6,6 +6,7 @@ import 'package:to_let_app_abandon/app/data/services/notification/notification_s
 import '../../../core/constants/app_colors.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../home/controllers/home_controller.dart';
+import '../../notifications/controllers/notifications_controller.dart';
 
 class PostListingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -331,6 +332,15 @@ class PostListingController extends GetxController {
       homeController.featuredProperties.insert(0, newItem);
       homeController.allProperties.insert(0, newItem);
     }
+
+    // Add to saved Notifications list
+    NotificationsController.to.addNotification(
+      title: '✨ Listing Published: $title',
+      body: 'Your property listing in $location has been successfully published!',
+      propertyId: newItem.id,
+      property: newItem,
+      type: 'listing',
+    );
 
     // ✅ Notification পাঠান — fire-and-forget, publish flow block করবে না
     NotificationApiService.notifyNewListing(
