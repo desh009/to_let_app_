@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'core/services/fcm_service.dart';
 import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
-import 'package:to_let_app_abandon/widgets/custom_floating_action%20button/custom_floating_action_button.dart';
+import 'package:to_let_app_abandon/widgets/custom_floating_action button/custom_floating_action_button.dart';
 import 'core/bindings/initial_binding.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_strings.dart';
@@ -19,7 +19,7 @@ import 'widgets/custom_snackbar.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
+  // Initialize Firebase (এটা লাগবেই, তুলনামূলক দ্রুত)
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -27,13 +27,7 @@ Future<void> main() async {
   // Register top-level background messaging handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Initialize FCM Service
-  await Get.putAsync<FcmService>(
-    () => FcmService().init(),
-    permanent: true,
-  );
-
-  // Initialize SharedPreferences via GetX Service
+  // Initialize SharedPreferences via GetX Service — UI বানানোর আগে দরকার (theme/lang জানতে)
   final storageService = await Get.putAsync<StorageService>(
     () => StorageService().init(),
     permanent: true,
@@ -42,20 +36,28 @@ Future<void> main() async {
   // Check saved theme preference
   final isDarkMode = storageService.getBool(StorageKeys.isDarkMode) ?? false;
 
-  // ✅ Check saved language preference — এটা মিসিং ছিল
+  // Check saved language preference
   final savedLang = storageService.getString(StorageKeys.language) ?? 'en';
 
+  // ✅ আগে App রান করে UI দেখান — এতে app সাথে সাথে খুলবে
   runApp(MyApp(isDarkMode: isDarkMode, savedLang: savedLang));
+
+  // ✅ FCM init এখন background এ চলবে (permission popup + token fetch),
+  // UI render হওয়া block করবে না
+  Get.putAsync<FcmService>(
+    () => FcmService().init(),
+    permanent: true,
+  );
 }
 
 class MyApp extends StatelessWidget {
   final bool isDarkMode;
-  final String savedLang; // ✅ নতুন field
+  final String savedLang;
 
   const MyApp({
     super.key,
     this.isDarkMode = false,
-    this.savedLang = 'en', // ✅ default value
+    this.savedLang = 'en',
   });
 
   @override
@@ -69,7 +71,7 @@ class MyApp extends StatelessWidget {
           title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
           translations: AppTranslations(),
-          locale: Locale(savedLang), // ✅ এখন savedLang define করা আছে
+          locale: Locale(savedLang),
           fallbackLocale: const Locale('en'),
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
@@ -81,7 +83,7 @@ class MyApp extends StatelessWidget {
           builder: (context, child) {
             return Stack(
               children: [
-                ?child,
+                if (child != null) child,
 
                 // ★ Global Voice Assistant Shutter FAB (এখন placeholder)
                 ShutterFab(

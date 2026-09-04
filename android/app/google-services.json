@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480599255685",
+    "project_id": "to-let-appse",
+    "storage_bucket": "to-let-appse.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480599255685:android:33f0602ea2c71f87c417ec",
+        "android_client_info": {
+          "package_name": "com.example.to_let_app_abandon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB462-klX8PmPf8P_buH878FOZKE2_wssc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

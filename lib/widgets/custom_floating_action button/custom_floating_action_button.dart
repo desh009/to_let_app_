@@ -14,7 +14,7 @@ class ShutterFab extends StatefulWidget {
   final double borderRadius;
   final bool startOnRight;
   final double initialTopFraction;
-
+  
   const ShutterFab({
     super.key,
     required this.icon,
