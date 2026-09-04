@@ -34,25 +34,23 @@ class PropertyInfoSection extends GetView<PostListingController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. TITLE
           _buildLabel('title_label'.tr, labelColor),
           SizedBox(height: 8.h),
           _buildInputField(
             controller: controller.titleController,
             inputBg: inputBg,
             textColor: textColor,
-            hintText: 'title_hint'.tr,
+            hintText: '',
           ),
           SizedBox(height: 18.h),
 
-          // 2. LOCATION
           _buildLabel('post_location_label'.tr, labelColor),
           SizedBox(height: 8.h),
           _buildInputField(
             controller: controller.locationController,
             inputBg: inputBg,
             textColor: textColor,
-            hintText: 'location_hint'.tr,
+            hintText: '',
             prefixIcon: Icon(
               Icons.location_on_outlined,
               color: labelColor,
@@ -61,7 +59,7 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
-          // 2.5 TENANT TYPE — ✅ NEW (Bachelor / Family / Seat / Sublet)
+          // 2.5 TENANT TYPE (Bachelor / Family / Seat / Sublet)
           _buildLabel('tenant_type_label'.tr, labelColor),
           SizedBox(height: 8.h),
           Obx(
@@ -104,119 +102,121 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
-          // 3. MONTHLY RENT
-          _buildLabel('monthly_rent_label'.tr, labelColor),
-          SizedBox(height: 8.h),
-          Container(
-            height: 52.h,
-            padding: EdgeInsets.symmetric(horizontal: 14.w),
-            decoration: BoxDecoration(
-              color: inputBg,
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Row(
+     // 3. MONTHLY RENT
+_buildLabel('monthly_rent_label'.tr, labelColor),
+SizedBox(height: 8.h),
+Container(
+  height: 52.h,
+  padding: EdgeInsets.symmetric(horizontal: 14.w),
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: isDark
+          ? const Color(0xFF4A5568)
+          : const Color(0xFFE2E8F0),
+      width: 1.2,
+    ),
+  ),
+  child: Row(
+    children: [
+      Text(
+        '৳ ',
+        style: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
+      ),
+      Expanded(
+        child: TextField(
+          controller: controller.rentController,
+          keyboardType: TextInputType.number,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w700,
+            color: textColor,
+          ),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            focusedErrorBorder: InputBorder.none,
+            isDense: true,
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+      ),
+      Text(
+        'month_suffix'.tr,
+        style: TextStyle(
+          fontSize: 11.5.sp,
+          fontWeight: FontWeight.w600,
+          color: isDark
+              ? const Color(0xFFA0AEC0)
+              : const Color(0xFF5A6A7D),
+        ),
+      ),
+    ],
+  ),
+),
+SizedBox(height: 18.h),
+
+          // 4. BEDROOMS / ROOMS & BATHROOMS Row
+          Obx(() {
+            final isBachelorOrSeat =
+                controller.selectedTenantType.value == 'Bachelor' ||
+                    controller.selectedTenantType.value == 'Seat';
+            final roomLabel = isBachelorOrSeat ? 'ROOM' : 'bedrooms_label'.tr;
+            final unitLabel = isBachelorOrSeat ? 'Room' : 'bhk'.tr;
+
+            return Row(
               children: [
-                Text(
-                  '৳ ',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    color: textColor,
-                  ),
-                ),
                 Expanded(
-                  child: TextField(
-                    controller: controller.rentController,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: textColor,
-                    ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLabel(roomLabel, labelColor),
+                      SizedBox(height: 8.h),
+                      _buildCounterBox(
+                        context,
+                        isDark: isDark,
+                        inputBg: inputBg,
+                        textColor: textColor,
+                        unitLabel: unitLabel,
+                        rxValue: controller.bedrooms,
+                        onDecrement: controller.decrementBedrooms,
+                        onIncrement: controller.incrementBedrooms,
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 4.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF2D3748)
-                        : const Color(0xFFEBF1F6),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    'month_suffix'.tr,
-                    style: TextStyle(
-                      fontSize: 11.5.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isDark
-                          ? const Color(0xFFA0AEC0)
-                          : const Color(0xFF5A6A7D),
-                    ),
+                SizedBox(width: 14.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLabel('bathrooms_label'.tr, labelColor),
+                      SizedBox(height: 8.h),
+                      _buildCounterBox(
+                        context,
+                        isDark: isDark,
+                        inputBg: inputBg,
+                        textColor: textColor,
+                        unitLabel: 'bath'.tr,
+                        rxValue: controller.bathrooms,
+                        onDecrement: controller.decrementBathrooms,
+                        onIncrement: controller.incrementBathrooms,
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
+            );
+          }),
           SizedBox(height: 18.h),
 
-          // 4. BEDROOMS & BATHROOMS Row
-          Row(
-            children: [
-              // BEDROOMS
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildLabel('bedrooms_label'.tr, labelColor),
-                    SizedBox(height: 8.h),
-                    _buildCounterBox(
-                      context,
-                      isDark: isDark,
-                      inputBg: inputBg,
-                      textColor: textColor,
-                      unitLabel: 'bhk'.tr,
-                      rxValue: controller.bedrooms,
-                      onDecrement: controller.decrementBedrooms,
-                      onIncrement: controller.incrementBedrooms,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 14.w),
-
-              // BATHROOMS
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildLabel('bathrooms_label'.tr, labelColor),
-                    SizedBox(height: 8.h),
-                    _buildCounterBox(
-                      context,
-                      isDark: isDark,
-                      inputBg: inputBg,
-                      textColor: textColor,
-                      unitLabel: 'bath'.tr,
-                      rxValue: controller.bathrooms,
-                      onDecrement: controller.decrementBathrooms,
-                      onIncrement: controller.incrementBathrooms,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 18.h),
-
-          // 5. DESCRIPTION — ✅ enlarged (maxLines 3 → 5)
+          // 5. DESCRIPTION
           _buildLabel('description_label'.tr, labelColor),
           SizedBox(height: 8.h),
           Container(
@@ -295,7 +295,7 @@ class PropertyInfoSection extends GetView<PostListingController> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                hintText: hintText,
+                hintText: hintText.isEmpty ? null : hintText,
                 hintStyle: TextStyle(
                   fontSize: 14.sp,
                   color: textColor.withAlpha(120),
@@ -328,7 +328,6 @@ class PropertyInfoSection extends GetView<PostListingController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Minus Button
           GestureDetector(
             onTap: onDecrement,
             child: Container(
@@ -351,8 +350,6 @@ class PropertyInfoSection extends GetView<PostListingController> {
               ),
             ),
           ),
-
-          // Value & Label in column
           Obx(
             () => Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -379,8 +376,6 @@ class PropertyInfoSection extends GetView<PostListingController> {
               ],
             ),
           ),
-
-          // Plus Button (Black solid circle)
           GestureDetector(
             onTap: onIncrement,
             child: Container(

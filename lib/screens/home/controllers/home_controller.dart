@@ -22,7 +22,7 @@ class HomeController extends GetxController {
   final RxList<ToLetItem> recommendedProperties = <ToLetItem>[].obs;
   final RxBool isLoading = false.obs;
 
-  final RxString selectedLocation = 'Dhaka, Bangladesh'.obs;
+  final RxString selectedLocation = 'Khulna, Bangladesh'.obs;
   final RxString selectedCategory = 'Family'.obs;
   final RxString searchQuery = ''.obs;
 
@@ -32,15 +32,16 @@ class HomeController extends GetxController {
   final RxString savedUserPhone = ''.obs;
 
   final List<String> availableLocations = [
-    'Dhaka, Bangladesh',
-    'Gulshan, Dhaka',
-    'Banani, Dhaka',
-    'Dhanmondi, Dhaka',
-    'Uttara, Dhaka',
-    'Bashundhara R/A, Dhaka',
-    'Mirpur, Dhaka',
-    'Chattogram, Bangladesh',
-    'Sylhet, Bangladesh',
+    'Khulna, Bangladesh',
+    'Sonadanga, Khulna',
+    'Khalishpur, Khulna',
+    'Boyra, Khulna',
+    'Nirala, Khulna',
+    'Daulatpur, Khulna',
+    'Moylapota, Khulna',
+    'Shibbari, Khulna',
+    'Gollamari, Khulna',
+    'Rupsha, Khulna',
   ];
 
   @override
@@ -80,7 +81,7 @@ class HomeController extends GetxController {
       allProperties.assignAll(properties);
 
       await favoriteController.loadFavorites();
-      _filterSections();
+      _applyFilters();
     } catch (e) {
       // Silent - no snackbar
     } finally {
@@ -106,25 +107,39 @@ class HomeController extends GetxController {
     } else {
       selectedCategory.value = category;
     }
-    _applyCategoryFilter();
+    _applyFilters();
   }
 
-  void _applyCategoryFilter() {
-    if (selectedCategory.value.isEmpty) {
-      _filterSections();
-      return;
+  void _applyFilters() {
+    List<ToLetItem> filtered = allProperties;
+
+    final selectedCat = selectedCategory.value.trim().toLowerCase();
+    if (selectedCat.isNotEmpty) {
+      filtered = filtered.where((item) => item.category.toLowerCase() == selectedCat).toList();
     }
 
-    final cat = selectedCategory.value.toLowerCase();
-    final matching = allProperties
-        .where((item) => item.category.toLowerCase() == cat)
-        .toList();
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      filtered = filtered.where((item) {
+        return item.title.toLowerCase().contains(query) ||
+            item.location.toLowerCase().contains(query) ||
+            item.description.toLowerCase().contains(query) ||
+            item.category.toLowerCase().contains(query);
+      }).toList();
+    }
 
-    if (matching.isNotEmpty) {
-      featuredProperties.assignAll(matching);
-      recommendedProperties.assignAll(matching);
-    } else {
+    if (selectedCat.isEmpty && query.isEmpty) {
       _filterSections();
+    } else {
+      final featured = filtered.where((p) => p.isFeatured).toList();
+      featuredProperties.assignAll(
+        featured.isNotEmpty ? featured : filtered.take(2).toList(),
+      );
+
+      final recommended = filtered.where((p) => !p.isFeatured).toList();
+      recommendedProperties.assignAll(
+        recommended.isNotEmpty ? recommended : filtered.skip(2).toList(),
+      );
     }
   }
 
@@ -197,12 +212,16 @@ class HomeController extends GetxController {
     searchQuery.value = query;
     if (query.isNotEmpty) {
       storageService.setString(StorageKeys.savedSearchQuery, query);
+    } else {
+      storageService.remove(StorageKeys.savedSearchQuery);
     }
+    _applyFilters();
   }
 
   void clearSearch() {
     searchQuery.value = '';
     storageService.remove(StorageKeys.savedSearchQuery);
+    _applyFilters();
   }
 
   ToLetItem? getPropertyById(String id) {
@@ -215,10 +234,5 @@ class HomeController extends GetxController {
 
   Future<void> refreshData() async {
     await loadProperties();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }
