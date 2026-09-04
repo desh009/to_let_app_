@@ -18,10 +18,10 @@ class FilterScreen extends GetView<FilterController> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top App Bar
+
             _buildAppBar(context, isDark),
 
-            // Scrollable Content
+
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -29,22 +29,22 @@ class FilterScreen extends GetView<FilterController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Selected Location Badge / Chip
+
                     _buildSubLocationChip(context, isDark),
 
                     SizedBox(height: 20.h),
 
-                    // Section 1: Price Range
+
                     _buildPriceRangeSection(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Section 2: Property Type (Family, Bachelor, Sublet, Seat)
+
                     _buildPropertyTypeSection(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Conditional: Bachelor Preference (Male / Female / Any)
+
                     Obx(() {
                       if (controller.selectedPropertyType.value == 'Bachelor') {
                         return Column(
@@ -57,12 +57,12 @@ class FilterScreen extends GetView<FilterController> {
                       return const SizedBox.shrink();
                     }),
 
-                    // Section 3: Bedrooms
+
                     _buildBedroomsSection(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Conditional: Furnishing & Amenities (ONLY for Family)
+
                     Obx(() {
                       if (controller.selectedPropertyType.value == 'Family') {
                         return Column(
@@ -78,7 +78,7 @@ class FilterScreen extends GetView<FilterController> {
                       return const SizedBox.shrink();
                     }),
 
-                    // Availability Section
+
                     _buildAvailabilitySection(isDark),
 
                     SizedBox(height: 30.h),
@@ -87,7 +87,7 @@ class FilterScreen extends GetView<FilterController> {
               ),
             ),
 
-            // Bottom Action Bar
+
             _buildBottomActionBar(isDark),
           ],
         ),
@@ -95,7 +95,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== APP BAR ====================
+
   Widget _buildAppBar(BuildContext context, bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -140,13 +140,13 @@ class FilterScreen extends GetView<FilterController> {
               ),
             ),
           ),
-          SizedBox(width: 40.r), // Balance back icon space
+          SizedBox(width: 40.r),
         ],
       ),
     );
   }
 
-  // ==================== SUB LOCATION CHIP ====================
+
   Widget _buildSubLocationChip(BuildContext context, bool isDark) {
     return Obx(() {
       final hasSub = controller.selectedSubLocation.value.isNotEmpty;
@@ -220,7 +220,7 @@ class FilterScreen extends GetView<FilterController> {
     });
   }
 
-  // ==================== PRICE RANGE SECTION ====================
+
   Widget _buildPriceRangeSection(bool isDark) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -244,7 +244,7 @@ class FilterScreen extends GetView<FilterController> {
           ),
           SizedBox(height: 14.h),
 
-          // Exactly 2 Editable MIN & MAX Price Input Cards
+
           Row(
             children: [
               Expanded(
@@ -278,7 +278,7 @@ class FilterScreen extends GetView<FilterController> {
           ),
           SizedBox(height: 12.h),
 
-          // Custom RangeSlider
+
           Obx(
             () => SliderTheme(
               data: SliderThemeData(
@@ -302,7 +302,7 @@ class FilterScreen extends GetView<FilterController> {
             ),
           ),
 
-          // Min / Max Limits indicators
+
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: Row(
@@ -383,7 +383,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== PROPERTY TYPE SECTION (Family, Bachelor, Sublet, Seat) ====================
+
   Widget _buildPropertyTypeSection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +464,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== BACHELOR GENDER PREFERENCE ====================
+
   Widget _buildBachelorGenderSection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,7 +544,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== BEDROOMS SECTION ====================
+
   Widget _buildBedroomsSection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -605,7 +605,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== FURNISHING SECTION ====================
+
   Widget _buildFurnishingSection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -668,7 +668,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== AMENITIES SECTION ====================
+
   Widget _buildAmenitiesSection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,7 +740,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== AVAILABILITY SECTION ====================
+
   Widget _buildAvailabilitySection(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -803,7 +803,7 @@ class FilterScreen extends GetView<FilterController> {
     );
   }
 
-  // ==================== BOTTOM ACTION BAR ====================
+
   Widget _buildBottomActionBar(bool isDark) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -819,7 +819,7 @@ class FilterScreen extends GetView<FilterController> {
       ),
       child: Row(
         children: [
-          // Reset Button
+
           OutlinedButton(
             onPressed: controller.resetFilters,
             style: OutlinedButton.styleFrom(
@@ -843,7 +843,7 @@ class FilterScreen extends GetView<FilterController> {
 
           SizedBox(width: 12.w),
 
-          // Apply Button
+
           Expanded(
             child: ElevatedButton(
               onPressed: controller.applyFilters,

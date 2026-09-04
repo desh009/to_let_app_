@@ -1,4 +1,4 @@
-// bindings/favorite_binding.dart
+
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/services/storage_service.dart';
 import 'package:to_let_app_abandon/domain/repositories/tolet_repository.dart';

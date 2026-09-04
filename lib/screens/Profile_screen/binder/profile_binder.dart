@@ -1,4 +1,4 @@
-// screens/profile/bindings/profile_binding.dart
+
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
 import '../../../core/services/storage_service.dart';

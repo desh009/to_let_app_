@@ -1,11 +1,9 @@
-// ignore_for_file: constant_identifier_names
+
 
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_factor_auth_screen.dart';
-// import 'package:to_let_app_abandon/screens/Filter_screen/controller/filter_controller.dart';
-// import 'package:to_let_app_abandon/screens/Filter_screen/view/filter_view.dart';
-// import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/edit_profile_controller.dart';
-// import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/screen.dart';
+
+
 import '../screens/filter/views/filter_results_screen.dart';
 import '../screens/notifications/views/notifications_screen.dart';
 import '../screens/notifications/controllers/notifications_controller.dart';
@@ -28,8 +26,8 @@ import 'package:to_let_app_abandon/screens/masaage/massage_details/binder/massag
 import 'package:to_let_app_abandon/screens/masaage/massage_details/view/massage_details_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/view/massage_view.dart';
 import 'package:to_let_app_abandon/screens/auth/views/forgot_password_screen.dart';
-// import 'package:to_let_app_abandon/screens/notification_screen/controller/notification_controlelr.dart';
-// import 'package:to_let_app_abandon/screens/notification_screen/view/notification_view.dart';
+
+
 import '../screens/auth/bindings/auth_binding.dart';
 import '../screens/auth/views/login_screen.dart';
 import '../screens/auth/views/register_screen.dart';
@@ -175,14 +173,6 @@ class AppPages {
         }
       }),
     ),
-
-    // GetPage(
-    //   name: '/edit-profile',
-    //   page: () => const EditProfileScreen(),
-    //   binding: BindingsBuilder(() {
-    //     Get.put(EditProfileController());
-    //   }),
-    // ),
 
 
     GetPage(

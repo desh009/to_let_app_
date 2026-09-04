@@ -11,7 +11,7 @@ class SplashScreen extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-    // Ensure controller is registered
+
     Get.find<SplashController>();
 
     return Scaffold(

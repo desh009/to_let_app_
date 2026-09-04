@@ -15,7 +15,7 @@ class PublishBottomBar extends GetView<PostListingController> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Publish Button
+
         Obx(
           () => SizedBox(
             width: double.infinity,
@@ -74,7 +74,7 @@ class PublishBottomBar extends GetView<PostListingController> {
         ),
         SizedBox(height: 12.h),
 
-        // Subtext / Terms Info
+
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(

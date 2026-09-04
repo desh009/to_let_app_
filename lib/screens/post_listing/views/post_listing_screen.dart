@@ -124,19 +124,19 @@ class PostListingScreen extends GetView<PostListingController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Property Photos Card
+
               const PhotoPickerSection(),
               SizedBox(height: 16.h),
 
-              // 2. Form Details Card (Title, Location, Rent, Rooms, Desc)
+
               const PropertyInfoSection(),
               SizedBox(height: 16.h),
 
-              // 3. Amenities Card (Lift, Parking, Gas, Wifi, Direct Owner)
+
               const AmenitiesSection(),
               SizedBox(height: 24.h),
 
-              // 4. Publish Button & Review Notes
+
               const PublishBottomBar(),
               SizedBox(height: 30.h),
             ],

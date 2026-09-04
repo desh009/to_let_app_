@@ -29,7 +29,7 @@ class LoginScreen extends GetView<AuthController> {
             children: [
               SizedBox(height: 10.h),
 
-              // 1. App Icon Badge (Terracotta Home)
+
               Container(
                 width: 48.r,
                 height: 48.r,
@@ -61,7 +61,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
-              // 2. Title & Subtitle
+
               Text(
                 'login_title'.tr,
                 style: TextStyle(
@@ -81,7 +81,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 28.h),
 
-              // 3. Field: Phone / Email
+
               Text(
                 'phone_or_email'.tr,
                 style: TextStyle(
@@ -134,7 +134,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 18.h),
 
-              // 4. Field: Password
+
               Text(
                 'password'.tr,
                 style: TextStyle(
@@ -194,7 +194,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 12.h),
 
-              // 5. Forgot Password
+
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
@@ -211,7 +211,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
-              // 6. Log In Button
+
               Obx(
                 () => SizedBox(
                   width: double.infinity,
@@ -249,7 +249,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 28.h),
 
-              // 7. OR CONTINUE WITH Divider
+
               Row(
                 children: [
                   Expanded(
@@ -282,10 +282,10 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
 
-              // 8. Social Login Buttons (Google & Apple)
+
               Row(
                 children: [
-                  // Google
+
                   Expanded(
                     child: _buildSocialButton(
                       context,
@@ -309,7 +309,7 @@ class LoginScreen extends GetView<AuthController> {
                   ),
                   SizedBox(width: 14.w),
 
-                  // Apple
+
                   Expanded(
                     child: _buildSocialButton(
                       context,
@@ -327,7 +327,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 36.h),
 
-              // 9. Sign Up Navigation Link
+
               Center(
                 child: GestureDetector(
                   onTap: () => Get.toNamed(Routes.REGISTER),
@@ -355,7 +355,7 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 16.h),
 
-              // 10. Footnote Security
+
               Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

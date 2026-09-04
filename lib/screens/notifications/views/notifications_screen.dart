@@ -13,7 +13,7 @@ class NotificationsScreen extends GetView<NotificationsController> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // Ensure controller is registered
+
     final ctrl = NotificationsController.to;
 
     return Scaffold(
@@ -169,7 +169,7 @@ class NotificationsScreen extends GetView<NotificationsController> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Icon badge
+
                   Container(
                     width: 44.r,
                     height: 44.r,
@@ -181,7 +181,7 @@ class NotificationsScreen extends GetView<NotificationsController> {
                   ),
                   SizedBox(width: 12.w),
 
-                  // Notification Title, Body, Timestamp
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

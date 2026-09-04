@@ -66,7 +66,7 @@ class CustomSnackbar {
     SnackbarType type = SnackbarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    // Close any previous snackbar
+
     if (Get.isSnackbarOpen) {
       Get.closeCurrentSnackbar();
     }
@@ -92,7 +92,7 @@ class CustomSnackbar {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left Circle Icon Container
+
             Container(
               padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
@@ -107,7 +107,7 @@ class CustomSnackbar {
             ),
             SizedBox(width: 12.w),
 
-            // Content (Title + Message)
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

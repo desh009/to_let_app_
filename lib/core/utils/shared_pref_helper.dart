@@ -7,7 +7,7 @@ class SharedPrefHelper {
 
   static StorageService get _service => Get.find<StorageService>();
 
-  // ================= Generic Helpers =================
+
   static String? getString(String key) => _service.getString(key);
   static Future<bool> setString(String key, String value) => _service.setString(key, value);
 
@@ -27,9 +27,7 @@ class SharedPrefHelper {
   static Future<bool> remove(String key) => _service.remove(key);
   static Future<bool> clearAll() => _service.clear();
 
-  // ================= Feature / Business Helpers =================
 
-  /// App First Launch Check
   static bool isFirstTimeLaunch() {
     return _service.getBool(StorageKeys.isFirstTime) ?? true;
   }
@@ -38,7 +36,7 @@ class SharedPrefHelper {
     await _service.setBool(StorageKeys.isFirstTime, value);
   }
 
-  /// Theme (Dark Mode / Light Mode)
+
   static bool isDarkMode() {
     return _service.getBool(StorageKeys.isDarkMode) ?? false;
   }
@@ -47,7 +45,7 @@ class SharedPrefHelper {
     await _service.setBool(StorageKeys.isDarkMode, value);
   }
 
-  /// User Profile & Authentication
+
   static String? getUserToken() {
     return _service.getString(StorageKeys.userToken);
   }
@@ -77,7 +75,7 @@ class SharedPrefHelper {
     await _service.setString(StorageKeys.userPhone, phone);
   }
 
-  /// Favorites List
+
   static List<String> getFavoriteProperties() {
     return _service.getStringList(StorageKeys.favoriteProperties) ?? [];
   }
@@ -86,7 +84,7 @@ class SharedPrefHelper {
     await _service.setStringList(StorageKeys.favoriteProperties, favorites);
   }
 
-  /// Search History / Query
+
   static String? getLastSearchQuery() {
     return _service.getString(StorageKeys.savedSearchQuery);
   }
@@ -95,7 +93,7 @@ class SharedPrefHelper {
     await _service.setString(StorageKeys.savedSearchQuery, query);
   }
 
-  /// Logout / Clear User Session
+
   static Future<void> clearUserSession() async {
     await _service.remove(StorageKeys.userToken);
     await _service.remove(StorageKeys.userName);

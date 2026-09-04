@@ -50,7 +50,7 @@ class RecommendedPropertyCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left Image Stack with VERIFIED Badge
+
               Stack(
                 children: [
                   ClipRRect(
@@ -77,7 +77,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                     ),
                   ),
 
-                  // VERIFIED Badge (Bottom-Left of Image)
+
                   if (item.isVerified)
                     Positioned(
                       bottom: 6.h,
@@ -88,7 +88,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                           vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF10B981), // Vibrant Green
+                          color: const Color(0xFF10B981),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Row(
@@ -117,13 +117,13 @@ class RecommendedPropertyCard extends StatelessWidget {
               ),
               SizedBox(width: 12.w),
 
-              // Right Details
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Title & Heart Icon
+
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -147,7 +147,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                     ),
                     SizedBox(height: 3.h),
 
-                    // Price & Category Pill
+
                     Row(
                       children: [
                         Text(
@@ -173,7 +173,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                         ),
                         SizedBox(width: 10.w),
 
-                        // Category Pill
+
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
@@ -200,7 +200,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                     ),
                     SizedBox(height: 6.h),
 
-                    // Specs (Beds • Baths • Sqft)
+
                     Row(
                       children: [
                         Icon(
@@ -277,7 +277,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
 
-                    // Location
+
                     Row(
                       children: [
                         Icon(

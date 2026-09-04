@@ -13,19 +13,19 @@ class SplashController extends GetxController {
   }
 
   Future<void> _handleSplashLogic() async {
-    // 2-second delay for splash animation
+
     await Future.delayed(const Duration(seconds: 2));
 
-    // Check if first time launch from SharedPreferences
+
     final isFirstTime = storageService.getBool(StorageKeys.isFirstTime) ?? true;
     if (isFirstTime) {
       await storageService.setBool(StorageKeys.isFirstTime, false);
     }
 
-    // Check login status
+
     final isLoggedIn = storageService.getBool(StorageKeys.isLoggedIn) ?? false;
 
-    // Navigate to Login (or Home if already logged in)
+
     if (isLoggedIn) {
       Get.offNamed(Routes.HOME);
     } else {

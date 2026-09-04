@@ -10,19 +10,19 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     final storageService = Get.find<StorageService>();
-    
-    // NavController
+
+
     if (!Get.isRegistered<NavController>()) {
       Get.put<NavController>(NavController(), permanent: true);
     }
 
-    // Datasource
+
     Get.lazyPut<ToLetLocalDataSource>(
       () => ToLetLocalDataSourceImpl(storageService: storageService),
       fenix: true,
     );
 
-    // Repository
+
     Get.lazyPut<ToLetRepository>(
       () => ToLetRepositoryImpl(
         localDataSource: Get.find<ToLetLocalDataSource>(),
@@ -30,9 +30,7 @@ class HomeBinding extends Bindings {
       fenix: true,
     );
 
-   
 
-    // HomeController
     Get.lazyPut<HomeController>(
       () => HomeController(
         repository: Get.find<ToLetRepository>(),

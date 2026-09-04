@@ -23,7 +23,7 @@ class FloatingActionPills extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Post a Listing Pill Button (Terracotta)
+
               InkWell(
                 borderRadius: BorderRadius.circular(30.r),
                 onTap: onPostListing,
@@ -59,7 +59,7 @@ class FloatingActionPills extends StatelessWidget {
               ),
               SizedBox(width: 12.w),
 
-              // Map View Pill Button (Dark Charcoal)
+
               InkWell(
                 borderRadius: BorderRadius.circular(30.r),
                 onTap: onMapView,

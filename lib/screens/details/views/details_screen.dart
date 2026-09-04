@@ -19,11 +19,11 @@ class DetailsScreen extends GetView<DetailsController> {
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       body: Stack(
         children: [
-          // ── Scrollable Content ──────────────────────────────────────────
+
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              // ── Hero Image AppBar ─────────────────────────────────────
+
               SliverAppBar(
                 expandedHeight: 260.h,
                 pinned: true,
@@ -34,7 +34,7 @@ class DetailsScreen extends GetView<DetailsController> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Property image
+
                       Image.network(
                         item.images.isNotEmpty
                             ? item.images.first
@@ -50,7 +50,7 @@ class DetailsScreen extends GetView<DetailsController> {
                         ),
                       ),
 
-                      // Dark gradient at top for buttons visibility
+
                       Positioned(
                         top: 0,
                         left: 0,
@@ -70,7 +70,7 @@ class DetailsScreen extends GetView<DetailsController> {
                         ),
                       ),
 
-                      // Back button (top-left)
+
                       Positioned(
                         top: 46.h,
                         left: 16.w,
@@ -80,7 +80,7 @@ class DetailsScreen extends GetView<DetailsController> {
                         ),
                       ),
 
-                      // Share + Favorite buttons (top-right)
+
                       Positioned(
                         top: 46.h,
                         right: 16.w,
@@ -104,7 +104,7 @@ class DetailsScreen extends GetView<DetailsController> {
                         ),
                       ),
 
-                      // Image counter (bottom-right of image)
+
                       if (item.images.isNotEmpty)
                         Positioned(
                           bottom: 12.h,
@@ -144,7 +144,7 @@ class DetailsScreen extends GetView<DetailsController> {
                 ),
               ),
 
-              // ── Content Body ─────────────────────────────────────────
+
               SliverToBoxAdapter(
                 child: Container(
                   decoration: BoxDecoration(
@@ -158,7 +158,7 @@ class DetailsScreen extends GetView<DetailsController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ── Badges ─────────────────────────────
+
                             Row(
                               children: [
                                 _Badge(
@@ -185,7 +185,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 14.h),
 
-                            // ── Price ───────────────────────────────
+
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.baseline,
                               textBaseline: TextBaseline.alphabetic,
@@ -214,7 +214,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 8.h),
 
-                            // ── Title ───────────────────────────────
+
                             Text(
                               item.title,
                               style: TextStyle(
@@ -228,7 +228,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 10.h),
 
-                            // ── Location ────────────────────────────
+
                             Row(
                               children: [
                                 Icon(
@@ -252,7 +252,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 20.h),
 
-                            // ── Stats Row (Bedrooms | Bathrooms | Floor Area) ──
+
                             Container(
                               padding: EdgeInsets.symmetric(
                                 vertical: 16.h,
@@ -294,7 +294,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 24.h),
 
-                            // ── Property Description ─────────────────
+
                             Text(
                               'Property description',
                               style: TextStyle(
@@ -318,7 +318,7 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 24.h),
 
-                            // ── Amenities & Features ─────────────────
+
                             Text(
                               'Amenities & features',
                               style: TextStyle(
@@ -343,7 +343,7 @@ class DetailsScreen extends GetView<DetailsController> {
                                   )
                                   .toList(),
                             ),
-                            SizedBox(height: 100.h), // bottom padding for FAB
+                            SizedBox(height: 100.h),
                           ],
                         ),
                       ),
@@ -354,7 +354,7 @@ class DetailsScreen extends GetView<DetailsController> {
             ],
           ),
 
-          // ── Fixed Bottom Bar ─────────────────────────────────────────
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -373,7 +373,7 @@ class DetailsScreen extends GetView<DetailsController> {
               ),
               child: Row(
                 children: [
-                  // Heart favorite button
+
                   Obx(
                     () => InkWell(
                       borderRadius: BorderRadius.circular(14.r),
@@ -404,7 +404,7 @@ class DetailsScreen extends GetView<DetailsController> {
                   ),
                   SizedBox(width: 14.w),
 
-                  // Contact Owner button
+
                   Expanded(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(14.r),
@@ -478,7 +478,6 @@ class DetailsScreen extends GetView<DetailsController> {
   }
 }
 
-// ── Small reusable widgets ───────────────────────────────────────────────────
 
 class _CircleButton extends StatelessWidget {
   final IconData icon;

@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import '../../../../core/services/fcm_service.dart';
 
 class NotificationApiService {
-  // আপনার Vercel এ deploy করা backend API base URL
+
   static const String _baseUrl = 'https://fcm-notification-api-ten.vercel.app';
 
-  /// Trigger notification when a new property listing is posted
+
   static Future<void> notifyNewListing({
     required String listingTitle,
     required String listingId,
@@ -19,14 +19,14 @@ class NotificationApiService {
         'Sending new listing notification for: $listingTitle (ID: $listingId)',
       );
 
-      // ১. Backend API কল করুন — এটা সব ইউজারের ডিভাইসে push notification পাঠাবে
+
       final response = await http.post(
         Uri.parse('$_baseUrl/api/sendNotification'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'title': 'New Property Listed! 🏠',
           'body': 'Check out "$listingTitle" now on To-Let!',
-          'topic': 'all_users', // ⚠️ backend যদি topic-based হয়
+          'topic': 'all_users',
           'data': {'listingId': listingId, 'type': 'new_listing'},
         }),
       );
@@ -39,7 +39,7 @@ class NotificationApiService {
         );
       }
 
-      // ২. (Optional) নিজের ডিভাইসেও সাথে সাথে local notification দেখাতে চাইলে
+
       if (Get.isRegistered<FcmService>()) {
         final flutterLocalNotifications = FlutterLocalNotificationsPlugin();
         const androidDetails = AndroidNotificationDetails(

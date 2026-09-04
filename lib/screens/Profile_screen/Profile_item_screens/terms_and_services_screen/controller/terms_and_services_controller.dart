@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/constants/app_strings.dart';
 
 
-/// এক একটা টার্মস সেকশন — প্যারাগ্রাফ অথবা বুলেট লিস্ট
 class TermsSection {
   final String title;
   final String? body;
@@ -21,7 +20,7 @@ class TermsSection {
 class TermsOfServiceController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
-  /// স্ক্রল করে নিচে নামলে "টপে যাও" বাটন দেখাবে
+
   final RxBool showScrollToTop = false.obs;
 
   final List<TermsSection> sections = const [

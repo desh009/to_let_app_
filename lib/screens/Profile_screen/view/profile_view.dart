@@ -18,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ProfileController controller;
 
-  // Accordion Expand States
+
   bool _isSettingsExpanded = false;
   bool _isHelpSupportExpanded = false;
 
@@ -72,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Header ---
+
   Widget _buildHeader(BuildContext context, bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Profile Card ---
+
   Widget _buildProfileCard(bool isDark) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -195,10 +195,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Animated 3-dot menu: Edit Profile / Delete Account ---
+
   Widget _buildProfileMenuButton(bool isDark) {
     return PopupMenuButton<String>(
-      // Built-in fade + scale open animation
+
       elevation: 6,
       offset: Offset(0, 40.h),
       shape: RoundedRectangleBorder(
@@ -294,8 +294,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextButton(
             onPressed: () {
               Get.back();
-              // TODO: call your real delete-account API here, then
-              // navigate to login / onboarding and clear local session.
+
+
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -304,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Main Menu Section ---
+
   Widget _buildMenuSection(bool isDark) {
     return Container(
       decoration: BoxDecoration(
@@ -364,19 +364,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           _buildDivider(isDark),
 
-          // Animated Settings Dropdown
+
           _buildExpandableSettings(isDark),
 
           _buildDivider(isDark),
 
-          // Animated Help & Support Dropdown
+
           _buildExpandableHelpSupport(isDark),
         ],
       ),
     );
   }
 
-  // --- Settings Dropdown ---
+
   Widget _buildExpandableSettings(bool isDark) {
     return Column(
       children: [
@@ -481,7 +481,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Help & Support Animated Dropdown ---
+
   Widget _buildExpandableHelpSupport(bool isDark) {
     return Column(
       children: [
@@ -551,9 +551,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Search & Title Header
+
                 SizedBox(height: 16.h),
-                // SECTION 1: CONTACT US
+
                 _buildSectionHeader(AppStrings.contactUs, isDark),
                 SizedBox(height: 8.h),
 
@@ -572,7 +572,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-                // SECTION 2: HELP TOPICS
+
                 _buildSectionHeader(AppStrings.helpTopics, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -592,7 +592,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-                // SECTION 3: FEEDBACK & ISSUES
+
                 _buildSectionHeader(AppStrings.feedbackIssues, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -611,7 +611,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-                // SECTION 4: LEGAL
+
                 _buildSectionHeader(AppStrings.legal, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -629,7 +629,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 16.h),
 
-                // Footer Version Text
+
                 Center(
                   child: Column(
                     children: [
@@ -665,7 +665,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Helper Widget for Section Headers
+
   Widget _buildSectionHeader(String title, bool isDark) {
     return Text(
       title,
@@ -678,8 +678,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Helper Widget for Help Support List Item
-  // FIX: wrapped the Container in an InkWell so `onTap` actually fires.
+
   Widget _buildHelpItem({
     required IconData icon,
     required String title,
@@ -755,8 +754,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Helper Widget for Sub Settings Menu Item
-  // FIX: wrapped in InkWell with a real onTap param (was hardcoded to `() {}`).
+
   Widget _buildSubMenuItem({
     required IconData icon,
     required String title,

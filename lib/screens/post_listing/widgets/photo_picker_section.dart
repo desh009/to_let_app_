@@ -30,7 +30,7 @@ class PhotoPickerSection extends GetView<PostListingController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row
+
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +61,7 @@ class PhotoPickerSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 14.h),
 
-          // Photos Row / List
+
           Obx(
             () => SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -81,7 +81,7 @@ class PhotoPickerSection extends GetView<PostListingController> {
                     );
                   }),
 
-                  // Add Photo Box
+
                   if (controller.propertyPhotos.length < 8)
                     _buildAddPhotoBox(context, isDark),
                 ],
@@ -142,7 +142,7 @@ class PhotoPickerSection extends GetView<PostListingController> {
                       )),
           ),
 
-          // Cover Badge
+
           if (isCover)
             Positioned(
               bottom: 6.h,
@@ -164,7 +164,7 @@ class PhotoPickerSection extends GetView<PostListingController> {
               ),
             ),
 
-          // Close / Remove Button
+
           Positioned(
             top: 6.h,
             right: 6.w,

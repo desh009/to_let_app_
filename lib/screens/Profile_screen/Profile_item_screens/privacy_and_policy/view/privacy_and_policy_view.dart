@@ -50,7 +50,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
                       children: [
                         SizedBox(height: 10.h),
 
-                        // সব সেকশন (অটো নাম্বারিং)
+
                         ...List.generate(controller.sections.length, (index) {
                           return _buildSection(
                             number: '${index + 1}',
@@ -61,7 +61,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
 
                         SizedBox(height: 4.h),
 
-                        // Bottom Security Box
+
                         _buildSecurityCard(isDark),
                         SizedBox(height: 20.h),
                       ],
@@ -76,7 +76,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
     );
   }
 
-  // এক একটা সেকশন রেন্ডার
+
   Widget _buildSection({
     required String number,
     required PolicySection section,
@@ -104,7 +104,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
     );
   }
 
-  // Header Navigation Bar
+
   Widget _buildAppBar(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -145,14 +145,14 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-        
+
           ),
         ],
       ),
     );
   }
 
-  // Numbered Badge Section Header
+
   Widget _buildSectionHeader(String number, String title, bool isDark) {
     return Row(
       children: [
@@ -191,7 +191,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
     );
   }
 
-  // General Text Paragraph
+
   Widget _buildBodyText(String text, bool isDark) {
     return Text(
       text,
@@ -203,7 +203,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
     );
   }
 
-  // Bullet Point Row Item
+
   Widget _buildBulletPoint(String text, bool isDark) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +233,7 @@ class PrivacyPolicyScreen extends GetView<PrivacyPolicyController> {
     );
   }
 
-  // Security Certification Box
+
   Widget _buildSecurityCard(bool isDark) {
     return Container(
       width: double.infinity,

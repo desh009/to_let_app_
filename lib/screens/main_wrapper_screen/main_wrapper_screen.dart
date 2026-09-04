@@ -13,7 +13,7 @@ class MainWrapper extends GetView<NavController> {
     const HomeScreen(),
     const SavedScreen(),
     const MessagesScreen(),
-    // const ProfileScreen(),
+
   ];
 
   @override

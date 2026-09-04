@@ -118,7 +118,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
-  // ── Long-press message actions ──────────────────────────────────────────
+
   void _showMessageOptions(_ChatBubbleData bubble) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
@@ -142,7 +142,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 ),
               ),
               SizedBox(height: 8.h),
-              // Edit — only for messages you sent
+
               if (bubble.isSent)
                 _optionTile(
                   icon: Icons.edit_outlined,
@@ -153,7 +153,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     _editMessage(bubble);
                   },
                 ),
-              // Unsend — removes it from BOTH sides (sender + receiver)
+
               if (bubble.isSent)
                 _optionTile(
                   icon: Icons.undo_rounded,
@@ -165,7 +165,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     _unsendMessage(bubble.id);
                   },
                 ),
-              // Remove from me — hides it only on your own side
+
               _optionTile(
                 icon: Icons.delete_outline_rounded,
                 label: 'Remove from me',
@@ -257,9 +257,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {
       _messages.removeWhere((m) => m.id == id);
     });
-    // TODO: when a real backend/socket is wired up, this must also tell the
-    // server to delete the message for the OTHER participant — unsend means
-    // gone from both sender's and receiver's chat, not just this device.
+
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Message unsent')),
     );
@@ -269,10 +268,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {
       _messages.removeWhere((m) => m.id == id);
     });
-    // TODO: with a real backend this should only set a "hidden for me" flag
-    // tied to the current user's account — the receiver's copy of this
-    // message must stay untouched. A hard delete here is only correct
-    // because this demo has no shared/multi-device message store yet.
+
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Removed for you')),
     );
@@ -287,32 +284,32 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header Section
+
             _buildHeader(context, isDark),
-            
-            // Main Chat Area
+
+
             Expanded(
               child: SingleChildScrollView(
                 controller: _scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 600.w), // Tablet responsiveness
+                    constraints: BoxConstraints(maxWidth: 600.w),
                     child: Column(
                       children: [
                         SizedBox(height: 12.h),
-                        
-                        // Property Info Card
+
+
                         _buildPropertyCard(isDark),
-                        
-                        SizedBox(height: 16.h),
-                        
-                        // Date Divider
-                        _buildDateDivider(isDark),
-                        
+
                         SizedBox(height: 16.h),
 
-                        // Chat Messages (dynamic, animated entrance, long-press actions)
+
+                        _buildDateDivider(isDark),
+
+                        SizedBox(height: 16.h),
+
+
                         for (final bubble in _messages) ...[
                           _AnimatedChatBubble(
                             key: ValueKey(bubble.id),
@@ -343,7 +340,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               ),
             ),
 
-            // Bottom Input Field
+
             _buildBottomInputArea(isDark),
           ],
         ),
@@ -351,7 +348,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Header Bar ---
+
   Widget _buildHeader(BuildContext context, bool isDark) {
     final displayName = widget.message.isSystem ? widget.message.title : widget.message.title;
     return Container(
@@ -415,7 +412,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           ),
           SizedBox(height: 12.h),
 
-          // Receiver Info
+
           Row(
             children: [
               CircleAvatar(
@@ -493,7 +490,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Property Card ---
+
   Widget _buildPropertyCard(bool isDark) {
     return Container(
       padding: EdgeInsets.all(10.r),
@@ -571,7 +568,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Date Divider ---
+
   Widget _buildDateDivider(bool isDark) {
     return Center(
       child: Text(
@@ -585,7 +582,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Received Bubble ---
+
   Widget _buildReceivedBubble({
     required String message,
     required String time,
@@ -652,7 +649,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Sent Bubble ---
+
   Widget _buildSentBubble({
     required String message,
     required String time,
@@ -718,7 +715,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  // --- Bottom Input Bar ---
+
   Widget _buildBottomInputArea(bool isDark) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -780,10 +777,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 }
 
-// ── Animated entrance wrapper for chat bubbles ──────────────────────────────
-// Bounces + slides + fades in whenever a NEW bubble is inserted. Existing
-// bubbles keep their ValueKey(id) across rebuilds, so Flutter reuses their
-// State and does not replay the animation — only the freshly added one animates.
+
 class _AnimatedChatBubble extends StatefulWidget {
   final Widget child;
   final bool isSent;

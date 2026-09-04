@@ -44,7 +44,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
         children: [
           SizedBox(height: 10.h),
 
-          // Back Button
+
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
@@ -63,7 +63,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-          // App Icon Badge
+
           Container(
             width: 48.r,
             height: 48.r,
@@ -95,7 +95,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-          // Title & Subtitle
+
           Text(
             'Forgot Password?',
             style: TextStyle(
@@ -115,7 +115,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-          // Phone / Email Field Label
+
           Text(
             'Phone or Email',
             style: TextStyle(
@@ -126,7 +126,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 8.h),
 
-          // Input Field
+
           Container(
             height: 52.h,
             padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -162,7 +162,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-          // Send OTP Button
+
           Obx(
             () => SizedBox(
               width: double.infinity,
@@ -201,7 +201,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-          // Back to Login
+
           Center(
             child: GestureDetector(
               onTap: () => Get.back(),
@@ -229,7 +229,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 20.h),
 
-          // Security note
+
           Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -257,7 +257,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
     );
   }
 
-  // ── STEP 2: OTP + New Password ───────────────────────────────────────────
+
   Widget _buildStep2OtpView(
     BuildContext context,
     bool isDark,
@@ -273,7 +273,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
         children: [
           SizedBox(height: 10.h),
 
-          // Back Button (go back to step 1)
+
           GestureDetector(
             onTap: () => controller.isForgotPasswordStep2.value = false,
             child: Container(
@@ -292,7 +292,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-          // Icon
+
           Container(
             width: 48.r,
             height: 48.r,
@@ -324,7 +324,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-          // Title
+
           Text(
             'Check Your Phone',
             style: TextStyle(
@@ -346,7 +346,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-          // OTP Boxes
+
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -397,11 +397,11 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-          // Numpad
+
           _buildNumpad(textColor, subtitleColor, inputBg),
           SizedBox(height: 20.h),
 
-          // Resend timer
+
           Obx(
             () => Center(
               child: controller.canResendForgotOtp.value
@@ -440,7 +440,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-          // Divider
+
           Divider(
             color: isDark
                 ? const Color(0xFF2D3748)
@@ -448,7 +448,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 20.h),
 
-          // New Password Label
+
           Text(
             'New Password',
             style: TextStyle(
@@ -502,7 +502,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 14.h),
 
-          // Confirm Password Label
+
           Text(
             'Confirm Password',
             style: TextStyle(
@@ -557,7 +557,7 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-          // Reset Password Button
+
           Obx(
             () => SizedBox(
               width: double.infinity,

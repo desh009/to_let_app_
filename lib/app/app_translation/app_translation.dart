@@ -1,17 +1,16 @@
-// app/app_translation/app_translation.dart
+
 import 'package:get/get.dart';
 
-/// GetX translation map for the whole app (Message screen বাদে —
-/// সেটা আলাদাভাবে হ্যান্ডেল হবে বলে জানানো হয়েছে)।
+
 class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'en': {
-      // ==================== App Level ====================
+
       'app_name': 'To-Let App',
       'splash_tagline': 'Find Your Dream Home Easily',
 
-      // ==================== Home Screen ====================
+
       'greeting_morning': 'Good Morning',
       'greeting_afternoon': 'Good Afternoon',
       'greeting_evening': 'Good Evening',
@@ -50,7 +49,7 @@ class AppTranslations extends Translations {
       'redirecting_to_form': 'Redirecting to property submission form...',
       'interactive_map': 'Interactive Dhaka Map will open here...',
 
-      // ==================== Details Screen ====================
+
       'details_title': 'Property Details',
       'share': 'Share',
       'sharing_property': 'Sharing property...',
@@ -86,7 +85,7 @@ class AppTranslations extends Translations {
       'favorite_added': 'Added to favorites',
       'favorite_removed': 'Removed from favorites',
 
-      // ==================== Common ====================
+
       'no_data_found': 'No data found',
       'error_occurred': 'An error occurred',
       'retry': 'Retry',
@@ -96,20 +95,20 @@ class AppTranslations extends Translations {
       'cancel': 'Cancel',
       'confirm': 'Confirm',
 
-      // ==================== User Profile ====================
+
       'guest_user': 'Guest User',
       'login': 'Login',
       'logout': 'Logout',
       'profile_title': 'Profile',
       'settings': 'Settings',
 
-      // ==================== Settings ====================
+
       'dark_mode': 'Dark Mode',
       'notifications': 'Notifications',
       'language': 'Language',
       'saved_searches': 'Saved Preferences',
 
-      // ==================== Saved Screen ====================
+
       'saved_listings': 'Saved Listings',
       'saved': 'Saved',
       'saved_subtitle': 'properties saved for later',
@@ -125,7 +124,7 @@ class AppTranslations extends Translations {
       'added_to_saved': 'Added to saved',
       'filter_all': 'All',
 
-      // ==================== Post Listing ====================
+
       'post_listing_title': 'Post Listing',
       'property_photos': 'PROPERTY PHOTOS',
       'min_photos_hint': 'Min 3 photos',
@@ -162,7 +161,7 @@ class AppTranslations extends Translations {
           'Your listing is under review and will be live within 2 hours.',
       'done': 'Done',
 
-      // ==================== Auth Screens ====================
+
       'login_title': 'Login',
       'login_subtitle': 'Login to find your next place',
       'phone_or_email': 'Phone / Email',
@@ -197,7 +196,7 @@ class AppTranslations extends Translations {
       'otp_security_note': 'OTP is encrypted • Expires in 5 min',
       'auth_security_note': 'Secure • No brokerage • Verified owners',
 
-      // ==================== Profile Screen ====================
+
       'verified_dhaka': 'Verified • Dhaka',
       'listing_stat': 'LISTING',
       'visits_stat': 'VISITS',
@@ -209,11 +208,11 @@ class AppTranslations extends Translations {
       'help_support': 'Help & Support',
     },
     'bn': {
-      // ==================== App Level ====================
+
       'app_name': 'টু-লেট অ্যাপ',
       'splash_tagline': 'সহজে আপনার স্বপ্নের বাসা খুঁজুন',
 
-      // ==================== Home Screen ====================
+
       'greeting_morning': 'শুভ সকাল',
       'greeting_afternoon': 'শুভ দুপুর',
       'greeting_evening': 'শুভ সন্ধ্যা',
@@ -252,7 +251,7 @@ class AppTranslations extends Translations {
       'redirecting_to_form': 'প্রপার্টি সাবমিশন ফর্মে নিয়ে যাওয়া হচ্ছে...',
       'interactive_map': 'ইন্টারেক্টিভ ঢাকা ম্যাপ এখানে খুলবে...',
 
-      // ==================== Details Screen ====================
+
       'details_title': 'প্রপার্টির বিস্তারিত',
       'share': 'শেয়ার',
       'sharing_property': 'প্রপার্টি শেয়ার হচ্ছে...',
@@ -288,7 +287,7 @@ class AppTranslations extends Translations {
       'favorite_added': 'ফেভারিটে যোগ হয়েছে',
       'favorite_removed': 'ফেভারিট থেকে সরানো হয়েছে',
 
-      // ==================== Common ====================
+
       'no_data_found': 'কোনো তথ্য পাওয়া যায়নি',
       'error_occurred': 'একটি সমস্যা হয়েছে',
       'retry': 'আবার চেষ্টা করুন',
@@ -298,20 +297,20 @@ class AppTranslations extends Translations {
       'cancel': 'বাতিল',
       'confirm': 'নিশ্চিত করুন',
 
-      // ==================== User Profile ====================
+
       'guest_user': 'অতিথি ব্যবহারকারী',
       'login': 'লগইন',
       'logout': 'লগআউট',
       'profile_title': 'প্রোফাইল',
       'settings': 'সেটিংস',
 
-      // ==================== Settings ====================
+
       'dark_mode': 'ডার্ক মোড',
       'notifications': 'নোটিফিকেশন',
       'language': 'ভাষা',
       'saved_searches': 'সেভড প্রেফারেন্স',
 
-      // ==================== Saved Screen ====================
+
       'saved_listings': 'সেভড লিস্টিং',
       'saved': 'সেভড',
       'saved_subtitle': 'টি প্রপার্টি পরে দেখার জন্য সেভ করা আছে',
@@ -327,7 +326,7 @@ class AppTranslations extends Translations {
       'added_to_saved': 'সেভে যোগ হয়েছে',
       'filter_all': 'সব',
 
-      // ==================== Post Listing ====================
+
       'post_listing_title': 'বিজ্ঞাপন দিন',
       'property_photos': 'প্রপার্টির ছবি',
       'min_photos_hint': 'কমপক্ষে ৩টি ছবি',
@@ -364,7 +363,7 @@ class AppTranslations extends Translations {
           'আপনার লিস্টিং পর্যালোচনায় রয়েছে এবং ২ ঘণ্টার মধ্যে লাইভ হবে।',
       'done': 'সম্পন্ন',
 
-      // ==================== Auth Screens ====================
+
       'login_title': 'লগইন',
       'login_subtitle': 'আপনার পছন্দের বাসা খুঁজতে লগইন করুন',
       'phone_or_email': 'ফোন / ইমেইল',
@@ -399,7 +398,7 @@ class AppTranslations extends Translations {
       'otp_security_note': 'ওটিপি এনক্রিপ্টেড • মেয়াদ ৫ মিনিট',
       'auth_security_note': 'নিরাপদ • কোনো ব্রোকারেজ নেই • ভেরিফায়েড মালিক',
 
-      // ==================== Profile Screen ====================
+
       'verified_dhaka': 'ভেরিফায়েড • ঢাকা',
       'listing_stat': 'লিস্টিং',
       'visits_stat': 'ভিজিট',

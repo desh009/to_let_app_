@@ -17,7 +17,7 @@ class ToLetLocalDataSourceImpl implements ToLetLocalDataSource {
 
   @override
   Future<List<ToLetModel>> getProperties() async {
-    // In local demo, return rich sample listings
+
     return ToLetModel.sampleData;
   }
 

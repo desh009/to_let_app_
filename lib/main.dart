@@ -17,35 +17,35 @@ import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'widgets/custom_snackbar.dart';
 
-// ValueNotifier to track current route for GlobalFloatingFab
+
 final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Register top-level background messaging handler
+
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Initialize SharedPreferences via GetX Service
+
   final storageService = await Get.putAsync<StorageService>(
     () => StorageService().init(),
     permanent: true,
   );
 
-  // Check saved theme preference
+
   final isDarkMode = storageService.getBool(StorageKeys.isDarkMode) ?? false;
 
-  // Check saved language preference
+
   final savedLang = storageService.getString(StorageKeys.language) ?? 'en';
 
   runApp(MyApp(isDarkMode: isDarkMode, savedLang: savedLang));
 
-  // Initialize FCM in background
+
   Get.putAsync<FcmService>(
     () => FcmService().init(),
     permanent: true,
@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
               children: [
                 if (child != null) child,
 
-                // Global Voice Assistant Shutter FAB
+
                 const GlobalFloatingFab(),
               ],
             );

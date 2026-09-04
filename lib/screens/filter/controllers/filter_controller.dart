@@ -4,11 +4,11 @@ import '../../../routes/app_routes.dart';
 import '../../home/controllers/home_controller.dart';
 
 class FilterController extends GetxController {
-  // Location
+
   final RxString selectedCity = 'Khulna'.obs;
   final RxString selectedSubLocation = 'Sonadanga, Khulna'.obs;
 
-  // Price Range
+
   final Rx<RangeValues> priceRange = const RangeValues(10000, 20000).obs;
   final double minPriceLimit = 1000;
   final double maxPriceLimit = 100000;
@@ -16,7 +16,7 @@ class FilterController extends GetxController {
   final TextEditingController minPriceTextController = TextEditingController(text: '10000');
   final TextEditingController maxPriceTextController = TextEditingController(text: '20000');
 
-  // Property Types (Exactly 4 Options: Family, Bachelor, Sublet, Seat)
+
   final List<Map<String, dynamic>> propertyTypes = const [
     {'title': 'Family', 'icon': Icons.family_restroom_rounded},
     {'title': 'Bachelor', 'icon': Icons.person_outline_rounded},
@@ -25,19 +25,19 @@ class FilterController extends GetxController {
   ];
   final RxString selectedPropertyType = 'Family'.obs;
 
-  // Bachelor Preference (Male / Female / Any)
+
   final List<String> bachelorGenderOptions = const ['Male', 'Female', 'Any'];
   final RxString selectedBachelorGender = 'Male'.obs;
 
-  // Bedrooms
+
   final List<String> bedroomOptions = const ['1', '2', '3', '4+'];
   final RxString selectedBedrooms = '2'.obs;
 
-  // Furnishing
+
   final List<String> furnishingOptions = const ['Furnished', 'Unfurnished', 'Semi'];
   final RxString selectedFurnishing = 'Semi'.obs;
 
-  // Amenities
+
   final List<Map<String, dynamic>> amenityOptions = const [
     {'title': 'Generator', 'icon': Icons.flash_on_outlined},
     {'title': 'Lift', 'icon': Icons.elevator_outlined},
@@ -47,17 +47,17 @@ class FilterController extends GetxController {
   ];
   final RxList<String> selectedAmenities = <String>['Lift', 'Parking'].obs;
 
-  // Availability
+
   final List<String> availabilityOptions = const ['Available now', 'From next month'];
   final RxString selectedAvailability = 'Available now'.obs;
 
-  // Results count
+
   final RxInt matchingResultsCount = 24.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Sync location from HomeController if available
+
     if (Get.isRegistered<HomeController>()) {
       final homeCtrl = Get.find<HomeController>();
       final loc = homeCtrl.selectedLocation.value;

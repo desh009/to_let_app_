@@ -16,7 +16,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
     final subtitleColor =
         isDark ? const Color(0xFFA0AEC0) : const Color(0xFF7E8B9B);
 
-    // Sync with backend once when the screen opens.
+
     controller.fetchTwoFactorStatus();
 
     return Scaffold(
@@ -32,7 +32,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
     );
   }
 
-  // ── STEP 1: Status + Enable/Disable ─────────────────────────────────
+
   Widget _buildToggleStep(
     BuildContext context,
     bool isDark,
@@ -48,7 +48,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
         children: [
           SizedBox(height: 10.h),
 
-          // Back Button
+
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
@@ -67,7 +67,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-          // Icon Badge
+
           Container(
             width: 48.r,
             height: 48.r,
@@ -112,7 +112,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-          // Status card + toggle
+
           Obx(
             () => Container(
               padding: EdgeInsets.all(16.r),
@@ -172,8 +172,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 20.h),
 
-          // Manual "Enable" button (in case user wants an explicit CTA
-          // instead of just the switch)
+
           Obx(
             () => controller.isTwoFactorEnabled.value
                 ? const SizedBox.shrink()
@@ -249,7 +248,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
     );
   }
 
-  // ── STEP 2: OTP Verification ────────────────────────────────────────
+
   Widget _buildOtpStep(
     BuildContext context,
     bool isDark,
@@ -303,7 +302,7 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-          // OTP Boxes
+
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

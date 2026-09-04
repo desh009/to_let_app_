@@ -59,7 +59,7 @@ class ToLetModel extends ToLetItem {
     };
   }
 
-  // Sample data with Khulna To-Let categories: Family, Bachelor, Sublet, Seat
+
   static List<ToLetModel> get sampleData => [
     const ToLetModel(
       id: '1',

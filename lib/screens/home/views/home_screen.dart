@@ -1,4 +1,4 @@
-// screens/home/views/home_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -32,7 +32,7 @@ class HomeScreen extends GetView<HomeController> {
         bottom: false,
         child: Stack(
           children: [
-            // Main Scrollable Content
+
             RefreshIndicator(
               onRefresh: controller.loadProperties,
               color: AppColors.primary,
@@ -48,15 +48,15 @@ class HomeScreen extends GetView<HomeController> {
 
                     SizedBox(height: 4.h),
 
-                    // 1. Horizontal Category Pills Row
+
                     const QuickSearchCategories(),
 
-                    // 2. Limited Offer Banner Card
+
                     const LimitedOfferBanner(),
 
                     SizedBox(height: 4.h),
 
-                    // 3. Near You / Featured Properties Section Header
+
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Row(
@@ -103,7 +103,7 @@ class HomeScreen extends GetView<HomeController> {
                     ),
                     SizedBox(height: 12.h),
 
-                    // Featured Horizontal Carousel
+
                     Obx(() {
                       if (controller.isLoading.value) {
                         return SizedBox(
@@ -153,7 +153,7 @@ class HomeScreen extends GetView<HomeController> {
 
                     SizedBox(height: 20.h),
 
-                    // 4. Recommended for you Section Header
+
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Row(
@@ -195,7 +195,7 @@ class HomeScreen extends GetView<HomeController> {
                     ),
                     SizedBox(height: 14.h),
 
-                    // Recommended Vertical List
+
                     Obx(() {
                       if (controller.isLoading.value) {
                         return Center(
@@ -243,7 +243,7 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
 
-            // Floating Dual Action Pills (Post Listing & Map View)
+
             Positioned(
               bottom: 8.h,
               left: 0,

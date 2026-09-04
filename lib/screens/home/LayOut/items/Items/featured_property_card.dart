@@ -49,7 +49,7 @@ class FeaturedPropertyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Image Stack
+
             Stack(
               children: [
                 ClipRRect(
@@ -84,7 +84,7 @@ class FeaturedPropertyCard extends StatelessWidget {
                   ),
                 ),
 
-                // Floating Beds & Category Pill Badge (Bottom-Left)
+
                 Positioned(
                   bottom: 10.h,
                   left: 10.w,
@@ -117,7 +117,7 @@ class FeaturedPropertyCard extends StatelessWidget {
                   ),
                 ),
 
-                // Favorite Round Button (Top-Right)
+
                 Positioned(
                   top: 10.h,
                   right: 10.w,
@@ -143,14 +143,14 @@ class FeaturedPropertyCard extends StatelessWidget {
               ],
             ),
 
-            // Content Section
+
             Padding(
               padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 14.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Price
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
@@ -180,7 +180,7 @@ class FeaturedPropertyCard extends StatelessWidget {
                   ),
                   SizedBox(height: 3.h),
 
-                  // Subtitle (e.g. 2BHK • Sonadanga)
+
                   Text(
                     bhkTitle,
                     maxLines: 1,

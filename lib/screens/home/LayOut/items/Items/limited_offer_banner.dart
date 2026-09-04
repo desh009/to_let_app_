@@ -29,7 +29,7 @@ class LimitedOfferBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(24.r),
         child: Stack(
           children: [
-            // Background Decorative Circles
+
             Positioned(
               right: -30.w,
               bottom: -40.h,
@@ -55,12 +55,12 @@ class LimitedOfferBanner extends StatelessWidget {
               ),
             ),
 
-            // Content Padding
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
               child: Row(
                 children: [
-                  // Text Column
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +91,7 @@ class LimitedOfferBanner extends StatelessWidget {
 
                   SizedBox(width: 12.w),
 
-                  // Post Now Button
+
                   GestureDetector(
                     onTap: () => navController.toPostListing(),
                     child: Container(

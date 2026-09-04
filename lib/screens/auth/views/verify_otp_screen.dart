@@ -26,7 +26,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Back Button
+
               GestureDetector(
                 onTap: () => Get.back(),
                 child: Container(
@@ -51,7 +51,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 18.h),
 
-              // 2. Mobile Phone Icon Badge
+
               Container(
                 width: 48.r,
                 height: 48.r,
@@ -85,7 +85,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
 
-              // 3. Title & Subtitle
+
               Text(
                 'verify_number_title'.tr,
                 style: TextStyle(
@@ -105,7 +105,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 6.h),
 
-              // 4. Phone Number & Sent Badge Row
+
               Row(
                 children: [
                   Obx(
@@ -141,7 +141,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
-              // 5. 6 OTP Digit Boxes
+
               Obx(
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -212,7 +212,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 18.h),
 
-              // 6. Resend Timer Row
+
               Obx(
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,7 +245,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
 
-              // 7. Verify & Continue Button
+
               Obx(
                 () => SizedBox(
                   width: double.infinity,
@@ -284,14 +284,14 @@ class VerifyOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
 
-              // 8. Custom In-App Numpad
+
               CustomNumpad(
                 onDigitTap: controller.inputOtpDigit,
                 onDeleteTap: controller.deleteOtpDigit,
               ),
               SizedBox(height: 18.h),
 
-              // 9. Footnote Security
+
               Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
