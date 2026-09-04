@@ -59,7 +59,7 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
-          // 2.5 TENANT TYPE (Bachelor / Family / Seat / Sublet)
+
           _buildLabel('tenant_type_label'.tr, labelColor),
           SizedBox(height: 8.h),
           Obx(
@@ -102,7 +102,7 @@ class PropertyInfoSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 18.h),
 
-     // 3. MONTHLY RENT
+
 _buildLabel('monthly_rent_label'.tr, labelColor),
 SizedBox(height: 8.h),
 Container(
@@ -162,7 +162,7 @@ Container(
 ),
 SizedBox(height: 18.h),
 
-          // 4. BEDROOMS / ROOMS & BATHROOMS Row
+
           Obx(() {
             final isBachelorOrSeat =
                 controller.selectedTenantType.value == 'Bachelor' ||
@@ -216,7 +216,7 @@ SizedBox(height: 18.h),
           }),
           SizedBox(height: 18.h),
 
-          // 5. DESCRIPTION
+
           _buildLabel('description_label'.tr, labelColor),
           SizedBox(height: 8.h),
           Container(

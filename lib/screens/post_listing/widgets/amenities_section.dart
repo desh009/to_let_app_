@@ -35,7 +35,7 @@ class AmenitiesSection extends GetView<PostListingController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+
           Text(
             'amenities_label'.tr,
             style: TextStyle(
@@ -47,7 +47,7 @@ class AmenitiesSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 12.h),
 
-          // 1. Lift
+
           Obx(
             () => _buildSwitchRow(
               title: 'amenity_lift'.tr,
@@ -58,7 +58,7 @@ class AmenitiesSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 10.h),
 
-          // 2. Parking
+
           Obx(
             () => _buildSwitchRow(
               title: 'amenity_parking'.tr,
@@ -69,7 +69,7 @@ class AmenitiesSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 10.h),
 
-          // 3. Gas Line
+
           Obx(
             () => _buildSwitchRow(
               title: 'amenity_gas_line'.tr,
@@ -80,7 +80,7 @@ class AmenitiesSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 10.h),
 
-          // 4. Wi-Fi Included
+
           Obx(
             () => _buildSwitchRow(
               title: 'amenity_wifi'.tr,
@@ -91,7 +91,7 @@ class AmenitiesSection extends GetView<PostListingController> {
           ),
           SizedBox(height: 16.h),
 
-          // 5. No brokerage • Direct owner Checkbox
+
           GestureDetector(
             onTap: controller.toggleDirectOwner,
             behavior: HitTestBehavior.opaque,

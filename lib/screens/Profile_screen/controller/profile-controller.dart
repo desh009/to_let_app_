@@ -1,4 +1,4 @@
-// screens/profile/controllers/profile_controller.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
@@ -11,7 +11,7 @@ class ProfileController extends GetxController {
 
   ProfileController({required this.storageService});
 
-  // Observables
+
   final RxString userName = ''.obs;
   final RxString userEmail = ''.obs;
   final RxString userPhone = ''.obs;
@@ -22,13 +22,13 @@ class ProfileController extends GetxController {
 
   final RxBool isDarkMode = false.obs;
 
-  // ✅ Role 
-  final RxString userRole = 'tenant'.obs; // 'landlord' অথবা 'tenant'
 
-  // ✅ Language 
-  final RxString selectedLanguage = 'en'.obs; // 'en' অথবা 'bn'
+  final RxString userRole = 'tenant'.obs;
 
-  // Navigation
+
+  final RxString selectedLanguage = 'en'.obs;
+
+
   NavController get navController => Get.find<NavController>();
 
   @override
@@ -37,7 +37,7 @@ class ProfileController extends GetxController {
     loadUserData();
     loadStats();
     _loadThemePrefrence();
-    _loadLanguagePreference(); // ✅ Language লোড করুন (এখানে Get.updateLocale() করবেন না)
+    _loadLanguagePreference();
   }
 
   void loadUserData() {
@@ -69,9 +69,8 @@ class ProfileController extends GetxController {
   void _loadLanguagePreference() {
     final lang = storageService.getString(StorageKeys.language) ?? 'en';
     selectedLanguage.value = lang;
-    
-  }
 
+  }
 
 
   void toggleDarkMode(bool value) {
@@ -85,12 +84,12 @@ class ProfileController extends GetxController {
   }
   void changeLanguage(String langCode) {
     if (selectedLanguage.value == langCode) return;
-    
+
     selectedLanguage.value = langCode;
     storageService.setString(StorageKeys.language, langCode);
-    
+
     Get.updateLocale(Locale(langCode));
-    
+
     update();
   }
 
@@ -141,7 +140,7 @@ class ProfileController extends GetxController {
     navController.changeTab(index);
   }
 
-  // ==================== LANDLORD NAVIGATION ====================
+
   void navigateToMyProperties() {
     Get.toNamed('/my-properties');
   }
@@ -154,7 +153,7 @@ class ProfileController extends GetxController {
     Get.toNamed('/post-ad');
   }
 
-  // ==================== TENANT NAVIGATION ====================
+
   void navigateToSavedProperties() {
     Get.toNamed('/saved-properties');
   }
@@ -167,7 +166,7 @@ class ProfileController extends GetxController {
     Get.toNamed('/search-history');
   }
 
-  // ==================== পুরানো মেথড (রেখে দিন অথবা সরিয়ে দিন) ====================
+
   void navigateToMyListings() {
     Get.toNamed('/my-listings');
   }

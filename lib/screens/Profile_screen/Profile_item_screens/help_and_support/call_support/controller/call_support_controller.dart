@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 class CallUsController extends GetxController {
   final RxBool isDialing = false.obs;
 
-  /// Phone dialer খুলে কল করবে
+
   Future<void> dialNumber(String phoneNumber) async {
     isDialing.value = true;
     try {
@@ -30,6 +30,6 @@ class CallUsController extends GetxController {
     }
   }
 
-  /// Back navigation
+
   void handleBack() => Get.back();
 }

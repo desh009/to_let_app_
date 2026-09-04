@@ -15,12 +15,12 @@ class FilterResultsScreen extends GetView<FilterController> {
     final minPrice = controller.priceRange.value.start;
     final maxPrice = controller.priceRange.value.end;
 
-    // Filter sample data dynamically based on criteria
+
     return ToLetModel.sampleData.where((item) {
       final itemCategoryMatch = item.category.toLowerCase() == category || category == 'all';
       final itemPriceMatch = item.price >= minPrice && item.price <= maxPrice;
-      
-      // If specific sub-location selected, match area name or show Khulna matches
+
+
       bool areaMatch = true;
       if (areaName.isNotEmpty && areaName != 'khulna') {
         areaMatch = item.location.toLowerCase().contains(areaName) ||
@@ -47,7 +47,7 @@ class FilterResultsScreen extends GetView<FilterController> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top Header Bar
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               child: Row(
@@ -122,7 +122,7 @@ class FilterResultsScreen extends GetView<FilterController> {
               ),
             ),
 
-            // Active Filter Chips Summary Bar
+
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
@@ -145,7 +145,7 @@ class FilterResultsScreen extends GetView<FilterController> {
 
             SizedBox(height: 10.h),
 
-            // Property Results List
+
             Expanded(
               child: displayList.isEmpty
                   ? Center(
@@ -249,7 +249,7 @@ class FilterResultsScreen extends GetView<FilterController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Stack
+
             Stack(
               children: [
                 ClipRRect(
@@ -269,7 +269,7 @@ class FilterResultsScreen extends GetView<FilterController> {
                   ),
                 ),
 
-                // Top Badges Row
+
                 Positioned(
                   top: 12.h,
                   left: 12.w,
@@ -308,7 +308,7 @@ class FilterResultsScreen extends GetView<FilterController> {
                   ),
                 ),
 
-                // Bottom Price Badge Overlay
+
                 Positioned(
                   bottom: 12.h,
                   left: 12.w,
@@ -331,7 +331,7 @@ class FilterResultsScreen extends GetView<FilterController> {
               ],
             ),
 
-            // Card Body Content
+
             Padding(
               padding: EdgeInsets.all(14.r),
               child: Column(
@@ -371,7 +371,7 @@ class FilterResultsScreen extends GetView<FilterController> {
                   ),
                   SizedBox(height: 12.h),
 
-                  // Specs Row (Beds, Baths, Sqft)
+
                   Row(
                     children: [
                       _buildSpecItem(Icons.king_bed_outlined, '${item.bedrooms} Beds', isDark),

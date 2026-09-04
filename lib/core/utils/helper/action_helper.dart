@@ -3,15 +3,14 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Central place for app-level actions: Share App & Rate App.
-/// Replace the package IDs / iOS App Store ID with your real ones.
+
 class AppActionsHelper {
   AppActionsHelper._();
 
-  // TODO: replace with your actual Android package name (applicationId in build.gradle)
+
   static const String _androidPackageName = 'com.yourcompany.tolet_app';
 
-  // TODO: replace with your actual App Store numeric ID (only the digits)
+
   static const String _iosAppStoreId = '0000000000';
 
   static String get _playStoreUrl =>
@@ -20,7 +19,7 @@ class AppActionsHelper {
   static String get _appStoreUrl =>
       'https://apps.apple.com/app/id$_iosAppStoreId';
 
-  /// Opens the phone's native share sheet with the app link.
+
   static Future<void> shareApp() async {
     try {
       final String link = defaultTargetPlatform == TargetPlatform.iOS
@@ -36,10 +35,7 @@ class AppActionsHelper {
     }
   }
 
-  /// Tries to show the native in-app rating popup (Android/iOS).
-  /// Falls back to opening the store page directly if in-app review
-  /// isn't available or throws (common on emulators without Play Store,
-  /// or debug builds where the review flow isn't backed by a real store).
+
   static Future<void> rateApp() async {
     final InAppReview inAppReview = InAppReview.instance;
 
@@ -53,12 +49,11 @@ class AppActionsHelper {
       debugPrint('in_app_review failed, falling back to store page: $e');
     }
 
-    // Fallback: always safe, works on emulators and debug builds too.
+
     await openStorePage();
   }
 
-  /// Opens the store listing directly (used as fallback, or you can
-  /// wire this to a "Rate on Play Store" text button too).
+
   static Future<void> openStorePage() async {
     try {
       final String url = defaultTargetPlatform == TargetPlatform.iOS

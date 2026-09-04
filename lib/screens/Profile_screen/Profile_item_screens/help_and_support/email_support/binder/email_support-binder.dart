@@ -4,7 +4,7 @@ import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/h
 class EmailSupportBinding extends Bindings {
   @override
   void dependencies() {
-    // ADDED: Controller registered via lazyPut
+
     Get.lazyPut<EmailSupportController>(() => EmailSupportController());
   }
 }

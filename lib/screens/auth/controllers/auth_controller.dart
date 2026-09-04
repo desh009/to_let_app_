@@ -9,13 +9,13 @@ import '../../../routes/app_routes.dart';
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
 
-  // ==================== LOGIN STATE ====================
+
   late final TextEditingController loginPhoneOrEmailController;
   late final TextEditingController loginPasswordController;
   final RxBool isLoginPasswordHidden = true.obs;
   final RxBool isLoggingIn = false.obs;
 
-  // ==================== REGISTER STATE ====================
+
   late final TextEditingController regFullNameController;
   late final TextEditingController regPhoneController;
   late final TextEditingController regEmailController;
@@ -23,19 +23,19 @@ class AuthController extends GetxController {
   late final TextEditingController regConfirmPasswordController;
   final RxBool isRegPasswordHidden = true.obs;
   final RxBool isTermsAgreed = false.obs;
-  final RxInt passwordStrength = 1.obs; // 1 to 4 segments
+  final RxInt passwordStrength = 1.obs;
   final RxBool isRegistering = false.obs;
 
-  // ==================== OTP STATE ====================
+
   final RxList<String> otpDigits = <String>['', '', '', '', '', ''].obs;
-  final RxInt currentOtpIndex = 0.obs; // index pointing to the first box
+  final RxInt currentOtpIndex = 0.obs;
   final RxInt resendCountdown = 45.obs;
   final RxBool canResend = false.obs;
   Timer? _timer;
   final RxString targetPhoneNumber = '+880 1712 345 678'.obs;
   final RxBool isVerifyingOtp = false.obs;
 
-  // ==================== FORGOT PASSWORD STATE ====================
+
   late final TextEditingController forgotPasswordInputController;
   late final TextEditingController forgotNewPasswordController;
   late final TextEditingController forgotConfirmPasswordController;
@@ -50,9 +50,9 @@ class AuthController extends GetxController {
   final RxBool canResendForgotOtp = false.obs;
   Timer? _forgotTimer;
 
-  // ==================== TWO-FACTOR AUTH STATE ====================
-  final RxBool isTwoFactorEnabled = false.obs;      // current saved state (from backend)
-  final RxBool isTwoFactorSetupStep2 = false.obs;   // false = intro/toggle view, true = OTP view
+
+  final RxBool isTwoFactorEnabled = false.obs;
+  final RxBool isTwoFactorSetupStep2 = false.obs;
   final RxBool isSendingTwoFactorOtp = false.obs;
   final RxBool isVerifyingTwoFactorOtp = false.obs;
   final RxBool isDisablingTwoFactor = false.obs;
@@ -99,7 +99,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // Timer for OTP Resend
+
   void startResendTimer() {
     _timer?.cancel();
     resendCountdown.value = 45;
@@ -120,7 +120,7 @@ class AuthController extends GetxController {
     return '$mins:$secs';
   }
 
-  // OTP Numpad Actions
+
   void inputOtpDigit(String digit) {
     if (currentOtpIndex.value < 6) {
       otpDigits[currentOtpIndex.value] = digit;
@@ -143,14 +143,13 @@ class AuthController extends GetxController {
 
   String get formattedMaskedPhone {
     final phone = targetPhoneNumber.value.trim();
-    // e.g. +880 1712 345 678 -> +880 17XX XXX 678
+
     if (phone.length >= 10) {
       return '+880 17XX XXX ${phone.substring(phone.length - 3)}';
     }
     return '+880 17XX XXX 678';
   }
 
-  // ==================== AUTH ACTIONS ====================
 
   Future<void> login() async {
     final input = loginPhoneOrEmailController.text.trim();
@@ -180,7 +179,7 @@ class AuthController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 700));
     isLoggingIn.value = false;
 
-    // Save session
+
     await storageService.setBool(StorageKeys.isLoggedIn, true);
     await storageService.setString(
       StorageKeys.userName,
@@ -251,7 +250,7 @@ class AuthController extends GetxController {
     isRegistering.value = false;
 
     targetPhoneNumber.value = phone;
-    // OTP digits empty by default
+
     otpDigits.assignAll(['', '', '', '', '', '']);
     currentOtpIndex.value = 0;
     startResendTimer();
@@ -298,7 +297,6 @@ class AuthController extends GetxController {
     );
   }
 
-  // ==================== FORGOT PASSWORD ACTIONS ====================
 
   void _startForgotResendTimer() {
     _forgotTimer?.cancel();
@@ -407,7 +405,7 @@ class AuthController extends GetxController {
     isResettingPassword.value = true;
     await Future.delayed(const Duration(milliseconds: 900));
     isResettingPassword.value = false;
-    // Reset state
+
     isForgotPasswordStep2.value = false;
     forgotPasswordInputController.clear();
     forgotNewPasswordController.clear();
@@ -433,7 +431,6 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.HOME);
   }
 
-  // ==================== TWO-FACTOR AUTH ACTIONS ====================
 
   String get formattedTwoFactorTimer {
     final m = (twoFactorResendSeconds.value ~/ 60).toString().padLeft(2, '0');
@@ -441,25 +438,15 @@ class AuthController extends GetxController {
     return '$m:$s';
   }
 
-  /// Call this when the screen opens to sync with backend's real status.
-  Future<void> fetchTwoFactorStatus() async {
-    try {
-      // TODO: replace with your real API call
-      // final res = await _authRepository.getTwoFactorStatus();
-      // isTwoFactorEnabled.value = res.enabled;
-    } catch (e) {
-      // handle/log error
-    }
-  }
 
-  /// Step 1 -> Step 2: user taps "Enable" and we send an OTP to their
-  /// registered phone/email to confirm they own the account.
+  Future<void> fetchTwoFactorStatus() async {}
+
+
   Future<void> sendTwoFactorOtp() async {
     if (isSendingTwoFactorOtp.value) return;
     isSendingTwoFactorOtp.value = true;
     try {
-      // TODO: replace with your real API call
-      // await _authRepository.sendTwoFactorOtp();
+
 
       isTwoFactorSetupStep2.value = true;
       twoFactorOtpDigits.clear();
@@ -507,22 +494,21 @@ class AuthController extends GetxController {
     currentTwoFactorOtpIndex.value = twoFactorOtpDigits.length;
   }
 
-  /// Final step: verify the OTP and actually flip 2FA ON in the backend.
+
   Future<void> verifyTwoFactorOtp() async {
     if (isVerifyingTwoFactorOtp.value) return;
     isVerifyingTwoFactorOtp.value = true;
     try {
       final code = twoFactorOtpDigits.join();
 
-      // TODO: replace with your real API call
-      // final ok = await _authRepository.verifyTwoFactorOtp(code);
-      final bool ok = code.length == 6; // placeholder success check
+
+      final bool ok = code.length == 6;
 
       if (ok) {
         isTwoFactorEnabled.value = true;
         isTwoFactorSetupStep2.value = false;
         _twoFactorTimer?.cancel();
-        Get.back(); // close the 2FA screen and return to Profile
+        Get.back();
         Get.snackbar('Two-Factor Authentication', 'Successfully enabled.');
       } else {
         Get.snackbar('Invalid Code', 'The OTP you entered is incorrect.');
@@ -536,14 +522,13 @@ class AuthController extends GetxController {
     }
   }
 
-  /// Turning 2FA OFF — normally you'd ask for password confirmation here
-  /// before disabling, since it lowers account security.
+
   Future<void> disableTwoFactor() async {
     if (isDisablingTwoFactor.value) return;
     isDisablingTwoFactor.value = true;
     try {
-      // TODO: replace with your real API call
-      // await _authRepository.disableTwoFactor();
+
+
       isTwoFactorEnabled.value = false;
       Get.snackbar('Two-Factor Authentication', 'Disabled.');
     } catch (e) {

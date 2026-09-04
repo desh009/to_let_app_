@@ -22,7 +22,7 @@ abstract class Routes {
   static const String FILTER_RESULTS = _Paths.FILTER_RESULTS;
   static const String NOTIFICATIONS = _Paths.NOTIFICATIONS;
 
-  // CamelCase aliases
+
   static const String splash = _Paths.SPLASH;
   static const String home = _Paths.HOME;
   static const String details = _Paths.DETAILS;

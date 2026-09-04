@@ -9,7 +9,7 @@ class SavedController extends GetxController {
 
   final RxString selectedFilter = 'All'.obs;
 
-  // নিজের savedItems না রেখে সরাসরি FavoriteController-এর রিঅ্যাক্টিভ লিস্ট রেফার করুন
+
   RxList<ToLetItem> get savedItems => favoriteController.favoriteItems;
   RxBool get isLoading => favoriteController.isLoading;
 

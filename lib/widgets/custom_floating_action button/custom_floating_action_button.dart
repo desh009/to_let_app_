@@ -1,4 +1,4 @@
-// widgets/shutter_fab/shutter_fab.dart
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class ShutterFab extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
-  final VoidCallback? onLongPress; 
+  final VoidCallback? onLongPress;
   final Color backgroundColor;
   final Color iconColor;
   final double buttonWidth;
@@ -14,7 +14,7 @@ class ShutterFab extends StatefulWidget {
   final double borderRadius;
   final bool startOnRight;
   final double initialTopFraction;
-  
+
   const ShutterFab({
     super.key,
     required this.icon,
@@ -35,7 +35,7 @@ class ShutterFab extends StatefulWidget {
 
 class _ShutterFabState extends State<ShutterFab> {
   static const double _peekVisible = 20;
-  static const double _dragTapThreshold = 6; // px — এর কম নড়াচড়া = tap/hold
+  static const double _dragTapThreshold = 6;
   static const Duration _longPressDuration = Duration(milliseconds: 450);
 
   bool _isRight = true;
@@ -89,8 +89,8 @@ class _ShutterFabState extends State<ShutterFab> {
   }
 
   void _handleLongPress() {
-    if (!_isExpanded) return; 
-    widget.onLongPress?.call(); 
+    if (!_isExpanded) return;
+    widget.onLongPress?.call();
   }
 
   void _onPointerDown(PointerDownEvent event, Size screenSize) {

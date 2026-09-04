@@ -50,14 +50,14 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
                       children: [
                         SizedBox(height: 10.h),
 
-                        // সব সেকশন
+
                         ...controller.sections.map(
                           (section) => _buildSection(section, isDark),
                         ),
 
                         SizedBox(height: 4.h),
 
-                        // Footer Questions/Legal Notice Box
+
                         _buildFooterNoticeCard(isDark),
                         SizedBox(height: 20.h),
                       ],
@@ -72,7 +72,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
     );
   }
 
-  // এক একটা সেকশন রেন্ডার
+
   Widget _buildSection(TermsSection section, bool isDark) {
     return Padding(
       padding: EdgeInsets.only(bottom: 24.h),
@@ -96,7 +96,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
     );
   }
 
-  // Header App Bar
+
   Widget _buildAppBar(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -137,14 +137,14 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-     
+
           ),
         ],
       ),
     );
   }
 
-  // Section Title
+
   Widget _buildSectionHeader(String title, bool isDark) {
     return Text(
       title,
@@ -156,7 +156,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
     );
   }
 
-  // General Text Paragraph
+
   Widget _buildBodyText(String text, bool isDark) {
     return Text(
       text,
@@ -168,7 +168,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
     );
   }
 
-  // Bullet Point Item
+
   Widget _buildBulletPoint(String text, bool isDark) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +198,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
     );
   }
 
-  // Bottom Grey Container Card
+
   Widget _buildFooterNoticeCard(bool isDark) {
     return Container(
       width: double.infinity,

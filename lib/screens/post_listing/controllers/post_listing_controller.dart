@@ -11,7 +11,7 @@ import '../../notifications/controllers/notifications_controller.dart';
 class PostListingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
-  // Text Editing Controllers
+
   late final TextEditingController titleController;
   late final TextEditingController locationController;
   late final TextEditingController rentController;
@@ -265,7 +265,7 @@ class PostListingController extends GetxController {
     isDirectOwner.value = true;
   }
 
-  // Publish Listing Action
+
   Future<void> publishListing() async {
     final title = titleController.text.trim();
     final location = locationController.text.trim();
@@ -307,7 +307,7 @@ class PostListingController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 900));
     isSubmitting.value = false;
 
-    // Create newly posted item
+
     final newItem = ToLetItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: title,
@@ -326,14 +326,14 @@ class PostListingController extends GetxController {
       isFeatured: true,
     );
 
-    // If HomeController is registered, prepend to listings
+
     if (Get.isRegistered<HomeController>()) {
       final homeController = Get.find<HomeController>();
       homeController.featuredProperties.insert(0, newItem);
       homeController.allProperties.insert(0, newItem);
     }
 
-    // Add to saved Notifications list
+
     NotificationsController.to.addNotification(
       title: '✨ Listing Published: $title',
       body: 'Your property listing in $location has been successfully published!',
@@ -342,7 +342,7 @@ class PostListingController extends GetxController {
       type: 'listing',
     );
 
-    // ✅ Notification পাঠান — fire-and-forget, publish flow block করবে না
+
     NotificationApiService.notifyNewListing(
       listingTitle: title,
       listingId: newItem.id,

@@ -67,7 +67,7 @@ class CustomNumpad extends StatelessWidget {
   Widget _buildBottomRow(Color keyBg, Color textColor) {
     return Row(
       children: [
-        // Dot Key
+
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -86,7 +86,7 @@ class CustomNumpad extends StatelessWidget {
           ),
         ),
 
-        // Zero Key
+
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -105,7 +105,7 @@ class CustomNumpad extends StatelessWidget {
           ),
         ),
 
-        // Backspace Key
+
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6.w),

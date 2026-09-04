@@ -7,7 +7,7 @@ import '../../data/models/tolet_model.dart';
 import '../../routes/app_routes.dart';
 import '../../screens/notifications/controllers/notifications_controller.dart';
 
-/// Top-level background message handler required by Firebase Messaging
+
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -30,7 +30,7 @@ class FcmService extends GetxService {
     importance: Importance.max,
   );
 
-  /// Initializes FCM permissions, local notification plugin, token fetching, and listeners
+
   Future<FcmService> init() async {
     await _requestPermission();
     await _initLocalNotifications();
@@ -39,7 +39,7 @@ class FcmService extends GetxService {
     return this;
   }
 
-  /// Request notification permissions for iOS / Android 13+
+
   Future<void> _requestPermission() async {
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
@@ -60,7 +60,7 @@ class FcmService extends GetxService {
     );
   }
 
-  /// Initialize Local Notifications plugin for Android & iOS
+
   Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -76,7 +76,7 @@ class FcmService extends GetxService {
       iOS: iosSettings,
     );
 
-    // Create channel on Android
+
     await _localNotifications
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -108,9 +108,9 @@ class FcmService extends GetxService {
     });
   }
 
-  /// Setup foreground, background open, and app launched message listeners
+
   void _setupMessageHandlers() {
-    // 1. Foreground message handler
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Received foreground message: ${message.notification?.title}');
       _showLocalNotification(message);
@@ -127,13 +127,13 @@ class FcmService extends GetxService {
       }
     });
 
-    // 2. Message opened app (from background state)
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('Notification opened app from background state: ${message.data}');
       _handleMessageData(message.data);
     });
 
-    // 3. Check if app was launched from a terminated notification click
+
     _messaging.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
         log('Notification opened app from terminated state: ${message.data}');
@@ -142,7 +142,7 @@ class FcmService extends GetxService {
     });
   }
 
-  /// Displays local notification when message received in foreground
+
   void _showLocalNotification(RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
@@ -187,13 +187,13 @@ class FcmService extends GetxService {
     Get.toNamed(Routes.DETAILS, arguments: sample);
   }
 
-  /// Subscribe to a topic for broadcast notifications
+
   Future<void> subscribeToTopic(String topic) async {
     await _messaging.subscribeToTopic(topic);
     log('Subscribed to FCM topic: $topic');
   }
 
-  /// Unsubscribe from a topic
+
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
     log('Unsubscribed from FCM topic: $topic');

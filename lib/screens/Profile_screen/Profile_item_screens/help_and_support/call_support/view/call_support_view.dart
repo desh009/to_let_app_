@@ -30,7 +30,7 @@ class CallUsScreen extends GetView<CallUsController> {
                       children: [
                         SizedBox(height: 16.h),
 
-                        // Call Icon Header Illustration
+
                         Container(
                           width: 100.r,
                           height: 100.r,
@@ -46,7 +46,7 @@ class CallUsScreen extends GetView<CallUsController> {
                         ),
                         SizedBox(height: 24.h),
 
-                        // Headline & Subtitle
+
                         Text(
                           AppStrings.wereHereToHelp,
                           style: TextStyle(
@@ -68,11 +68,11 @@ class CallUsScreen extends GetView<CallUsController> {
                         ),
                         SizedBox(height: 28.h),
 
-                        // Helpline Dark Card
+
                         _buildHelplineCard(),
                         SizedBox(height: 20.h),
 
-                        // Call Now Button with Loading
+
                         Obx(
                           () => SizedBox(
                             width: double.infinity,
@@ -122,7 +122,7 @@ class CallUsScreen extends GetView<CallUsController> {
                         ),
                         SizedBox(height: 24.h),
 
-                        // Call Schedule Section Card
+
                         _buildScheduleCard(isDark),
                         SizedBox(height: 20.h),
                       ],
@@ -137,7 +137,7 @@ class CallUsScreen extends GetView<CallUsController> {
     );
   }
 
-  // App Bar
+
   Widget _buildAppBar(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -174,14 +174,14 @@ class CallUsScreen extends GetView<CallUsController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-          
+
           ),
         ],
       ),
     );
   }
 
-  // Black Helpline Display Card
+
   Widget _buildHelplineCard() {
     return Container(
       width: double.infinity,
@@ -249,7 +249,7 @@ class CallUsScreen extends GetView<CallUsController> {
     );
   }
 
-  // Schedule Info Card
+
   Widget _buildScheduleCard(bool isDark) {
     return Container(
       width: double.infinity,

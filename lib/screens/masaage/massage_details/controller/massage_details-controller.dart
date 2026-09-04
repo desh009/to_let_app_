@@ -1,8 +1,8 @@
-// screens/chat/controllers/chat_controller.dart
+
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
-  // Observables
+
   final RxList<ChatMessage> messages = <ChatMessage>[].obs;
   final RxString inputMessage = ''.obs;
   final RxBool isLoading = false.obs;
@@ -14,7 +14,7 @@ class ChatController extends GetxController {
   }
 
   void loadMessages() {
-    // Sample messages
+
     messages.assignAll([
       ChatMessage(
         message: "Hi! Thanks for your interest in the apartment. When would you like to visit?",
@@ -36,16 +36,16 @@ class ChatController extends GetxController {
 
   void sendMessage() {
     if (inputMessage.value.trim().isEmpty) return;
-    
+
     final now = DateTime.now();
     final time = "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-    
+
     messages.add(ChatMessage(
       message: inputMessage.value.trim(),
       time: time,
       isSentByMe: true,
     ));
-    
+
     inputMessage.value = '';
   }
 

@@ -38,7 +38,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
       child: Row(
         children: [
-          // Search Input Field Box
+
           Expanded(
             child: Container(
               height: 52.h,
@@ -134,7 +134,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
           ),
           SizedBox(width: 12.w),
 
-          // Filter Button (Terracotta Square)
+
           InkWell(
             borderRadius: BorderRadius.circular(16.r),
             onTap: () => Get.toNamed(Routes.FILTER),

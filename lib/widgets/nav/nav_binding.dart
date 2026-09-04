@@ -1,4 +1,4 @@
-// bindings/nav_binding.dart
+
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 

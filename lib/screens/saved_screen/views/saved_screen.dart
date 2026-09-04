@@ -26,8 +26,6 @@ class SavedScreen extends GetView<SavedController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header ────────────────────────────────────────────────
-
 
 
             Padding(
@@ -62,9 +60,6 @@ class SavedScreen extends GetView<SavedController> {
                   ),
 
 
-                  // Clear all trash icon
-
-                  
                   Obx(() => controller.savedItems.isNotEmpty
 
                       ? IconButton(
@@ -82,7 +77,7 @@ class SavedScreen extends GetView<SavedController> {
               ),
             ),
 
-            // ── Filter Chips (horizontal scroll) ─────────────────────
+
             Obx(() {
               if (controller.savedItems.isEmpty) return const SizedBox.shrink();
               final filters = controller.filterOptions;
@@ -140,7 +135,7 @@ class SavedScreen extends GetView<SavedController> {
             }),
             SizedBox(height: 12.h),
 
-            // ── Main List ─────────────────────────────────────────────
+
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -165,7 +160,6 @@ class SavedScreen extends GetView<SavedController> {
                     ),
                   );
                 }
-
 
 
                 return ListView.builder(
@@ -233,7 +227,6 @@ class SavedScreen extends GetView<SavedController> {
   }
 }
 
-// ── Saved Property Card ───────────────────────────────────────────────────────
 
 class _SavedCard extends StatelessWidget {
   final ToLetItem item;
@@ -272,13 +265,13 @@ class _SavedCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // ── Top row: image + details + heart ──────────────
+
             Padding(
               padding: EdgeInsets.all(12.r),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Thumbnail
+
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14.r),
                     child: Container(
@@ -302,12 +295,12 @@ class _SavedCard extends StatelessWidget {
                   ),
                   SizedBox(width: 12.w),
 
-                  // Details
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Price
+
                         Row(
                           children: [
                             Text(
@@ -333,7 +326,7 @@ class _SavedCard extends StatelessWidget {
                         ),
                         SizedBox(height: 3.h),
 
-                        // Title
+
                         Text(
                           item.title,
                           maxLines: 1,
@@ -348,7 +341,7 @@ class _SavedCard extends StatelessWidget {
                         ),
                         SizedBox(height: 3.h),
 
-                        // Location
+
                         Text(
                           item.location,
                           maxLines: 1,
@@ -362,7 +355,7 @@ class _SavedCard extends StatelessWidget {
                         ),
                         SizedBox(height: 6.h),
 
-                        // Stats: beds • baths • status
+
                         Row(
                           children: [
                             Text(
@@ -401,7 +394,7 @@ class _SavedCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Heart / Remove button
+
                   GestureDetector(
                     onTap: onRemove,
                     child: Icon(
@@ -414,19 +407,19 @@ class _SavedCard extends StatelessWidget {
               ),
             ),
 
-            // ── Divider ────────────────────────────────────────
+
             Divider(
               height: 1,
               thickness: 1,
               color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
             ),
 
-            // ── Action Buttons: Message | Call Owner ───────────
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               child: Row(
                 children: [
-                  // Message button (outlined)
+
                   Expanded(
                     child: GestureDetector(
                       onTap: onMessage,
@@ -470,7 +463,7 @@ class _SavedCard extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w),
 
-                  // Call Owner button (terracotta filled)
+
                   Expanded(
                     child: GestureDetector(
                       onTap: onCall,
@@ -522,7 +515,6 @@ class _SavedCard extends StatelessWidget {
       );
 }
 
-// ── Empty State ──────────────────────────────────────────────────────────────
 
 class _EmptyState extends StatelessWidget {
   final bool isDark;

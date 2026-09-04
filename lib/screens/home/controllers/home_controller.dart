@@ -1,4 +1,4 @@
-// screens/home/controllers/home_controller.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
@@ -83,7 +83,7 @@ class HomeController extends GetxController {
       await favoriteController.loadFavorites();
       _applyFilters();
     } catch (e) {
-      // Silent - no snackbar
+      debugPrint('Error loading properties: $e');
     } finally {
       isLoading.value = false;
     }
@@ -147,7 +147,6 @@ class HomeController extends GetxController {
     selectedLocation.value = location;
   }
 
-  // ============ NAVIGATION METHODS ============
 
   void changeNavTab(int index) {
     navController.changeTab(index);
@@ -165,19 +164,15 @@ class HomeController extends GetxController {
     navController.toMessages();
   }
 
-  // void navigateToProfile() {
-  //   navController.toProfile();
-  // }
 
   void navigateToPostListing() {
     navController.toPostListing();
   }
 
   void navigateToMapView() {
-    // Silent navigation - no snackbar
+
   }
 
-  // ============ FAVORITE METHODS ============
 
   Future<void> toggleFavorite(ToLetItem item) async {
     await favoriteController.toggleFavorite(item);
@@ -189,7 +184,6 @@ class HomeController extends GetxController {
 
   int get favoriteCount => favoriteController.favoriteCount;
 
-  // ============ THEME METHODS ============
 
   void toggleTheme() {
     isDarkMode.value = !isDarkMode.value;
@@ -197,7 +191,6 @@ class HomeController extends GetxController {
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
   }
 
-  // ============ PROFILE METHODS ============
 
   Future<void> updateUserProfile(String name, String phone) async {
     savedUserName.value = name;
@@ -206,7 +199,6 @@ class HomeController extends GetxController {
     await storageService.setString(StorageKeys.userPhone, phone);
   }
 
-  // ============ SEARCH METHODS ============
 
   void updateSearchQuery(String query) {
     searchQuery.value = query;

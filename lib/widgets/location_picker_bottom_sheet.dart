@@ -32,7 +32,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
   String _selectedSubArea = 'Sonadanga';
   String _searchQuery = '';
 
-  // Khulna Areas List
+
   final List<Map<String, dynamic>> _khulnaAreas = const [
     {'area': 'Sonadanga', 'count': 124},
     {'area': 'Khalishpur', 'count': 89},
@@ -100,7 +100,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
         children: [
           SizedBox(height: 12.h),
 
-          // Drag Handle Pill
+
           Container(
             width: 40.w,
             height: 4.h,
@@ -112,7 +112,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
 
           SizedBox(height: 16.h),
 
-          // Top Header (Fixed to Khulna, Bangladesh)
+
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Container(
@@ -185,7 +185,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
 
           SizedBox(height: 16.h),
 
-          // Search Area Input Field
+
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Container(
@@ -238,7 +238,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
 
           SizedBox(height: 12.h),
 
-          // Scrollable List of Areas
+
           Expanded(
             child: _filteredAreas.isEmpty
                 ? Center(
@@ -295,7 +295,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
                             ),
                             child: Row(
                               children: [
-                                // Location Pin Circle Icon
+
                                 Container(
                                   width: 36.r,
                                   height: 36.r,
@@ -315,7 +315,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
                                 ),
                                 SizedBox(width: 14.w),
 
-                                // Area Name & Subtitle
+
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,7 +344,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
                                   ),
                                 ),
 
-                                // Trailing Badge / Checkmark
+
                                 if (isSelected)
                                   Container(
                                     width: 26.r,
@@ -379,7 +379,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
                   ),
           ),
 
-          // Footer info text
+
           Container(
             padding: EdgeInsets.symmetric(vertical: 14.h),
             alignment: Alignment.center,

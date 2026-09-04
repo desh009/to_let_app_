@@ -20,7 +20,7 @@ class HomeHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Greeting & Headline
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +53,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
 
-          // Notification Bell Button
+
           Container(
             decoration: BoxDecoration(
               color: isDark ? AppColors.surfaceDark : Colors.white,
@@ -73,7 +73,7 @@ class HomeHeader extends StatelessWidget {
                 color: const Color(0xFF1E232A),
               ),
               onPressed: () {
-                // Navigate to the notifications screen
+
                 Get.toNamed(Routes.NOTIFICATIONS);
               },
             ),

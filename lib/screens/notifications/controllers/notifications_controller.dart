@@ -110,7 +110,7 @@ class NotificationsController extends GetxController {
   void onNotificationTap(AppNotificationModel item) {
     markAsRead(item.id);
 
-    // Find target property
+
     ToLetItem? targetItem = item.property;
     if (targetItem == null && item.propertyId != null) {
       targetItem = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == item.propertyId);

@@ -41,7 +41,7 @@ class ReportProblemController extends GetxController {
 
   ProblemOption get selectedOption => options[selectedIndex.value];
 
-  /// আগের স্ক্রিন থেকে পাঠানো listing id (optional)
+
   String? listingId;
 
   @override
@@ -82,12 +82,8 @@ class ReportProblemController extends GetxController {
     isSubmitting.value = true;
 
     try {
-      // TODO: repository/API call
-      // await _repository.submitReport(
-      //   reason: selectedOption.title,
-      //   description: description,
-      //   listingId: listingId,
-      // );
+
+
       await Future.delayed(const Duration(milliseconds: 800));
 
       descriptionController.clear();

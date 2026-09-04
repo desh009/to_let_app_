@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/constants/app_strings.dart';
 
 
-/// এক একটা পলিসি সেকশন — প্যারাগ্রাফ অথবা বুলেট লিস্ট
 class PolicySection {
   final String title;
   final String? body;
@@ -21,7 +20,7 @@ class PolicySection {
 class PrivacyPolicyController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
-  /// স্ক্রল করে নিচে নামলে "টপে যাও" বাটন দেখাবে
+
   final RxBool showScrollToTop = false.obs;
 
   final List<PolicySection> sections = const [

@@ -1,4 +1,4 @@
-// widgets/favourite/button/animated_favourite_button.dart
+
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -29,16 +29,16 @@ class AnimatedFavoriteButton extends StatefulWidget {
 
 class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
     with TickerProviderStateMixin {
-  // Heart bounce/pop controller
+
   late AnimationController _bounceController;
   late Animation<double> _bounceScale;
 
-  // Ripple / halo controller
+
   late AnimationController _rippleController;
   late Animation<double> _rippleScale;
   late Animation<double> _rippleOpacity;
 
-  // Particle burst controller
+
   late AnimationController _burstController;
 
   StreamSubscription? _sub;
@@ -141,7 +141,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
-              // ── Ripple halo ──────────────────────────────
+
               AnimatedBuilder(
                 animation: _rippleController,
                 builder: (context, _) {
@@ -165,7 +165,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                 },
               ),
 
-              // ── Particle burst ───────────────────────────
+
               AnimatedBuilder(
                 animation: _burstController,
                 builder: (context, _) {
@@ -206,7 +206,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                 },
               ),
 
-              // ── Heart icon (bounce) ──────────────────────
+
               AnimatedBuilder(
                 animation: _bounceController,
                 builder: (context, child) {
@@ -235,7 +235,6 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
   }
 }
 
-// ── Particle spec generator ─────────────────────────────────────────────────
 
 class _ParticleSpec {
   final double angle;
@@ -254,12 +253,12 @@ class _ParticleSpec {
 }
 
 List<_ParticleSpec> _generateParticles(int count) {
-  final rand = math.Random(7); // fixed seed → consistent nice spread
+  final rand = math.Random(7);
   final colors = [
-    AppColors.error,       // লাল হার্ট বার্স্ট
-    AppColors.primary,     // টেরাকোটা
-    AppColors.secondary,   // অ্যাম্বার/অরেঞ্জ অ্যাকসেন্ট
-    AppColors.primaryDark, // গাঢ় রাস্ট শেড
+    AppColors.error,
+    AppColors.primary,
+    AppColors.secondary,
+    AppColors.primaryDark,
   ];
 
   return List.generate(count, (i) {

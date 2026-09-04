@@ -9,8 +9,8 @@ class ToLetItem {
   final String description;
   final String contactNumber;
   final List<String> images;
-  final String category; // 'Apartments', 'Houses', 'Rooms', 'Commercial'
-  final String badgeText; // 'Available now', 'Verified', etc.
+  final String category;
+  final String badgeText;
   final bool isVerified;
   final bool isAvailable;
   final bool isFeatured;

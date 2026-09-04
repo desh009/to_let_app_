@@ -18,6 +18,7 @@ class RegisterScreen extends GetView<AuthController> {
         ? const Color(0xFFA0AEC0)
         : const Color(0xFF7E8B9B);
 
+
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.backgroundDark
@@ -29,7 +30,6 @@ class RegisterScreen extends GetView<AuthController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Top Back Button
               GestureDetector(
                 onTap: () => Get.back(),
                 child: Container(
@@ -88,7 +88,6 @@ class RegisterScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 16.h),
 
-              // 4. Field 2: Phone number (Active Terracotta Border)
              _buildLabel('phone_number'.tr, textColor),
 SizedBox(height: 8.h),
 
@@ -96,7 +95,6 @@ TextField(
   controller: controller.regPhoneController,
   keyboardType: TextInputType.phone,
   decoration: InputDecoration(
-    // ✅ Prefix এ +880 এবং Icon যোগ করুন
     prefixIcon: Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Row(
@@ -123,11 +121,10 @@ TextField(
       minWidth: 0,
       minHeight: 0,
     ),
-    
-    // ✅ Background Color
+
     filled: true,
     fillColor: inputBg,
-    
+
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16.r),
       borderSide: const BorderSide(
@@ -149,7 +146,7 @@ TextField(
         width: 2.0,
       ),
     ),
-    
+
     contentPadding: EdgeInsets.symmetric(vertical: 14.h),
     isDense: true,
   ),
@@ -161,7 +158,6 @@ TextField(
 ),
               SizedBox(height: 16.h),
 
-              // 5. Field 3: Email address
               _buildLabel('email_address'.tr, textColor),
               SizedBox(height: 8.h),
               _buildInputField(
@@ -177,7 +173,6 @@ TextField(
               ),
               SizedBox(height: 16.h),
 
-              // 6. Field 4: Password & Strength Indicators
               _buildLabel('password'.tr, textColor),
               SizedBox(height: 8.h),
               _buildInputField(
@@ -194,7 +189,6 @@ TextField(
               ),
               SizedBox(height: 8.h),
 
-              // Password Strength 4 Horizontal Bars
               Obx(
                 () => Row(
                   children: List.generate(4, (index) {
@@ -218,7 +212,6 @@ TextField(
               ),
               SizedBox(height: 16.h),
 
-              // 7. Field 5: Confirm Password
               _buildLabel('confirm_password'.tr, textColor),
               SizedBox(height: 8.h),
               _buildInputField(
@@ -235,7 +228,6 @@ TextField(
               ),
               SizedBox(height: 18.h),
 
-              // 8. Terms Checkbox & No Brokerage Badge
               Row(
                 children: [
                   Obx(
@@ -315,7 +307,7 @@ TextField(
               ),
               SizedBox(height: 24.h),
 
-              // 9. CTA: Create Account Button
+
               Obx(
                 () => SizedBox(
                   width: double.infinity,
@@ -355,7 +347,7 @@ TextField(
               ),
               SizedBox(height: 22.h),
 
-              // 10. Footer: Already have an account? Log In
+
               Center(
                 child: GestureDetector(
                   onTap: () => Get.back(),

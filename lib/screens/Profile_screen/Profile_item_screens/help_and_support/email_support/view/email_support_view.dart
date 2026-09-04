@@ -8,7 +8,6 @@ import 'package:to_let_app_abandon/core/constants/app_strings.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/email_support/controller/email_support_controller.dart';
 
 
-// CHANGED: StatefulWidget -> GetView<EmailSupportController>
 class EmailSupportScreen extends GetView<EmailSupportController> {
   const EmailSupportScreen({super.key});
 
@@ -21,7 +20,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildAppBar(isDark), // CHANGED: removed context parameter
+            _buildAppBar(isDark),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -33,11 +32,11 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                       children: [
                         SizedBox(height: 8.h),
 
-                        // Top Support Info Box
+
                         _buildTopInfoCard(isDark),
                         SizedBox(height: 24.h),
 
-                        // Your Email Field Label
+
                         Text(
                           AppStrings.yourEmail,
                           style: TextStyle(
@@ -51,7 +50,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                         _buildEmailField(isDark),
                         SizedBox(height: 20.h),
 
-                        // Subject Dropdown Label
+
                         Text(
                           AppStrings.subject,
                           style: TextStyle(
@@ -65,16 +64,14 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                         _buildSubjectDropdown(isDark),
                         SizedBox(height: 24.h),
 
-                        // Attach Screenshot Button (Dotted Border)
-                        // CHANGED: Wrapped with GestureDetector to make it tappable
+
                         GestureDetector(
                           onTap: controller.pickAttachment,
                           child: _buildAttachmentButton(isDark),
                         ),
                         SizedBox(height: 24.h),
 
-                        // Send Email Button with Loading
-                        // CHANGED: Wrapped with Obx for reactive loading state
+
                         Obx(
                           () => SizedBox(
                             width: double.infinity,
@@ -113,7 +110,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                         ),
                         SizedBox(height: 16.h),
 
-                        // Ticket ID Footer Note
+
                         Center(
                           child: Text(
                             AppStrings.ticketIdNote,
@@ -136,8 +133,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
     );
   }
 
-  // Header App Bar
-  // CHANGED: Removed BuildContext parameter, uses controller.handleBack
+
   Widget _buildAppBar(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -145,7 +141,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: controller.handleBack, // CHANGED
+            onTap: controller.handleBack,
             child: Container(
               width: 36.r,
               height: 36.r,
@@ -174,15 +170,15 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-          
-            
+
+
           ),
         ],
       ),
     );
   }
 
-  // Top Email Info Card
+
   Widget _buildTopInfoCard(bool isDark) {
     return Container(
       width: double.infinity,
@@ -239,7 +235,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
     );
   }
 
-  // Email Address Display Container
+
   Widget _buildEmailField(bool isDark) {
     return Container(
       width: double.infinity,
@@ -251,7 +247,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // CHANGED: Uses controller emailController
+
           Text(
             controller.emailController.text,
             style: TextStyle(
@@ -263,7 +259,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
           Icon(
             Icons.check,
             size: 18.r,
-            // CHANGED: Fixed invalid Colors.emerald to AppColors.success
+
             color: AppColors.success,
           ),
         ],
@@ -271,8 +267,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
     );
   }
 
-  // Subject Dropdown Selector
-  // CHANGED: Wrapped with Obx for reactive dropdown
+
   Widget _buildSubjectDropdown(bool isDark) {
     return Obx(
       () => Container(
@@ -286,7 +281,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
-            value: controller.selectedSubject.value, // CHANGED
+            value: controller.selectedSubject.value,
             isExpanded: true,
             icon: Icon(
               Icons.keyboard_arrow_down,
@@ -294,7 +289,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
             ),
             dropdownColor: isDark ? AppColors.surfaceDark : Colors.white,
             borderRadius: BorderRadius.circular(16.r),
-            items: controller.subjects.map((String value) { // CHANGED
+            items: controller.subjects.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(
@@ -307,15 +302,14 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                 ),
               );
             }).toList(),
-            onChanged: controller.selectSubject, // CHANGED
+            onChanged: controller.selectSubject,
           ),
         ),
       ),
     );
   }
 
-  // Custom Dotted Border Attachment Button
-  // CHANGED: Added Obx to show selected file name
+
   Widget _buildAttachmentButton(bool isDark) {
     return CustomPaint(
       painter: DottedBorderPainter(
@@ -389,8 +383,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
   }
 }
 
-// Custom Painter for Dotted Border around attachment
-// CHANGED: Fixed invalid Paint() syntax error (..color = color)
+
 class DottedBorderPainter extends CustomPainter {
   final Color color;
 
@@ -399,7 +392,7 @@ class DottedBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color // CHANGED: was 'color = color' (syntax error)
+      ..color = color
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
 

@@ -30,12 +30,12 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
                       children: [
                         SizedBox(height: 6.h),
 
-                        // Red Alert Banner
+
                         _buildNoticeBanner(isDark),
                         SizedBox(height: 20.h),
                         SizedBox(height: 24.h),
 
-                        // Description Field Title
+
                         Text(
                           AppStrings.description,
                           style: TextStyle(
@@ -49,7 +49,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
                         ),
                         SizedBox(height: 8.h),
 
-                        // Description TextField Input
+
                         Container(
                           decoration: BoxDecoration(
                             color: isDark ? AppColors.surfaceDark : Colors.white,
@@ -85,7 +85,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
                         ),
                         SizedBox(height: 24.h),
 
-                        // Submit Button
+
                         Obx(
                           () => SizedBox(
                             width: double.infinity,
@@ -136,7 +136,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
     );
   }
 
-  // Header Navigation Bar
+
   Widget _buildAppBar(bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -177,14 +177,14 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
               color: isDark ? AppColors.surfaceDark : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(10.r),
             ),
-     
+
           ),
         ],
       ),
     );
   }
 
-  // Top Anonymous Notice Box
+
   Widget _buildNoticeBanner(bool isDark) {
     return Container(
       width: double.infinity,
@@ -220,7 +220,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
     );
   }
 
-  // Custom Radio Option Card
+
   Widget _buildOptionCard({
     required ProblemOption option,
     required bool isSelected,
@@ -245,7 +245,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
         ),
         child: Row(
           children: [
-            // Custom Radio Indicator Icon
+
             Container(
               width: 22.r,
               height: 22.r,
