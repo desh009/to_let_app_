@@ -21,7 +21,7 @@ class FilterController extends GetxController {
     {'title': 'Family', 'icon': Icons.family_restroom_rounded},
     {'title': 'Bachelor', 'icon': Icons.person_outline_rounded},
     {'title': 'Sublet', 'icon': Icons.door_front_door_outlined},
-    {'title': 'Seat', 'icon': Icons.chair_outlined},
+    {'title': 'Seat', 'icon': Icons.bed_rounded},
   ];
   final RxString selectedPropertyType = 'Family'.obs;
 

@@ -54,7 +54,6 @@ class RegisterScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 18.h),
 
-              // 2. Title & Subtitle
               Text(
                 'create_account_title'.tr,
                 style: TextStyle(
@@ -81,7 +80,6 @@ class RegisterScreen extends GetView<AuthController> {
                 inputBg: inputBg,
                 textColor: textColor,
                 subtitleColor: subtitleColor,
-                hintText: 'full_name_hint'.tr,
                 prefixIcon: Icon(
                   Icons.person_outline_rounded,
                   size: 18.r,
@@ -98,14 +96,6 @@ TextField(
   controller: controller.regPhoneController,
   keyboardType: TextInputType.phone,
   decoration: InputDecoration(
-    // ✅ Hint Text
-    hintText: 'phone_hint'.tr,
-    hintStyle: TextStyle(
-      fontSize: 14.sp,
-      fontWeight: FontWeight.w400,
-      color: subtitleColor,
-    ),
-    
     // ✅ Prefix এ +880 এবং Icon যোগ করুন
     prefixIcon: Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -179,7 +169,6 @@ TextField(
                 inputBg: inputBg,
                 textColor: textColor,
                 subtitleColor: subtitleColor,
-                hintText: 'email_hint'.tr,
                 prefixIcon: Icon(
                   Icons.mail_outline_rounded,
                   size: 18.r,
@@ -196,7 +185,6 @@ TextField(
                 inputBg: inputBg,
                 textColor: textColor,
                 subtitleColor: subtitleColor,
-                hintText: 'password_min_chars'.tr,
                 isPassword: true,
                 prefixIcon: Icon(
                   Icons.lock_outline_rounded,
@@ -238,7 +226,6 @@ TextField(
                 inputBg: inputBg,
                 textColor: textColor,
                 subtitleColor: subtitleColor,
-                hintText: 'reenter_password'.tr,
                 isPassword: true,
                 prefixIcon: Icon(
                   Icons.lock_outline_rounded,
@@ -418,7 +405,6 @@ TextField(
     required Color inputBg,
     required Color textColor,
     required Color subtitleColor,
-    required String hintText,
     Widget? prefixIcon,
     bool isPassword = false,
   }) {
@@ -441,14 +427,9 @@ TextField(
                 fontWeight: FontWeight.w600,
                 color: textColor,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  fontSize: 14.sp,
-                  color: subtitleColor.withAlpha(150),
-                ),
               ),
             ),
           ),

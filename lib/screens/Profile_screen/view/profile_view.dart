@@ -16,17 +16,27 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _selectedNavIndex = 3;
-  bool _isDarkMode = false;
+  late final ProfileController controller;
 
   // Accordion Expand States
   bool _isSettingsExpanded = false;
   bool _isHelpSupportExpanded = false;
 
   @override
+  void initState() {
+    super.initState();
+    controller = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(
+            ProfileController(
+              storageService: Get.find(),
+            ),
+          );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark || _isDarkMode;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final navController = Get.find<NavController>();
 
     return Scaffold(
@@ -343,10 +353,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildMenuItem(
             icon: Icons.wb_sunny_outlined,
             title: AppStrings.darkMode,
-            trailingWidget: Switch(
-              value: _isDarkMode,
-              onChanged: (val) => setState(() => _isDarkMode = val),
-              activeColor: AppColors.primary,
+            trailingWidget: Obx(
+              () => Switch(
+                value: controller.isDarkMode.value,
+                onChanged: (val) => controller.toggleDarkMode(val),
+                activeColor: AppColors.primary,
+              ),
             ),
             isDark: isDark,
           ),
@@ -897,9 +909,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildLogoutButton(bool isDark) {
     return InkWell(
-      onTap: () {
-        // TODO: wire up your actual logout logic here
-      },
+      onTap: () => controller.logout(),
       borderRadius: BorderRadius.circular(16.r),
       child: Container(
         width: double.infinity,

@@ -91,7 +91,6 @@ class FcmService extends GetxService {
     );
   }
 
-  /// Get device FCM token and listen for refreshes
   Future<void> _getToken() async {
     try {
       String? token = await _messaging.getToken();
