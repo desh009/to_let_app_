@@ -132,7 +132,7 @@ class HomeScreen extends GetView<HomeController> {
                       }
 
                       return SizedBox(
-                        height: 220.h,
+                        height: 235.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),

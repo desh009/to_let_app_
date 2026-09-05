@@ -23,7 +23,7 @@ class HomeController extends GetxController {
   final RxBool isLoading = false.obs;
 
   final RxString selectedLocation = 'Khulna, Bangladesh'.obs;
-  final RxString selectedCategory = 'Family'.obs;
+  final RxString selectedCategory = ''.obs;
   final RxString searchQuery = ''.obs;
 
   final RxInt currentNavIndex = 0.obs;
@@ -38,10 +38,20 @@ class HomeController extends GetxController {
     'Boyra, Khulna',
     'Nirala, Khulna',
     'Daulatpur, Khulna',
+    'Shiromoni, Khulna',
+    'KUET Area, Khulna',
+    'Fulbarigate, Khulna',
     'Moylapota, Khulna',
     'Shibbari, Khulna',
     'Gollamari, Khulna',
     'Rupsha, Khulna',
+    'Tutpara, Khulna',
+    'KDA Avenue, Khulna',
+    'Royal Mor, Khulna',
+    'Dakbangla, Khulna',
+    'Teligati, Khulna',
+    'Gilatala, Khulna',
+    'Khulna Sadar, Khulna',
   ];
 
   @override
@@ -67,11 +77,10 @@ class HomeController extends GetxController {
         : 'Desh';
     savedUserPhone.value =
         storageService.getString(StorageKeys.userPhone) ?? '';
-    final lastSearch =
-        storageService.getString(StorageKeys.savedSearchQuery) ?? '';
-    if (lastSearch.isNotEmpty) {
-      searchQuery.value = lastSearch;
-    }
+    // Reset search query and category on launch so home always populates full listings
+    searchQuery.value = '';
+    selectedCategory.value = '';
+    storageService.remove(StorageKeys.savedSearchQuery);
   }
 
   Future<void> loadProperties() async {
@@ -92,12 +101,12 @@ class HomeController extends GetxController {
   void _filterSections() {
     final featured = allProperties.where((p) => p.isFeatured).toList();
     featuredProperties.assignAll(
-      featured.isNotEmpty ? featured : allProperties.take(2).toList(),
+      featured.isNotEmpty ? featured : allProperties.take(4).toList(),
     );
 
     final recommended = allProperties.where((p) => !p.isFeatured).toList();
     recommendedProperties.assignAll(
-      recommended.isNotEmpty ? recommended : allProperties.skip(2).toList(),
+      recommended.isNotEmpty ? recommended : allProperties.skip(4).toList(),
     );
   }
 
@@ -114,7 +123,7 @@ class HomeController extends GetxController {
     List<ToLetItem> filtered = allProperties;
 
     final selectedCat = selectedCategory.value.trim().toLowerCase();
-    if (selectedCat.isNotEmpty) {
+    if (selectedCat.isNotEmpty && selectedCat != 'all') {
       filtered = filtered.where((item) => item.category.toLowerCase() == selectedCat).toList();
     }
 
@@ -132,14 +141,15 @@ class HomeController extends GetxController {
       _filterSections();
     } else {
       final featured = filtered.where((p) => p.isFeatured).toList();
-      featuredProperties.assignAll(
-        featured.isNotEmpty ? featured : filtered.take(2).toList(),
-      );
-
       final recommended = filtered.where((p) => !p.isFeatured).toList();
-      recommendedProperties.assignAll(
-        recommended.isNotEmpty ? recommended : filtered.skip(2).toList(),
-      );
+
+      if (featured.isEmpty && recommended.isEmpty) {
+        featuredProperties.assignAll(filtered);
+        recommendedProperties.clear();
+      } else {
+        featuredProperties.assignAll(featured);
+        recommendedProperties.assignAll(recommended);
+      }
     }
   }
 

@@ -54,30 +54,7 @@ class HomeHeader extends StatelessWidget {
           ),
 
 
-          Container(
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.surfaceDark : Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(isDark ? 30 : 12),
-                  blurRadius: 10.r,
-                  offset: Offset(0, 3.h),
-                ),
-              ],
-            ),
-            child: IconButton(
-              icon: Icon(
-                Icons.notifications_none_rounded,
-                size: 22.r,
-                color: const Color(0xFF1E232A),
-              ),
-              onPressed: () {
 
-                Get.toNamed(Routes.NOTIFICATIONS);
-              },
-            ),
-          ),
         ],
       ),
     );

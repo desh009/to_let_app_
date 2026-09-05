@@ -10,24 +10,24 @@ class FilterResultsScreen extends GetView<FilterController> {
   const FilterResultsScreen({super.key});
 
   List<ToLetModel> get _filteredProperties {
-    final areaName = controller.selectedSubLocation.value.split(',').first.trim().toLowerCase();
-    final category = controller.selectedPropertyType.value.toLowerCase();
-    final minPrice = controller.priceRange.value.start;
-    final maxPrice = controller.priceRange.value.end;
-
+    final searchLoc = controller.selectedSubLocation.value.trim().toLowerCase();
+    final areaName = searchLoc.contains(',')
+        ? searchLoc.split(',').first.trim()
+        : searchLoc;
 
     return ToLetModel.sampleData.where((item) {
-      final itemCategoryMatch = item.category.toLowerCase() == category || category == 'all';
-      final itemPriceMatch = item.price >= minPrice && item.price <= maxPrice;
-
+      final locLower = item.location.toLowerCase();
+      final titleLower = item.title.toLowerCase();
+      final descLower = item.description.toLowerCase();
 
       bool areaMatch = true;
-      if (areaName.isNotEmpty && areaName != 'khulna') {
-        areaMatch = item.location.toLowerCase().contains(areaName) ||
-            item.title.toLowerCase().contains(areaName);
+      if (areaName.isNotEmpty && areaName != 'khulna' && areaName != 'khulna, bangladesh') {
+        areaMatch = locLower.contains(areaName) ||
+            titleLower.contains(areaName) ||
+            descLower.contains(areaName);
       }
 
-      return itemCategoryMatch && itemPriceMatch && areaMatch;
+      return areaMatch;
     }).toList();
   }
 
@@ -39,8 +39,7 @@ class FilterResultsScreen extends GetView<FilterController> {
     final subLoc = controller.selectedSubLocation.value.isNotEmpty
         ? controller.selectedSubLocation.value.split(',').first
         : 'Khulna';
-    final resultsList = _filteredProperties;
-    final displayList = resultsList.isNotEmpty ? resultsList : ToLetModel.sampleData;
+    final displayList = _filteredProperties;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
@@ -257,14 +256,20 @@ class FilterResultsScreen extends GetView<FilterController> {
                   child: Image.network(
                     item.images.isNotEmpty
                         ? item.images.first
-                        : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+                        : 'https://picsum.photos/seed/${item.id}/800/600',
                     height: 170.h,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (ctx, err, stack) => Container(
+                    errorBuilder: (ctx, err, stack) => Image.network(
+                      'https://picsum.photos/seed/${item.id}/800/600',
                       height: 170.h,
-                      color: isDark ? Colors.grey[800] : Colors.grey[300],
-                      child: const Icon(Icons.home_outlined, size: 40),
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stack) => Container(
+                        height: 170.h,
+                        color: isDark ? Colors.grey[800] : Colors.grey[300],
+                        child: const Icon(Icons.home_outlined, size: 40),
+                      ),
                     ),
                   ),
                 ),
