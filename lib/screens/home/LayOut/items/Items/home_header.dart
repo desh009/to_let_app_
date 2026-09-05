@@ -53,8 +53,48 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
 
-
-
+          SizedBox(width: 12.w),
+          GestureDetector(
+            onTap: () => Get.toNamed(Routes.NOTIFICATIONS),
+            child: Container(
+              width: 44.r,
+              height: 44.r,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF2C2C2C)
+                    : const Color(0xFFF5F2EC),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF383838)
+                      : const Color(0xFFEBE6DD),
+                  width: 1,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.notifications_none_rounded,
+                    size: 22.r,
+                    color: isDark ? Colors.white : const Color(0xFF1E232A),
+                  ),
+                  Positioned(
+                    top: 10.h,
+                    right: 11.w,
+                    child: Container(
+                      width: 8.r,
+                      height: 8.r,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFF4D4F),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

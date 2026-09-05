@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -331,6 +332,30 @@ class PostListingController extends GetxController {
       final homeController = Get.find<HomeController>();
       homeController.featuredProperties.insert(0, newItem);
       homeController.allProperties.insert(0, newItem);
+    }
+
+    // Save listing to Cloud Firestore
+    try {
+      await FirebaseFirestore.instance.collection('properties').doc(newItem.id).set({
+        'id': newItem.id,
+        'title': newItem.title,
+        'location': newItem.location,
+        'price': newItem.price,
+        'bedrooms': newItem.bedrooms,
+        'bathrooms': newItem.bathrooms,
+        'squareFeet': newItem.squareFeet,
+        'description': newItem.description,
+        'contactNumber': newItem.contactNumber,
+        'images': newItem.images,
+        'category': newItem.category,
+        'badgeText': newItem.badgeText,
+        'isVerified': newItem.isVerified,
+        'isAvailable': newItem.isAvailable,
+        'isFeatured': newItem.isFeatured,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      debugPrint('Firestore save property exception: $e');
     }
 
 

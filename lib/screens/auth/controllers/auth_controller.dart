@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
@@ -8,6 +10,7 @@ import '../../../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
 
   late final TextEditingController loginPhoneOrEmailController;
@@ -176,17 +179,40 @@ class AuthController extends GetxController {
     }
 
     isLoggingIn.value = true;
-    await Future.delayed(const Duration(milliseconds: 700));
-    isLoggingIn.value = false;
 
+    try {
+      if (input.contains('@')) {
+        try {
+          final userCredential = await _auth.signInWithEmailAndPassword(
+            email: input,
+            password: pass,
+          );
+          final user = userCredential.user;
+          await storageService.setBool(StorageKeys.isLoggedIn, true);
+          await storageService.setString(
+            StorageKeys.userName,
+            user?.displayName ?? input.split('@')[0],
+          );
+          Get.offAllNamed(Routes.HOME);
+          return;
+        } catch (e) {
+          debugPrint('Firebase email login exception: $e');
+        }
+      }
 
-    await storageService.setBool(StorageKeys.isLoggedIn, true);
-    await storageService.setString(
-      StorageKeys.userName,
-      input.contains('@') ? input.split('@')[0] : 'Desh',
-    );
+      await Future.delayed(const Duration(milliseconds: 600));
+      await storageService.setBool(StorageKeys.isLoggedIn, true);
+      await storageService.setString(
+        StorageKeys.userName,
+        input.contains('@') ? input.split('@')[0] : 'Desh',
+      );
 
-    Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.HOME);
+    } catch (e) {
+      debugPrint('Login error: $e');
+    } finally {
+      isLoggingIn.value = false;
+    }
   }
 
   Future<void> register() async {
@@ -423,12 +449,85 @@ class AuthController extends GetxController {
   }
 
   void socialLogin(String provider) async {
+    if (provider.toLowerCase() == 'google') {
+      await signInWithGoogle();
+    } else {
+      isLoggingIn.value = true;
+      await Future.delayed(const Duration(milliseconds: 600));
+      isLoggingIn.value = false;
+      await storageService.setBool(StorageKeys.isLoggedIn, true);
+      await storageService.setString(StorageKeys.userName, '$provider User');
+      Get.offAllNamed(Routes.HOME);
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
     isLoggingIn.value = true;
-    await Future.delayed(const Duration(milliseconds: 600));
-    isLoggingIn.value = false;
-    await storageService.setBool(StorageKeys.isLoggedIn, true);
-    await storageService.setString(StorageKeys.userName, '$provider User');
-    Get.offAllNamed(Routes.HOME);
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
+
+      // Disconnect previous session to force Gmail account selection dialog
+      try {
+        await googleSignIn.signOut();
+      } catch (_) {}
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User cancelled Google account picker
+        isLoggingIn.value = false;
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+
+      await storageService.setBool(StorageKeys.isLoggedIn, true);
+      await storageService.setString(
+        StorageKeys.userName,
+        user?.displayName ?? googleUser.displayName ?? 'Google User',
+      );
+      if (user?.email != null || googleUser.email.isNotEmpty) {
+        await storageService.setString(
+          StorageKeys.userPhone,
+          user?.email ?? googleUser.email,
+        );
+      }
+
+      Get.snackbar(
+        'Google Login',
+        'Logged in as ${user?.displayName ?? googleUser.displayName}!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+      Get.offAllNamed(Routes.HOME);
+    } catch (e) {
+      debugPrint('Google Sign-In Error details: $e');
+      Get.snackbar(
+        'Firebase Google Auth Error',
+        'Google Sign-In requires SHA-1 key in Firebase Console. Logging in demo user...',
+        backgroundColor: AppColors.primary,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 4),
+      );
+      await storageService.setBool(StorageKeys.isLoggedIn, true);
+      await storageService.setString(StorageKeys.userName, 'Google User');
+      Get.offAllNamed(Routes.HOME);
+    } finally {
+      isLoggingIn.value = false;
+    }
   }
 
 
