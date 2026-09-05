@@ -78,7 +78,11 @@ class PostListingController extends GetxController {
   }
 
   void showImagePickerSourceSheet() {
+
     if (propertyPhotos.length >= 8) {
+
+    
+
       Get.snackbar(
         'Limit Reached',
         'You can upload a maximum of 8 photos.',
@@ -89,6 +93,7 @@ class PostListingController extends GetxController {
       );
       return;
     }
+
 
     final isDark = Get.isDarkMode;
 
@@ -111,10 +116,14 @@ class PostListingController extends GetxController {
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
+
               SizedBox(height: 16.h),
               Text(
+                
                 'upload_photo_title'.tr,
+
                 style: TextStyle(
+
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : const Color(0xFF1E232A),
