@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
@@ -66,20 +67,53 @@ class FeaturedPropertyCard extends StatelessWidget {
                     child: Image.network(
                       item.images.isNotEmpty
                           ? item.images.first
-                          : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+                          : 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: isDark
-                            ? AppColors.surfaceDark
-                            : Colors.grey[200],
-                        child: Center(
-                          child: Icon(
-                            Icons.apartment_rounded,
-                            size: 44.r,
-                            color: Colors.grey,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
                           ),
-                        ),
-                      ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: isDark
+                                  ? [const Color(0xFF1F2937), const Color(0xFF111827)]
+                                  : [const Color(0xFFE2E8F0), const Color(0xFFCBD5E1)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.house_rounded,
+                                  size: 44.r,
+                                  color: isDark
+                                      ? const Color(0xFF4B5563)
+                                      : const Color(0xFF94A3B8),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  item.category,
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

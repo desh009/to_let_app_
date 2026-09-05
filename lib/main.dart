@@ -98,69 +98,8 @@ class MyApp extends StatelessWidget {
             }),
           ],
           builder: (context, child) {
-            return Stack(
-              children: [
-                if (child != null) child,
-
-
-                const GlobalFloatingFab(),
-              ],
-            );
+            return child ?? const SizedBox.shrink();
           },
-        );
-      },
-    );
-  }
-}
-
-class GlobalFloatingFab extends StatelessWidget {
-  const GlobalFloatingFab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: currentRouteNotifier,
-      builder: (context, currentRoute, child) {
-        final activeRoute = currentRoute.isEmpty ? Get.currentRoute : currentRoute;
-        final hideOnRoutes = [
-          Routes.LOGIN,
-          Routes.REGISTER,
-          Routes.VERIFY_OTP,
-          Routes.FORGOT_PASSWORD,
-          Routes.SPLASH,
-          Routes.TWO_FACTOR_AUTH,
-          '/login',
-          '/register',
-          '/verify-otp',
-          '/forgot-password',
-          '/splash',
-          '/two-factor-auth',
-        ];
-
-        if (hideOnRoutes.contains(activeRoute)) {
-          return const SizedBox.shrink();
-        }
-
-        // Press‑and‑hold voice button (no bottom sheet)
-        return GestureDetector(
-          onLongPressStart: (_) => GeminiVoiceController.to.startListening(),
-          onLongPressEnd: (_) => GeminiVoiceController.to.stopListening(),
-          child: Obx(() {
-            final isListening = GeminiVoiceController.to.isListening.value;
-            return FloatingActionButton(
-              backgroundColor: isListening ? Colors.redAccent : AppColors.primary,
-              child: Icon(
-                isListening ? Icons.stop_rounded : Icons.mic_rounded,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                CustomSnackbar.showInfo(
-                  title: 'Gemini Voice Search',
-                  message: 'Press & hold the mic button to speak.',
-                );
-              },
-            );
-          }),
         );
       },
     );

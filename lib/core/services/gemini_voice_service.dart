@@ -74,14 +74,16 @@ class GeminiVoiceService {
     );
 
     final prompt = '''
-You are the AI assistant for a "To-Let" Property Rental App in Bangladesh.
+You are the AI assistant for a "To-Let" Property Rental App in Bangladesh, focusing heavily on Khulna city & surrounding areas.
 Analyze the user's voice command: "$userQuery"
+Key Khulna Locations to recognize: Daulatpur, Shiromoni, Sonadanga, Khalishpur, Boyra, Nirala, KUET, Fulbarigate, Moylapota, Shibbari, Gollamari, Rupsha, Phultala, Khan Jahan Ali, Mujgunni, Pabla, Maheshwarpasha, KDA Avenue, Royal Mor, Dakbangla, Tutpara, Labanchara, Teligati, Gilatala, Khulna Sadar.
+
 Return strictly a valid JSON object without markdown formatting:
 {
   "action": "navigate" | "search" | "generalReply",
   "targetRoute": "/profile" | "/saved" | "/messages" | "/post-listing" | "/notifications" | "/home" | "/filter" | null,
   "targetTabIndex": 0 (Home), 1 (Saved), 2 (Messages), 3 (Profile) or null,
-  "location": "location name e.g. Mirpur, Dhanmondi, Khulna, Shiromoni" or null,
+  "location": "location name e.g. Daulatpur, Shiromoni, Sonadanga, KUET, Khulna" or null,
   "category": "Family" | "Bachelor" | "Sublet" | "Seat" or null,
   "maxPrice": number or null,
   "bedrooms": "1" | "2" | "3" | "4+" or null,
@@ -265,12 +267,28 @@ Return strictly a valid JSON object without markdown formatting:
       }
     }
 
-    // Extract location
+    // Extract location - Comprehensive Khulna City & Area Coverage
     final locationsList = [
-      'Khulna', 'Shiromoni', 'Sonadanga', 'Khalishpur', 'Boyra', 'Nirala',
-      'Daulatpur', 'Moylapota', 'Shibbari', 'Gollamari', 'Rupsha',
-      'Mirpur', 'Dhanmondi', 'Uttara', 'Gulshan', 'Banani', 'Badda', 'Mohakhali',
-      'খুলনা', 'শিরোমণি', 'সোনাডাঙ্গা', 'খালিশপুর', 'বয়রা', 'নিরালা', 'দৌলতপুর',
+      // English Names & Variations
+      'Shiromoni', 'Siromoni', 'Daulatpur', 'Doulatpur', 'Sonadanga', 'Khalishpur',
+      'Boyra', 'Boira', 'Choto Boyra', 'Boro Boyra', 'Nirala', 'Moylapota', 'Shibbari',
+      'Gollamari', 'Rupsha', 'KUET', 'Kuet', 'Phultala', 'Fultola', 'Fulbarigate', 'Phulbarigate',
+      'Khan Jahan Ali', 'Mujgunni', 'Railgate', 'Pabla', 'Maheshwarpasha',
+      'KDA Avenue', 'KDA Bypass', 'KDA', 'Royal Mor', 'Royal Circle', 'Dakbangla',
+      'Custom Ghat', 'Ferrighat', 'Tutpara', 'Labanchara', 'Joraghat', 'Teligati', 'Gilatala',
+      'Bastuhara', 'Rayer Mahal', 'Baniakhamar', 'Picture Palace', 'Shantidham',
+      'Sheikhpara', 'Basupara', 'Power House Mor', 'BL College', 'City College',
+      'Medical College', 'Khulna University', 'Khulna Sadar', 'Khulna',
+      'Mirpur', 'Dhanmondi', 'Uttara', 'Gulshan', 'Banani',
+
+      // Bengali Names & Variations
+      'শিরোমণি', 'শিরোমনি', 'দৌলতপুর', 'সোনাডাঙ্গা', 'সোনাডাঙা', 'খালিশপুর',
+      'বয়রা', 'বইরা', 'ছোট বয়রা', 'বড় বয়রা', 'নিরালা', 'ময়লাপোতা', 'শিববাড়ী', 'শিববাড়ি',
+      'গল্লামারী', 'গল্লামারি', 'রূপসা', 'রূপশা', 'কুয়েট', 'ফুলতলা', 'ফুলবাড়ীগেট', 'ফুলবাড়িগেট',
+      'রেলগেট', 'পাবলা', 'মহেশ্বরপাশা', 'কেডিএ', 'কেডিএ বাইপাস', 'রয়্যাল মোড়', 'রয়েল মোড়',
+      'ডাকবাংলা', 'টুটপাড়া', 'টুটপাড়া', 'লবণচরা', 'তেলীগাতী', 'গিলাতলা', 'বাস্তুহারা',
+      'রায়ের মহল', 'বানিয়াকামার', 'পিকচার প্যালেস', 'শান্তিধাম', 'শেখপাড়া', 'বসুিপাড়া',
+      'পাওয়ার হাউস মোড়', 'বি এল কলেজ', 'সিটি কলেজ', 'মেডিকেল কলেজ', 'খুলনা বিশ্ববিদ্যালয়', 'খুলনা',
       'মিরপুর', 'ধানমন্ডি', 'উত্তরা', 'গুলশান', 'বনানী'
     ];
 

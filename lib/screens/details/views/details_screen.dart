@@ -38,14 +38,18 @@ class DetailsScreen extends GetView<DetailsController> {
                       Image.network(
                         item.images.isNotEmpty
                             ? item.images.first
-                            : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+                            : 'https://picsum.photos/seed/${item.id}/800/600',
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Container(
-                          color: Colors.grey[300],
-                          child: Icon(
-                            Icons.apartment,
-                            size: 64.r,
-                            color: Colors.grey,
+                        errorBuilder: (_, __, ___) => Image.network(
+                          'https://picsum.photos/seed/${item.id}/800/600',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: Colors.grey[300],
+                            child: Icon(
+                              Icons.apartment,
+                              size: 64.r,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                       ),

@@ -10,7 +10,8 @@
     <application
         android:label="to_let_app_abandon"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
 
         <!-- Default notification channel and icon for FCM -->
         <meta-data

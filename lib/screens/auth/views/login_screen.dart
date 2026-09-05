@@ -290,15 +290,19 @@ class LoginScreen extends GetView<AuthController> {
                     child: _buildSocialButton(
                       context,
                       icon: Container(
-                        width: 18.r,
-                        height: 18.r,
+                        width: 22.r,
+                        height: 22.r,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF4285F4),
+                          shape: BoxShape.circle,
+                        ),
                         alignment: Alignment.center,
                         child: Text(
                           'G',
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w900,
-                            color: const Color(0xFF4285F4),
+                            color: Colors.white,
                           ),
                         ),
                       ),
