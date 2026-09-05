@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'core/services/fcm_service.dart';
+import 'core/controllers/gemini_voice_controller.dart';
 import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
 import 'package:to_let_app_abandon/widgets/custom_floating_action button/custom_floating_action_button.dart';
 import 'core/bindings/initial_binding.dart';
@@ -15,14 +17,18 @@ import 'core/services/storage_service.dart';
 import 'core/theme/app_theme.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
-import 'widgets/custom_snackbar.dart';
 
+
+
+import 'widgets/custom_snackbar.dart';
 
 final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load .env file
+  await dotenv.load(fileName: '.env');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -50,6 +56,9 @@ Future<void> main() async {
     () => FcmService().init(),
     permanent: true,
   );
+
+  // Register Gemini Voice Controller globally
+  Get.put(GeminiVoiceController(), permanent: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -132,15 +141,26 @@ class GlobalFloatingFab extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return ShutterFab(
-          icon: Icons.mic_none_rounded,
-          backgroundColor: AppColors.primary,
-          onPressed: () {
-            CustomSnackbar.showInfo(
-              title: 'Voice Assistant',
-              message: 'Voice feature coming soon...',
+        // Press‑and‑hold voice button (no bottom sheet)
+        return GestureDetector(
+          onLongPressStart: (_) => GeminiVoiceController.to.startListening(),
+          onLongPressEnd: (_) => GeminiVoiceController.to.stopListening(),
+          child: Obx(() {
+            final isListening = GeminiVoiceController.to.isListening.value;
+            return FloatingActionButton(
+              backgroundColor: isListening ? Colors.redAccent : AppColors.primary,
+              child: Icon(
+                isListening ? Icons.stop_rounded : Icons.mic_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                CustomSnackbar.showInfo(
+                  title: 'Gemini Voice Search',
+                  message: 'Press & hold the mic button to speak.',
+                );
+              },
             );
-          },
+          }),
         );
       },
     );
