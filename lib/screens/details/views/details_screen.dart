@@ -432,7 +432,7 @@ class DetailsScreen extends GetView<DetailsController> {
                           ],
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment:.center,
                           children: [
                             Icon(
                               Icons.phone_outlined,

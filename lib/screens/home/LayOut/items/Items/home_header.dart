@@ -20,14 +20,13 @@ class HomeHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(
                   () => Text(
-                    'Good morning, ${controller.savedUserName.value}',
+                    '${controller.timeGreeting.value}, ${controller.savedUserName.value}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,

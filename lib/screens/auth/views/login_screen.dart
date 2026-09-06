@@ -15,11 +15,14 @@ class LoginScreen extends GetView<AuthController> {
 
     final inputBg = isDark ? const Color(0xFF1E2228) : const Color(0xFFF7F8FA);
     final textColor = isDark ? Colors.white : const Color(0xFF1E232A);
-    final subtitleColor =
-        isDark ? const Color(0xFFA0AEC0) : const Color(0xFF7E8B9B);
+    final subtitleColor = isDark
+        ? const Color(0xFFA0AEC0)
+        : const Color(0xFF7E8B9B);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : const Color(0xFFFAF8F5),
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : const Color(0xFFFAF8F5),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -28,7 +31,6 @@ class LoginScreen extends GetView<AuthController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10.h),
-
 
               Container(
                 width: 48.r,
@@ -61,7 +63,6 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
-
               Text(
                 'login_title'.tr,
                 style: TextStyle(
@@ -81,9 +82,8 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 28.h),
 
-
               Text(
-                'phone_or_email'.tr,
+                'email_address'.tr,
                 style: TextStyle(
                   fontSize: 12.5.sp,
                   fontWeight: FontWeight.w700,
@@ -100,30 +100,24 @@ class LoginScreen extends GetView<AuthController> {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      '+880',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                        color: textColor,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
                     Icon(
-                      Icons.phone_android_rounded,
+                      Icons.alternate_email_rounded,
                       size: 18.r,
                       color: subtitleColor,
                     ),
                     SizedBox(width: 8.w),
                     Expanded(
                       child: TextField(
-                        controller: controller.loginPhoneOrEmailController,
+                        controller: controller.loginEmailController,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        enableSuggestions: false,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: textColor,
                         ),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -133,7 +127,6 @@ class LoginScreen extends GetView<AuthController> {
                 ),
               ),
               SizedBox(height: 18.h),
-
 
               Text(
                 'password'.tr,
@@ -194,7 +187,6 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 12.h),
 
-
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
@@ -211,14 +203,14 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
-
               Obx(
                 () => SizedBox(
                   width: double.infinity,
                   height: 52.h,
                   child: ElevatedButton(
-                    onPressed:
-                        controller.isLoggingIn.value ? null : controller.login,
+                    onPressed: controller.isLoggingIn.value
+                        ? null
+                        : controller.login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
@@ -232,8 +224,9 @@ class LoginScreen extends GetView<AuthController> {
                             height: 22.r,
                             child: const CircularProgressIndicator(
                               strokeWidth: 2.5,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : Text(
@@ -248,7 +241,6 @@ class LoginScreen extends GetView<AuthController> {
                 ),
               ),
               SizedBox(height: 28.h),
-
 
               Row(
                 children: [
@@ -282,10 +274,8 @@ class LoginScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
 
-
               Row(
                 children: [
-
                   Expanded(
                     child: _buildSocialButton(
                       context,
@@ -313,15 +303,10 @@ class LoginScreen extends GetView<AuthController> {
                   ),
                   SizedBox(width: 14.w),
 
-
                   Expanded(
                     child: _buildSocialButton(
                       context,
-                      icon: Icon(
-                        Icons.apple,
-                        size: 20.r,
-                        color: textColor,
-                      ),
+                      icon: Icon(Icons.apple, size: 20.r, color: textColor),
                       label: 'apple'.tr,
                       onTap: () => controller.socialLogin('Apple'),
                       isDark: isDark,
@@ -330,7 +315,6 @@ class LoginScreen extends GetView<AuthController> {
                 ],
               ),
               SizedBox(height: 36.h),
-
 
               Center(
                 child: GestureDetector(
@@ -358,7 +342,6 @@ class LoginScreen extends GetView<AuthController> {
                 ),
               ),
               SizedBox(height: 16.h),
-
 
               Center(
                 child: Row(
@@ -407,9 +390,7 @@ class LoginScreen extends GetView<AuthController> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: isDark
-                  ? const Color(0xFF2D3748)
-                  : const Color(0xFFE2E8F0),
+              color: isDark ? const Color(0xFF2D3748) : const Color(0xFFE2E8F0),
               width: 1,
             ),
           ),

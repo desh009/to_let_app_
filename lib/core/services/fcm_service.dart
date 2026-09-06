@@ -7,7 +7,6 @@ import '../../data/models/tolet_model.dart';
 import '../../routes/app_routes.dart';
 import '../../screens/notifications/controllers/notifications_controller.dart';
 
-
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -30,15 +29,25 @@ class FcmService extends GetxService {
     importance: Importance.max,
   );
 
-
   Future<FcmService> init() async {
     await _requestPermission();
     await _initLocalNotifications();
     await _getToken();
+    await _subscribeToListingNotifications();
     _setupMessageHandlers();
     return this;
   }
 
+  /// Joins this device to the public topic used for new property listings.
+  /// A failure here must not stop the rest of the app from starting.
+  Future<void> _subscribeToListingNotifications() async {
+    try {
+      await _messaging.subscribeToTopic('all_users');
+      log('Subscribed to listing notifications: all_users');
+    } catch (e) {
+      log('Unable to subscribe to listing notifications: $e');
+    }
+  }
 
   Future<void> _requestPermission() async {
     NotificationSettings settings = await _messaging.requestPermission(
@@ -60,26 +69,26 @@ class FcmService extends GetxService {
     );
   }
 
-
   Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     const InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
 
-
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_channel);
 
     await _localNotifications.initialize(
@@ -108,9 +117,7 @@ class FcmService extends GetxService {
     });
   }
 
-
   void _setupMessageHandlers() {
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Received foreground message: ${message.notification?.title}');
       _showLocalNotification(message);
@@ -127,12 +134,10 @@ class FcmService extends GetxService {
       }
     });
 
-
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('Notification opened app from background state: ${message.data}');
       _handleMessageData(message.data);
     });
-
 
     _messaging.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
@@ -141,7 +146,6 @@ class FcmService extends GetxService {
       }
     });
   }
-
 
   void _showLocalNotification(RemoteMessage message) {
     RemoteNotification? notification = message.notification;
@@ -174,7 +178,8 @@ class FcmService extends GetxService {
 
   void _handleNotificationPayload(String? payload) {
     if (Get.isRegistered<NotificationsController>()) {
-      final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == payload) ??
+      final sample =
+          ToLetModel.sampleData.firstWhereOrNull((p) => p.id == payload) ??
           ToLetModel.sampleData.first;
       Get.toNamed(Routes.DETAILS, arguments: sample);
     }
@@ -182,17 +187,16 @@ class FcmService extends GetxService {
 
   void _handleMessageData(Map<String, dynamic> data) {
     final propertyId = data['listingId'] ?? data['propertyId'];
-    final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == propertyId) ??
+    final sample =
+        ToLetModel.sampleData.firstWhereOrNull((p) => p.id == propertyId) ??
         ToLetModel.sampleData.first;
     Get.toNamed(Routes.DETAILS, arguments: sample);
   }
-
 
   Future<void> subscribeToTopic(String topic) async {
     await _messaging.subscribeToTopic(topic);
     log('Subscribed to FCM topic: $topic');
   }
-
 
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);

@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,8 @@ class HomeController extends GetxController {
   final RxBool isDarkMode = false.obs;
   final RxString savedUserName = 'Desh'.obs;
   final RxString savedUserPhone = ''.obs;
+  final RxString timeGreeting = ''.obs;
+  Timer? _greetingTimer;
 
   final List<String> availableLocations = [
     'Khulna, Bangladesh',
@@ -58,6 +61,11 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _loadUserPreferences();
+    _updateTimeGreeting();
+    _greetingTimer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) => _updateTimeGreeting(),
+    );
     loadProperties();
     _syncNavIndex();
   }
@@ -81,6 +89,26 @@ class HomeController extends GetxController {
     searchQuery.value = '';
     selectedCategory.value = '';
     storageService.remove(StorageKeys.savedSearchQuery);
+  }
+
+  void _updateTimeGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      timeGreeting.value = 'Good morning';
+    } else if (hour < 17) {
+      timeGreeting.value = 'Good afternoon';
+    } else if (hour < 21) {
+      timeGreeting.value = 'Good evening';
+    } else {
+      timeGreeting.value = 'Good night';
+    }
+  }
+
+  @override
+  void onClose() {
+    _greetingTimer?.cancel();
+    super.onClose();
   }
 
   Future<void> loadProperties() async {
@@ -124,7 +152,9 @@ class HomeController extends GetxController {
 
     final selectedCat = selectedCategory.value.trim().toLowerCase();
     if (selectedCat.isNotEmpty && selectedCat != 'all') {
-      filtered = filtered.where((item) => item.category.toLowerCase() == selectedCat).toList();
+      filtered = filtered
+          .where((item) => item.category.toLowerCase() == selectedCat)
+          .toList();
     }
 
     final query = searchQuery.value.trim().toLowerCase();
@@ -157,7 +187,6 @@ class HomeController extends GetxController {
     selectedLocation.value = location;
   }
 
-
   void changeNavTab(int index) {
     navController.changeTab(index);
   }
@@ -174,15 +203,11 @@ class HomeController extends GetxController {
     navController.toMessages();
   }
 
-
   void navigateToPostListing() {
     navController.toPostListing();
   }
 
-  void navigateToMapView() {
-
-  }
-
+  void navigateToMapView() {}
 
   Future<void> toggleFavorite(ToLetItem item) async {
     await favoriteController.toggleFavorite(item);
@@ -194,13 +219,11 @@ class HomeController extends GetxController {
 
   int get favoriteCount => favoriteController.favoriteCount;
 
-
   void toggleTheme() {
     isDarkMode.value = !isDarkMode.value;
     storageService.setBool(StorageKeys.isDarkMode, isDarkMode.value);
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
   }
-
 
   Future<void> updateUserProfile(String name, String phone) async {
     savedUserName.value = name;
@@ -208,7 +231,6 @@ class HomeController extends GetxController {
     await storageService.setString(StorageKeys.userName, name);
     await storageService.setString(StorageKeys.userPhone, phone);
   }
-
 
   void updateSearchQuery(String query) {
     searchQuery.value = query;
