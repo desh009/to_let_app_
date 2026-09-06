@@ -12,12 +12,10 @@ class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-
-  late final TextEditingController loginPhoneOrEmailController;
+  late final TextEditingController loginEmailController;
   late final TextEditingController loginPasswordController;
   final RxBool isLoginPasswordHidden = true.obs;
   final RxBool isLoggingIn = false.obs;
-
 
   late final TextEditingController regFullNameController;
   late final TextEditingController regPhoneController;
@@ -29,7 +27,6 @@ class AuthController extends GetxController {
   final RxInt passwordStrength = 1.obs;
   final RxBool isRegistering = false.obs;
 
-
   final RxList<String> otpDigits = <String>['', '', '', '', '', ''].obs;
   final RxInt currentOtpIndex = 0.obs;
   final RxInt resendCountdown = 45.obs;
@@ -37,7 +34,6 @@ class AuthController extends GetxController {
   Timer? _timer;
   final RxString targetPhoneNumber = '+880 1712 345 678'.obs;
   final RxBool isVerifyingOtp = false.obs;
-
 
   late final TextEditingController forgotPasswordInputController;
   late final TextEditingController forgotNewPasswordController;
@@ -52,7 +48,6 @@ class AuthController extends GetxController {
   final RxInt forgotResendCountdown = 45.obs;
   final RxBool canResendForgotOtp = false.obs;
   Timer? _forgotTimer;
-
 
   final RxBool isTwoFactorEnabled = false.obs;
   final RxBool isTwoFactorSetupStep2 = false.obs;
@@ -70,11 +65,11 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loginPhoneOrEmailController = TextEditingController(text: '1712 345 678');
-    loginPasswordController = TextEditingController(text: 'password123');
+    loginEmailController = TextEditingController();
+    loginPasswordController = TextEditingController();
 
     regFullNameController = TextEditingController();
-    regPhoneController = TextEditingController(text: '1712 345 678');
+    regPhoneController = TextEditingController();
     regEmailController = TextEditingController();
     regPasswordController = TextEditingController();
     regConfirmPasswordController = TextEditingController();
@@ -102,7 +97,6 @@ class AuthController extends GetxController {
     }
   }
 
-
   void startResendTimer() {
     _timer?.cancel();
     resendCountdown.value = 45;
@@ -122,7 +116,6 @@ class AuthController extends GetxController {
     final secs = (resendCountdown.value % 60).toString().padLeft(2, '0');
     return '$mins:$secs';
   }
-
 
   void inputOtpDigit(String digit) {
     if (currentOtpIndex.value < 6) {
@@ -153,15 +146,24 @@ class AuthController extends GetxController {
     return '+880 17XX XXX 678';
   }
 
-
   Future<void> login() async {
-    final input = loginPhoneOrEmailController.text.trim();
+    final email = loginEmailController.text.trim();
     final pass = loginPasswordController.text.trim();
 
-    if (input.isEmpty) {
+    if (email.isEmpty) {
       Get.snackbar(
         'Required Field',
-        'Please enter your phone number or email address.',
+        'Please enter your Gmail address.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar(
+        'Invalid Email',
+        'Please enter a valid Gmail address.',
         backgroundColor: AppColors.error,
         colorText: Colors.white,
       );
@@ -181,33 +183,29 @@ class AuthController extends GetxController {
     isLoggingIn.value = true;
 
     try {
-      if (input.contains('@')) {
-        try {
-          final userCredential = await _auth.signInWithEmailAndPassword(
-            email: input,
-            password: pass,
-          );
-          final user = userCredential.user;
-          await storageService.setBool(StorageKeys.isLoggedIn, true);
-          await storageService.setString(
-            StorageKeys.userName,
-            user?.displayName ?? input.split('@')[0],
-          );
-          Get.offAllNamed(Routes.HOME);
-          return;
-        } catch (e) {
-          debugPrint('Firebase email login exception: $e');
-        }
+      try {
+        final userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: pass,
+        );
+        final user = userCredential.user;
+        await storageService.setBool(StorageKeys.isLoggedIn, true);
+        await storageService.setString(
+          StorageKeys.userName,
+          user?.displayName ?? email.split('@')[0],
+        );
+        Get.offAllNamed(Routes.HOME);
+        return;
+      } catch (e) {
+        debugPrint('Firebase email login exception: $e');
       }
 
-      await Future.delayed(const Duration(milliseconds: 600));
-      await storageService.setBool(StorageKeys.isLoggedIn, true);
-      await storageService.setString(
-        StorageKeys.userName,
-        input.contains('@') ? input.split('@')[0] : 'Desh',
+      Get.snackbar(
+        'Login Failed',
+        'Your Gmail address or password is incorrect.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
       );
-
-      Get.offAllNamed(Routes.HOME);
     } catch (e) {
       debugPrint('Login error: $e');
     } finally {
@@ -322,7 +320,6 @@ class AuthController extends GetxController {
       snackPosition: SnackPosition.TOP,
     );
   }
-
 
   void _startForgotResendTimer() {
     _forgotTimer?.cancel();
@@ -488,8 +485,9 @@ class AuthController extends GetxController {
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
       final user = userCredential.user;
 
       await storageService.setBool(StorageKeys.isLoggedIn, true);
@@ -515,21 +513,16 @@ class AuthController extends GetxController {
     } catch (e) {
       debugPrint('Google Sign-In Error details: $e');
       Get.snackbar(
-        'Firebase Google Auth Error',
-        'Google Sign-In requires SHA-1 key in Firebase Console. Logging in demo user...',
-        backgroundColor: AppColors.primary,
+        'Google Sign-In Failed',
+        'Please try again. If this continues, check Firebase Google Sign-In setup.',
+        backgroundColor: AppColors.error,
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 4),
       );
-      await storageService.setBool(StorageKeys.isLoggedIn, true);
-      await storageService.setString(StorageKeys.userName, 'Google User');
-      Get.offAllNamed(Routes.HOME);
     } finally {
       isLoggingIn.value = false;
     }
   }
-
 
   String get formattedTwoFactorTimer {
     final m = (twoFactorResendSeconds.value ~/ 60).toString().padLeft(2, '0');
@@ -537,16 +530,12 @@ class AuthController extends GetxController {
     return '$m:$s';
   }
 
-
   Future<void> fetchTwoFactorStatus() async {}
-
 
   Future<void> sendTwoFactorOtp() async {
     if (isSendingTwoFactorOtp.value) return;
     isSendingTwoFactorOtp.value = true;
     try {
-
-
       isTwoFactorSetupStep2.value = true;
       twoFactorOtpDigits.clear();
       currentTwoFactorOtpIndex.value = 0;
@@ -593,13 +582,11 @@ class AuthController extends GetxController {
     currentTwoFactorOtpIndex.value = twoFactorOtpDigits.length;
   }
 
-
   Future<void> verifyTwoFactorOtp() async {
     if (isVerifyingTwoFactorOtp.value) return;
     isVerifyingTwoFactorOtp.value = true;
     try {
       final code = twoFactorOtpDigits.join();
-
 
       final bool ok = code.length == 6;
 
@@ -621,13 +608,10 @@ class AuthController extends GetxController {
     }
   }
 
-
   Future<void> disableTwoFactor() async {
     if (isDisablingTwoFactor.value) return;
     isDisablingTwoFactor.value = true;
     try {
-
-
       isTwoFactorEnabled.value = false;
       Get.snackbar('Two-Factor Authentication', 'Disabled.');
     } catch (e) {
@@ -642,7 +626,7 @@ class AuthController extends GetxController {
     _timer?.cancel();
     _forgotTimer?.cancel();
     _twoFactorTimer?.cancel();
-    loginPhoneOrEmailController.dispose();
+    loginEmailController.dispose();
     loginPasswordController.dispose();
     regFullNameController.dispose();
     regPhoneController.dispose();
