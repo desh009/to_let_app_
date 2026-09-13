@@ -11,6 +11,8 @@ class ToLetModel extends ToLetItem {
     required super.squareFeet,
     required super.description,
     required super.contactNumber,
+    super.ownerName = 'Owner',
+    super.ownerAvatar,
     required super.images,
     super.category = 'Family',
     super.badgeText = 'Available now',
@@ -30,6 +32,8 @@ class ToLetModel extends ToLetItem {
       squareFeet: (json['squareFeet'] as num).toDouble(),
       description: json['description'] as String,
       contactNumber: json['contactNumber'] as String,
+      ownerName: json['ownerName'] as String? ?? 'Owner',
+      ownerAvatar: json['ownerAvatar'] as String?,
       images: List<String>.from(json['images'] as List? ?? []),
       category: json['category'] as String? ?? 'Family',
       badgeText: json['badgeText'] as String? ?? 'Available now',
@@ -50,6 +54,8 @@ class ToLetModel extends ToLetItem {
       'squareFeet': squareFeet,
       'description': description,
       'contactNumber': contactNumber,
+      'ownerName': ownerName,
+      'ownerAvatar': ownerAvatar,
       'images': images,
       'category': category,
       'badgeText': badgeText,
@@ -58,7 +64,6 @@ class ToLetModel extends ToLetItem {
       'isFeatured': isFeatured,
     };
   }
-
 
   static List<ToLetModel> get sampleData => [
     const ToLetModel(
@@ -72,6 +77,8 @@ class ToLetModel extends ToLetItem {
       description:
           'Spacious family flat with south-facing balcony, generator backup, lift, dedicated car parking, and 24/7 security guard in Sonadanga.',
       contactNumber: '+8801711223344',
+      ownerName: 'Rahman Khan',
+      ownerAvatar: 'https://i.pravatar.cc/150?img=12',
       images: [
         'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
         'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -92,6 +99,8 @@ class ToLetModel extends ToLetItem {
       description:
           'Bachelor friendly flat for job holders / students in Khalishpur. High-speed WiFi, meal system, and helper available.',
       contactNumber: '+8801811556677',
+      ownerName: 'Ayesha Begum',
+      ownerAvatar: 'https://i.pravatar.cc/150?img=47',
       images: [
         'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
         'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -112,6 +121,8 @@ class ToLetModel extends ToLetItem {
       description:
           'Master bed with attached bathroom and balcony for student / small family sublet in Boyra residential area.',
       contactNumber: '+8801911998877',
+      ownerName: 'Kamal Uddin',
+      ownerAvatar: 'https://i.pravatar.cc/150?img=33',
       images: [
         'https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=800',
       ],

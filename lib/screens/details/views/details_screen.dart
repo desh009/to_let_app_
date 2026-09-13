@@ -16,14 +16,14 @@ class DetailsScreen extends GetView<DetailsController> {
     final item = controller.item;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : AppColors.backgroundLight,
       body: Stack(
         children: [
-
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-
               SliverAppBar(
                 expandedHeight: 260.h,
                 pinned: true,
@@ -34,7 +34,6 @@ class DetailsScreen extends GetView<DetailsController> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-
                       Image.network(
                         item.images.isNotEmpty
                             ? item.images.first
@@ -53,7 +52,6 @@ class DetailsScreen extends GetView<DetailsController> {
                           ),
                         ),
                       ),
-
 
                       Positioned(
                         top: 0,
@@ -74,7 +72,6 @@ class DetailsScreen extends GetView<DetailsController> {
                         ),
                       ),
 
-
                       Positioned(
                         top: 46.h,
                         left: 16.w,
@@ -83,7 +80,6 @@ class DetailsScreen extends GetView<DetailsController> {
                           onTap: () => Get.back(),
                         ),
                       ),
-
 
                       Positioned(
                         top: 46.h,
@@ -100,14 +96,10 @@ class DetailsScreen extends GetView<DetailsController> {
                               },
                             ),
                             SizedBox(width: 8.w),
-                            AnimatedFavoriteButton(
-                              item: item,
-                              size: 22,
-                            ),
+                            AnimatedFavoriteButton(item: item, size: 22),
                           ],
                         ),
                       ),
-
 
                       if (item.images.isNotEmpty)
                         Positioned(
@@ -148,11 +140,12 @@ class DetailsScreen extends GetView<DetailsController> {
                 ),
               ),
 
-
               SliverToBoxAdapter(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
+                    color: isDark
+                        ? AppColors.backgroundDark
+                        : AppColors.backgroundLight,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +155,6 @@ class DetailsScreen extends GetView<DetailsController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
                             Row(
                               children: [
                                 _Badge(
@@ -188,7 +180,6 @@ class DetailsScreen extends GetView<DetailsController> {
                               ],
                             ),
                             SizedBox(height: 14.h),
-
 
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -218,7 +209,6 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 8.h),
 
-
                             Text(
                               item.title,
                               style: TextStyle(
@@ -231,7 +221,6 @@ class DetailsScreen extends GetView<DetailsController> {
                               ),
                             ),
                             SizedBox(height: 10.h),
-
 
                             Row(
                               children: [
@@ -255,7 +244,6 @@ class DetailsScreen extends GetView<DetailsController> {
                               ],
                             ),
                             SizedBox(height: 20.h),
-
 
                             Container(
                               padding: EdgeInsets.symmetric(
@@ -298,7 +286,6 @@ class DetailsScreen extends GetView<DetailsController> {
                             ),
                             SizedBox(height: 24.h),
 
-
                             Text(
                               'Property description',
                               style: TextStyle(
@@ -321,7 +308,6 @@ class DetailsScreen extends GetView<DetailsController> {
                               ),
                             ),
                             SizedBox(height: 24.h),
-
 
                             Text(
                               'Amenities & features',
@@ -358,7 +344,6 @@ class DetailsScreen extends GetView<DetailsController> {
             ],
           ),
 
-
           Positioned(
             bottom: 0,
             left: 0,
@@ -377,7 +362,6 @@ class DetailsScreen extends GetView<DetailsController> {
               ),
               child: Row(
                 children: [
-
                   Obx(
                     () => InkWell(
                       borderRadius: BorderRadius.circular(14.r),
@@ -408,16 +392,10 @@ class DetailsScreen extends GetView<DetailsController> {
                   ),
                   SizedBox(width: 14.w),
 
-
                   Expanded(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(14.r),
-                      onTap: () {
-                        CustomSnackbar.showInfo(
-                          title: 'Contact Owner',
-                          message: 'Calling ${item.contactNumber}...',
-                        );
-                      },
+                      onTap: controller.contactOwner,
                       child: Container(
                         height: 50.h,
                         decoration: BoxDecoration(
@@ -432,10 +410,10 @@ class DetailsScreen extends GetView<DetailsController> {
                           ],
                         ),
                         child: Row(
-                          mainAxisAlignment:.center,
+                          mainAxisAlignment: .center,
                           children: [
                             Icon(
-                              Icons.phone_outlined,
+                              Icons.message_outlined,
                               color: Colors.white,
                               size: 20.r,
                             ),
@@ -481,7 +459,6 @@ class DetailsScreen extends GetView<DetailsController> {
     return [...common, ...extra];
   }
 }
-
 
 class _CircleButton extends StatelessWidget {
   final IconData icon;
@@ -561,9 +538,7 @@ class _StatCell extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11.sp,
-            color: isDark
-                ? AppColors.textSecondaryDark
-                : AppColors.iconMuted,
+            color: isDark ? AppColors.textSecondaryDark : AppColors.iconMuted,
           ),
         ),
         SizedBox(height: 4.h),
@@ -572,7 +547,9 @@ class _StatCell extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w700,
-            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+            color: isDark
+                ? AppColors.textPrimaryDark
+                : AppColors.textPrimaryLight,
           ),
         ),
       ],

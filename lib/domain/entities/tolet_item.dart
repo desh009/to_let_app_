@@ -8,6 +8,8 @@ class ToLetItem {
   final double squareFeet;
   final String description;
   final String contactNumber;
+  final String ownerName;
+  final String? ownerAvatar;
   final List<String> images;
   final String category;
   final String badgeText;
@@ -25,6 +27,8 @@ class ToLetItem {
     required this.squareFeet,
     required this.description,
     required this.contactNumber,
+    this.ownerName = 'Owner',
+    this.ownerAvatar,
     required this.images,
     this.category = 'Apartments',
     this.badgeText = 'Available now',
