@@ -12,7 +12,6 @@ import '../../notifications/controllers/notifications_controller.dart';
 class PostListingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
-
   late final TextEditingController titleController;
   late final TextEditingController locationController;
   late final TextEditingController rentController;
@@ -23,7 +22,12 @@ class PostListingController extends GetxController {
   final RxInt bedrooms = 2.obs;
   final RxInt bathrooms = 2.obs;
 
-  final List<String> tenantTypes = const ['Bachelor', 'Family', 'Seat', 'Sublet'];
+  final List<String> tenantTypes = const [
+    'Bachelor',
+    'Family',
+    'Seat',
+    'Sublet',
+  ];
   final RxString selectedTenantType = 'Family'.obs;
 
   void selectTenantType(String type) {
@@ -78,11 +82,7 @@ class PostListingController extends GetxController {
   }
 
   void showImagePickerSourceSheet() {
-
     if (propertyPhotos.length >= 8) {
-
-    
-
       Get.snackbar(
         'Limit Reached',
         'You can upload a maximum of 8 photos.',
@@ -93,7 +93,6 @@ class PostListingController extends GetxController {
       );
       return;
     }
-
 
     final isDark = Get.isDarkMode;
 
@@ -119,11 +118,9 @@ class PostListingController extends GetxController {
 
               SizedBox(height: 16.h),
               Text(
-                
                 'upload_photo_title'.tr,
 
                 style: TextStyle(
-
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : const Color(0xFF1E232A),
@@ -275,12 +272,13 @@ class PostListingController extends GetxController {
     isDirectOwner.value = true;
   }
 
-
   Future<void> publishListing() async {
     final title = titleController.text.trim();
     final location = locationController.text.trim();
-    final rentText =
-        rentController.text.replaceAll(',', '').replaceAll('৳', '').trim();
+    final rentText = rentController.text
+        .replaceAll(',', '')
+        .replaceAll('৳', '')
+        .trim();
     final rent = double.tryParse(rentText) ?? 32000;
 
     if (title.isEmpty) {
@@ -317,7 +315,6 @@ class PostListingController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 900));
     isSubmitting.value = false;
 
-
     final newItem = ToLetItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: title,
@@ -328,6 +325,7 @@ class PostListingController extends GetxController {
       squareFeet: 950,
       description: descriptionController.text.trim(),
       contactNumber: '+8801700000000',
+      ownerName: 'Property Owner',
       images: List<String>.from(propertyPhotos),
       category: selectedTenantType.value,
       badgeText: 'Featured',
@@ -335,7 +333,6 @@ class PostListingController extends GetxController {
       isAvailable: true,
       isFeatured: true,
     );
-
 
     if (Get.isRegistered<HomeController>()) {
       final homeController = Get.find<HomeController>();
@@ -345,37 +342,41 @@ class PostListingController extends GetxController {
 
     // Save listing to Cloud Firestore
     try {
-      await FirebaseFirestore.instance.collection('properties').doc(newItem.id).set({
-        'id': newItem.id,
-        'title': newItem.title,
-        'location': newItem.location,
-        'price': newItem.price,
-        'bedrooms': newItem.bedrooms,
-        'bathrooms': newItem.bathrooms,
-        'squareFeet': newItem.squareFeet,
-        'description': newItem.description,
-        'contactNumber': newItem.contactNumber,
-        'images': newItem.images,
-        'category': newItem.category,
-        'badgeText': newItem.badgeText,
-        'isVerified': newItem.isVerified,
-        'isAvailable': newItem.isAvailable,
-        'isFeatured': newItem.isFeatured,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      await FirebaseFirestore.instance
+          .collection('properties')
+          .doc(newItem.id)
+          .set({
+            'id': newItem.id,
+            'title': newItem.title,
+            'location': newItem.location,
+            'price': newItem.price,
+            'bedrooms': newItem.bedrooms,
+            'bathrooms': newItem.bathrooms,
+            'squareFeet': newItem.squareFeet,
+            'description': newItem.description,
+            'contactNumber': newItem.contactNumber,
+            'ownerName': newItem.ownerName,
+            'ownerAvatar': newItem.ownerAvatar,
+            'images': newItem.images,
+            'category': newItem.category,
+            'badgeText': newItem.badgeText,
+            'isVerified': newItem.isVerified,
+            'isAvailable': newItem.isAvailable,
+            'isFeatured': newItem.isFeatured,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
     } catch (e) {
       debugPrint('Firestore save property exception: $e');
     }
 
-
     NotificationsController.to.addNotification(
       title: '✨ Listing Published: $title',
-      body: 'Your property listing in $location has been successfully published!',
+      body:
+          'Your property listing in $location has been successfully published!',
       propertyId: newItem.id,
       property: newItem,
       type: 'listing',
     );
-
 
     NotificationApiService.notifyNewListing(
       listingTitle: title,
@@ -406,7 +407,10 @@ class PostListingController extends GetxController {
               const SizedBox(height: 16),
               Text(
                 'listing_submitted'.tr,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(

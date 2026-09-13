@@ -22,10 +22,13 @@ import 'routes/app_routes.dart';
 
 import 'widgets/custom_snackbar.dart';
 
+
 final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('');
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
 
   // Load .env file
   await dotenv.load(fileName: '.env');
@@ -36,6 +39,7 @@ Future<void> main() async {
 
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
 
 
   final storageService = await Get.putAsync<StorageService>(
