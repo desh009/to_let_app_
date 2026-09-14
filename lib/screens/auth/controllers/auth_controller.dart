@@ -35,6 +35,11 @@ class AuthController extends GetxController {
   final RxString targetPhoneNumber = '+880 1712 345 678'.obs;
   final RxBool isVerifyingOtp = false.obs;
 
+  // Which flow currently owns the shared Verify OTP screen: register (false)
+  // or forgot-password (true). Set right before Get.toNamed(Routes.VERIFY_OTP).
+  final RxBool otpFlowIsForgotPassword = false.obs;
+  final RxBool isVerifyingForgotOtp = false.obs;
+
   late final TextEditingController forgotPasswordInputController;
   late final TextEditingController forgotNewPasswordController;
   late final TextEditingController forgotConfirmPasswordController;
@@ -144,6 +149,87 @@ class AuthController extends GetxController {
       return '+880 17XX XXX ${phone.substring(phone.length - 3)}';
     }
     return '+880 17XX XXX 678';
+  }
+
+  // ---- Unified helpers so VerifyOtpScreen works for BOTH register and
+  // forgot-password flows without duplicating the whole screen. ----
+
+  String get activeOtpTargetLabel => otpFlowIsForgotPassword.value
+      ? forgotPasswordInputController.text.trim()
+      : formattedMaskedPhone;
+
+  RxList<String> get activeOtpDigits =>
+      otpFlowIsForgotPassword.value ? forgotOtpDigits : otpDigits;
+
+  int get activeCurrentOtpIndex => otpFlowIsForgotPassword.value
+      ? currentForgotOtpIndex.value
+      : currentOtpIndex.value;
+
+  String get activeFormattedTimer =>
+      otpFlowIsForgotPassword.value ? formattedForgotTimer : formattedTimer;
+
+  bool get activeCanResend => otpFlowIsForgotPassword.value
+      ? canResendForgotOtp.value
+      : canResend.value;
+
+  bool get activeIsSubmitting => otpFlowIsForgotPassword.value
+      ? isVerifyingForgotOtp.value
+      : isVerifyingOtp.value;
+
+  void selectActiveOtpBox(int index) {
+    if (otpFlowIsForgotPassword.value) {
+      if (index >= 0 && index < 6) currentForgotOtpIndex.value = index;
+    } else {
+      selectOtpBox(index);
+    }
+  }
+
+  void inputActiveOtpDigit(String digit) {
+    if (otpFlowIsForgotPassword.value) {
+      inputForgotOtpDigit(digit);
+    } else {
+      inputOtpDigit(digit);
+    }
+  }
+
+  void deleteActiveOtpDigit() {
+    if (otpFlowIsForgotPassword.value) {
+      deleteForgotOtpDigit();
+    } else {
+      deleteOtpDigit();
+    }
+  }
+
+  void resendActiveOtp() {
+    if (otpFlowIsForgotPassword.value) {
+      resendForgotOtp();
+    } else {
+      resendOtp();
+    }
+  }
+
+  /// Called by the "Verify & Continue" button on the shared OTP screen.
+  Future<void> continueFromOtpScreen() async {
+    if (otpFlowIsForgotPassword.value) {
+      final code = forgotOtpDigits.join();
+      if (code.length < 6) {
+        Get.snackbar(
+          'Incomplete Code',
+          'Please enter the full 6-digit verification code.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
+      isVerifyingForgotOtp.value = true;
+      await Future.delayed(const Duration(milliseconds: 500));
+      isVerifyingForgotOtp.value = false;
+      // OTP confirmed — go back to Forgot Password screen, which is already
+      // showing the "set new password" step underneath.
+      Get.back();
+    } else {
+      await verifyOtp();
+    }
   }
 
   Future<void> login() async {
@@ -279,6 +365,7 @@ class AuthController extends GetxController {
     currentOtpIndex.value = 0;
     startResendTimer();
 
+    otpFlowIsForgotPassword.value = false;
     Get.toNamed(Routes.VERIFY_OTP);
   }
 
@@ -372,7 +459,10 @@ class AuthController extends GetxController {
     forgotOtpDigits.assignAll(['', '', '', '', '', '']);
     currentForgotOtpIndex.value = 0;
     _startForgotResendTimer();
-    isForgotPasswordStep2.value = true;
+
+    // Navigate to forgot password OTP screen
+    Get.toNamed(Routes.FORGOT_PASSWORD_OTP);
+
     Get.snackbar(
       'OTP Sent',
       'A 6-digit code was sent to $input',
@@ -394,7 +484,7 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> resetPassword() async {
+  Future<void> verifyForgotOtp() async {
     final code = forgotOtpDigits.join();
     if (code.length < 6) {
       Get.snackbar(
@@ -405,8 +495,27 @@ class AuthController extends GetxController {
       );
       return;
     }
+
+    isVerifyingForgotOtp.value = true;
+    await Future.delayed(const Duration(milliseconds: 800));
+    isVerifyingForgotOtp.value = false;
+
+    // OTP verified - navigate to reset password screen
+    Get.toNamed(Routes.RESET_PASSWORD);
+
+    Get.snackbar(
+      'Verified!',
+      'OTP confirmed. Please set your new password.',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  Future<void> resetPassword() async {
     final newPass = forgotNewPasswordController.text.trim();
     final confirmPass = forgotConfirmPasswordController.text.trim();
+
     if (newPass.length < 6) {
       Get.snackbar(
         'Weak Password',
@@ -425,17 +534,22 @@ class AuthController extends GetxController {
       );
       return;
     }
+
     isResettingPassword.value = true;
     await Future.delayed(const Duration(milliseconds: 900));
     isResettingPassword.value = false;
 
-    isForgotPasswordStep2.value = false;
+    // Clear all fields
     forgotPasswordInputController.clear();
     forgotNewPasswordController.clear();
     forgotConfirmPasswordController.clear();
     forgotOtpDigits.assignAll(['', '', '', '', '', '']);
     currentForgotOtpIndex.value = 0;
-    Get.until((route) => route.settings.name == '/login');
+
+    // Navigate back to login screen
+    Get.until((route) => route.settings.name == Routes.LOGIN);
+
+    // Show success message
     Get.snackbar(
       'Success!',
       'Your password has been reset. Please log in.',

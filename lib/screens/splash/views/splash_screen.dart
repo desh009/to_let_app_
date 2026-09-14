@@ -11,22 +11,33 @@ class SplashScreen extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-
     Get.find<SplashController>();
 
+    // Get current theme mode
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : AppColors.backgroundLight,
       body: Container(
         width: 1.sw,
         height: 1.sh,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppColors.primaryDark,
-              AppColors.primary,
-              AppColors.primaryLight,
-            ],
+            colors: isDark
+                ? [
+                    AppColors.primaryDark,
+                    AppColors.primary,
+                    AppColors.primary.withOpacity(0.8),
+                  ]
+                : [
+                    AppColors.primaryDark,
+                    AppColors.primary,
+                    AppColors.primaryLight,
+                  ],
           ),
         ),
         child: Center(
@@ -37,7 +48,7 @@ class SplashScreen extends GetView<SplashController> {
                 Container(
                   padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? AppColors.surfaceDark : Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -74,10 +85,7 @@ class SplashScreen extends GetView<SplashController> {
                   ),
                 ),
                 SizedBox(height: 48.h),
-                LoadingIndicator(
-                  color: Colors.white,
-                  size: 28.r,
-                ),
+                LoadingIndicator(color: Colors.white, size: 28.r),
               ],
             ),
           ),

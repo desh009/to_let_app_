@@ -12,6 +12,8 @@ abstract class Routes {
   static const String REGISTER = _Paths.REGISTER;
   static const String VERIFY_OTP = _Paths.VERIFY_OTP;
   static const String FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const String FORGOT_PASSWORD_OTP = _Paths.FORGOT_PASSWORD_OTP;
+  static const String RESET_PASSWORD = _Paths.RESET_PASSWORD;
   static const String CALL_SUPPORT = _Paths.CALL_SUPPORT;
   static const String EMAIL_SUPPORT = _Paths.EMAIL_SUPPORT;
   static const String REPORT_A_PROBLEM = _Paths.REPORT_A_PROBLEM;
@@ -21,7 +23,6 @@ abstract class Routes {
   static const String FILTER = _Paths.FILTER;
   static const String FILTER_RESULTS = _Paths.FILTER_RESULTS;
   static const String NOTIFICATIONS = _Paths.NOTIFICATIONS;
-
 
   static const String splash = _Paths.SPLASH;
   static const String home = _Paths.HOME;
@@ -45,6 +46,7 @@ abstract class Routes {
   static const String filter_results = _Paths.FILTER_RESULTS;
   static const String notifications = _Paths.NOTIFICATIONS;
 }
+
 abstract class _Paths {
   _Paths._();
   static const String SPLASH = '/splash';
@@ -59,6 +61,8 @@ abstract class _Paths {
   static const String REGISTER = '/register';
   static const String VERIFY_OTP = '/verify-otp';
   static const String FORGOT_PASSWORD = '/forgot-password';
+  static const String FORGOT_PASSWORD_OTP = '/forgot-password-otp';
+  static const String RESET_PASSWORD = '/reset-password';
   static const String CALL_SUPPORT = '/call-support';
   static const String EMAIL_SUPPORT = '/email-support';
   static const String REPORT_A_PROBLEM = '/report-a-problem';
@@ -67,4 +71,5 @@ abstract class _Paths {
   static const String TWO_FACTOR_AUTH = '/two-factor-auth';
   static const String FILTER = '/filter';
   static const String FILTER_RESULTS = '/filter-results';
-  static const String NOTIFICATIONS = '/notifications';}
+  static const String NOTIFICATIONS = '/notifications';
+}

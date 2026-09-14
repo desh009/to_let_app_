@@ -12,22 +12,36 @@ class ForgotPasswordScreen extends GetView<AuthController> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final inputBg = isDark ? const Color(0xFF1E2228) : const Color(0xFFF7F8FA);
     final textColor = isDark ? Colors.white : const Color(0xFF1E232A);
-    final subtitleColor =
-        isDark ? const Color(0xFFA0AEC0) : const Color(0xFF7E8B9B);
+    final subtitleColor = isDark
+        ? const Color(0xFFA0AEC0)
+        : const Color(0xFF7E8B9B);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.backgroundDark : const Color(0xFFFAF8F5),
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : const Color(0xFFFAF8F5),
       body: SafeArea(
-        child: Obx(
-          () => controller.isForgotPasswordStep2.value
-              ? _buildStep2OtpView(context, isDark, textColor, subtitleColor, inputBg)
-              : _buildStep1View(context, isDark, textColor, subtitleColor, inputBg),
-        ),
+        child: Obx(() {
+          final isStep2 = controller.isForgotPasswordStep2.value;
+          return isStep2
+              ? _buildStep2OtpView(
+                  context,
+                  isDark,
+                  textColor,
+                  subtitleColor,
+                  inputBg,
+                )
+              : _buildStep1View(
+                  context,
+                  isDark,
+                  textColor,
+                  subtitleColor,
+                  inputBg,
+                );
+        }),
       ),
     );
   }
-
 
   Widget _buildStep1View(
     BuildContext context,
@@ -43,7 +57,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-
 
           GestureDetector(
             onTap: () => Get.back(),
@@ -63,14 +76,11 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-
           Container(
             width: 48.r,
             height: 48.r,
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF2B1F1C)
-                  : const Color(0xFFFDF0ED),
+              color: isDark ? const Color(0xFF2B1F1C) : const Color(0xFFFDF0ED),
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
                 color: AppColors.primary.withAlpha(60),
@@ -95,7 +105,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-
           Text(
             'Forgot Password?',
             style: TextStyle(
@@ -115,7 +124,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-
           Text(
             'Phone or Email',
             style: TextStyle(
@@ -125,7 +133,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 8.h),
-
 
           Container(
             height: 52.h,
@@ -162,7 +169,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-
           Obx(
             () => SizedBox(
               width: double.infinity,
@@ -184,8 +190,9 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                         height: 22.r,
                         child: const CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(
@@ -200,7 +207,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 32.h),
-
 
           Center(
             child: GestureDetector(
@@ -229,7 +235,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 20.h),
 
-
           Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -257,7 +262,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
     );
   }
 
-
   Widget _buildStep2OtpView(
     BuildContext context,
     bool isDark,
@@ -272,7 +276,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-
 
           GestureDetector(
             onTap: () => controller.isForgotPasswordStep2.value = false,
@@ -292,19 +295,13 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-
           Container(
             width: 48.r,
             height: 48.r,
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF1C2B1F)
-                  : const Color(0xFFEDF7ED),
+              color: isDark ? const Color(0xFF1C2B1F) : const Color(0xFFEDF7ED),
               borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: Colors.green.withAlpha(80),
-                width: 1.5,
-              ),
+              border: Border.all(color: Colors.green.withAlpha(80), width: 1.5),
             ),
             child: Center(
               child: Container(
@@ -323,7 +320,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 24.h),
-
 
           Text(
             'Check Your Phone',
@@ -346,12 +342,12 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: List.generate(6, (i) {
-                final filled = i < controller.forgotOtpDigits.length &&
+                final filled =
+                    i < controller.forgotOtpDigits.length &&
                     controller.forgotOtpDigits[i].isNotEmpty;
                 final isActive = i == controller.currentForgotOtpIndex.value;
                 return AnimatedContainer(
@@ -359,18 +355,16 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                   width: 44.r,
                   height: 52.r,
                   decoration: BoxDecoration(
-                    color: isActive
-                        ? AppColors.primary.withAlpha(15)
-                        : inputBg,
+                    color: isActive ? AppColors.primary.withAlpha(15) : inputBg,
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
                       color: isActive
                           ? AppColors.primary
                           : filled
-                              ? AppColors.primary.withAlpha(100)
-                              : (isDark
-                                  ? const Color(0xFF2D3748)
-                                  : const Color(0xFFE2E8F0)),
+                          ? AppColors.primary.withAlpha(100)
+                          : (isDark
+                                ? const Color(0xFF2D3748)
+                                : const Color(0xFFE2E8F0)),
                       width: isActive ? 2 : 1.5,
                     ),
                   ),
@@ -385,22 +379,20 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                           ),
                         )
                       : (isActive
-                          ? Container(
-                              width: 2,
-                              height: 22.h,
-                              color: AppColors.primary,
-                            )
-                          : const SizedBox.shrink()),
+                            ? Container(
+                                width: 2,
+                                height: 22.h,
+                                color: AppColors.primary,
+                              )
+                            : const SizedBox.shrink()),
                 );
               }),
             ),
           ),
           SizedBox(height: 28.h),
 
-
           _buildNumpad(textColor, subtitleColor, inputBg),
           SizedBox(height: 20.h),
-
 
           Obx(
             () => Center(
@@ -440,14 +432,10 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-
           Divider(
-            color: isDark
-                ? const Color(0xFF2D3748)
-                : const Color(0xFFE2E8F0),
+            color: isDark ? const Color(0xFF2D3748) : const Color(0xFFE2E8F0),
           ),
           SizedBox(height: 20.h),
-
 
           Text(
             'New Password',
@@ -468,7 +456,11 @@ class ForgotPasswordScreen extends GetView<AuthController> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lock_outline_rounded, size: 18.r, color: subtitleColor),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 18.r,
+                    color: subtitleColor,
+                  ),
                   SizedBox(width: 10.w),
                   Expanded(
                     child: TextField(
@@ -502,7 +494,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 14.h),
 
-
           Text(
             'Confirm Password',
             style: TextStyle(
@@ -522,12 +513,17 @@ class ForgotPasswordScreen extends GetView<AuthController> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lock_outline_rounded, size: 18.r, color: subtitleColor),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 18.r,
+                    color: subtitleColor,
+                  ),
                   SizedBox(width: 10.w),
                   Expanded(
                     child: TextField(
                       controller: controller.forgotConfirmPasswordController,
-                      obscureText: controller.isForgotConfirmPasswordHidden.value,
+                      obscureText:
+                          controller.isForgotConfirmPasswordHidden.value,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -557,7 +553,6 @@ class ForgotPasswordScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 28.h),
 
-
           Obx(
             () => SizedBox(
               width: double.infinity,
@@ -579,8 +574,9 @@ class ForgotPasswordScreen extends GetView<AuthController> {
                         height: 22.r,
                         child: const CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(

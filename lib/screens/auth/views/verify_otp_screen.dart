@@ -110,7 +110,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
                 children: [
                   Obx(
                     () => Text(
-                      controller.formattedMaskedPhone,
+                      controller.activeOtpTargetLabel,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
@@ -147,11 +147,11 @@ class VerifyOtpScreen extends GetView<AuthController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(6, (index) {
                     final isCurrent =
-                        index == controller.currentOtpIndex.value;
-                    final digit = controller.otpDigits[index];
+                        index == controller.activeCurrentOtpIndex;
+                    final digit = controller.activeOtpDigits[index];
 
                     return GestureDetector(
-                      onTap: () => controller.selectOtpBox(index),
+                      onTap: () => controller.selectActiveOtpBox(index),
                       child: Container(
                         width: 44.w,
                         height: 52.h,
@@ -218,7 +218,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${'resend_code_in'.tr}${controller.formattedTimer}',
+                      '${'resend_code_in'.tr}${controller.activeFormattedTimer}',
                       style: TextStyle(
                         fontSize: 12.5.sp,
                         fontWeight: FontWeight.w600,
@@ -226,15 +226,15 @@ class VerifyOtpScreen extends GetView<AuthController> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: controller.canResend.value
-                          ? controller.resendOtp
+                      onTap: controller.activeCanResend
+                          ? controller.resendActiveOtp
                           : null,
                       child: Text(
                         'resend'.tr,
                         style: TextStyle(
                           fontSize: 12.5.sp,
                           fontWeight: FontWeight.w700,
-                          color: controller.canResend.value
+                          color: controller.activeCanResend
                               ? AppColors.primary
                               : AppColors.primary.withAlpha(140),
                         ),
@@ -251,9 +251,9 @@ class VerifyOtpScreen extends GetView<AuthController> {
                   width: double.infinity,
                   height: 52.h,
                   child: ElevatedButton(
-                    onPressed: controller.isVerifyingOtp.value
+                    onPressed: controller.activeIsSubmitting
                         ? null
-                        : controller.verifyOtp,
+                        : controller.continueFromOtpScreen,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
@@ -261,7 +261,7 @@ class VerifyOtpScreen extends GetView<AuthController> {
                       ),
                       elevation: 0,
                     ),
-                    child: controller.isVerifyingOtp.value
+                    child: controller.activeIsSubmitting
                         ? SizedBox(
                             width: 22.r,
                             height: 22.r,
@@ -286,8 +286,8 @@ class VerifyOtpScreen extends GetView<AuthController> {
 
 
               CustomNumpad(
-                onDigitTap: controller.inputOtpDigit,
-                onDeleteTap: controller.deleteOtpDigit,
+                onDigitTap: controller.inputActiveOtpDigit,
+                onDeleteTap: controller.deleteActiveOtpDigit,
               ),
               SizedBox(height: 18.h),
 

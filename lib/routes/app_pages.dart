@@ -1,8 +1,5 @@
-
-
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_factor_auth_screen.dart';
-
 
 import '../screens/filter/views/filter_results_screen.dart';
 import '../screens/notifications/views/notifications_screen.dart';
@@ -26,7 +23,8 @@ import 'package:to_let_app_abandon/screens/masaage/massage_details/binder/massag
 import 'package:to_let_app_abandon/screens/masaage/massage_details/view/massage_details_view.dart';
 import 'package:to_let_app_abandon/screens/masaage/view/massage_view.dart';
 import 'package:to_let_app_abandon/screens/auth/views/forgot_password_screen.dart';
-
+import 'package:to_let_app_abandon/screens/auth/views/forgot_password_otp_screen.dart';
+import 'package:to_let_app_abandon/screens/auth/views/reset_password_screen.dart';
 
 import '../screens/auth/bindings/auth_binding.dart';
 import '../screens/auth/views/login_screen.dart';
@@ -80,6 +78,18 @@ class AppPages {
     GetPage(
       name: Routes.FORGOT_PASSWORD,
       page: () => const ForgotPasswordScreen(),
+      binding: AuthBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.FORGOT_PASSWORD_OTP,
+      page: () => const ForgotPasswordOtpScreen(),
+      binding: AuthBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () => const ResetPasswordScreen(),
       binding: AuthBinding(),
       transition: Transition.rightToLeft,
     ),
@@ -173,7 +183,6 @@ class AppPages {
         }
       }),
     ),
-
 
     GetPage(
       name: Routes.FILTER,
