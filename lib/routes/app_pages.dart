@@ -30,6 +30,7 @@ import '../screens/auth/bindings/auth_binding.dart';
 import '../screens/auth/views/login_screen.dart';
 import '../screens/auth/views/register_screen.dart';
 import '../screens/auth/views/verify_otp_screen.dart';
+import '../screens/auth/views/registration_otp_screen.dart';
 import '../screens/details/bindings/details_binding.dart';
 import '../screens/details/views/details_screen.dart';
 import '../screens/filter/bindings/filter_binding.dart';
@@ -72,6 +73,12 @@ class AppPages {
     GetPage(
       name: Routes.VERIFY_OTP,
       page: () => const VerifyOtpScreen(),
+      binding: AuthBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.REGISTRATION_OTP,
+      page: () => const RegistrationOtpScreen(),
       binding: AuthBinding(),
       transition: Transition.rightToLeft,
     ),

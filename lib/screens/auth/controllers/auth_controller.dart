@@ -6,11 +6,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/network_service.dart';
+import '../../../data/repositories/auth_repo.dart';
 import '../../../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthRepo _authRepo = AuthRepo();
+  final NetworkService _networkService = Get.find<NetworkService>();
 
   late final TextEditingController loginEmailController;
   late final TextEditingController loginPasswordController;
@@ -356,17 +360,60 @@ class AuthController extends GetxController {
     }
 
     isRegistering.value = true;
-    await Future.delayed(const Duration(milliseconds: 600));
-    isRegistering.value = false;
 
-    targetPhoneNumber.value = phone;
+    try {
+      // Call API - Send OTP
+      final response = await _authRepo.registerSendOtp(
+        email: regEmailController.text.trim(),
+        fullName: name,
+        phone: phone,
+        password: pass,
+      );
 
-    otpDigits.assignAll(['', '', '', '', '', '']);
-    currentOtpIndex.value = 0;
-    startResendTimer();
+      isRegistering.value = false;
 
-    otpFlowIsForgotPassword.value = false;
-    Get.toNamed(Routes.VERIFY_OTP);
+      if (response.isSuccess) {
+        // Parse model
+        final otpModel = _authRepo.parseRegisterOtpResponse(response);
+
+        if (otpModel != null) {
+          // OTP sent successfully
+          targetPhoneNumber.value = otpModel.email;
+          otpDigits.assignAll(['', '', '', '', '', '']);
+          currentOtpIndex.value = 0;
+          startResendTimer();
+          otpFlowIsForgotPassword.value = false;
+
+          // Navigate to OTP screen
+          Get.toNamed(Routes.REGISTRATION_OTP);
+
+          Get.snackbar(
+            'OTP Sent',
+            otpModel.message,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+          );
+        }
+      } else {
+        // Show error
+        Get.snackbar(
+          'Registration Failed',
+          response.errorMessage ?? 'Failed to send OTP. Please try again.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      isRegistering.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Future<void> verifyOtp() async {
@@ -382,30 +429,117 @@ class AuthController extends GetxController {
     }
 
     isVerifyingOtp.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    isVerifyingOtp.value = false;
 
-    await storageService.setBool(StorageKeys.isLoggedIn, true);
-    if (regFullNameController.text.trim().isNotEmpty) {
-      await storageService.setString(
-        StorageKeys.userName,
-        regFullNameController.text.trim(),
+    try {
+      // Call API - Verify OTP
+      final response = await _authRepo.registerVerifyOtp(
+        email: regEmailController.text.trim(),
+        otp: code,
+      );
+
+      isVerifyingOtp.value = false;
+
+      if (response.isSuccess) {
+        // Parse response model
+        final verifyResponse = _authRepo.parseVerifyOtpResponse(response);
+
+        if (verifyResponse != null && verifyResponse.data != null) {
+          // Save token
+          if (verifyResponse.data!.idToken.isNotEmpty) {
+            _networkService.setAuthToken(verifyResponse.data!.idToken);
+          }
+
+          // Save user data
+          await storageService.setBool(StorageKeys.isLoggedIn, true);
+
+          if (verifyResponse.data!.user != null) {
+            final user = verifyResponse.data!.user!;
+            await storageService.setString(StorageKeys.userName, user.name);
+            await storageService.setString(StorageKeys.userEmail, user.email);
+            await storageService.setString(
+              StorageKeys.userId,
+              user.id ?? user.uid,
+            );
+            if (user.phone != null && user.phone!.isNotEmpty) {
+              await storageService.setString(
+                StorageKeys.userPhone,
+                user.phone!,
+              );
+            }
+          }
+
+          // Navigate to home
+          Get.offAllNamed(Routes.HOME);
+
+          Get.snackbar(
+            'Success!',
+            verifyResponse.message,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+          );
+        }
+      } else {
+        Get.snackbar(
+          'Verification Failed',
+          response.errorMessage ?? 'Invalid OTP. Please try again.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      isVerifyingOtp.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
       );
     }
-
-    Get.offAllNamed(Routes.HOME);
   }
 
-  void resendOtp() {
+  Future<void> resendOtp() async {
     if (!canResend.value) return;
-    startResendTimer();
-    Get.snackbar(
-      'Code Sent',
-      'A new verification code has been sent to your phone.',
-      backgroundColor: AppColors.primary,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+
+    try {
+      // Call API - Resend OTP
+      final response = await _authRepo.registerResendOtp(
+        email: regEmailController.text.trim(),
+      );
+
+      if (response.isSuccess) {
+        // Parse model
+        final resendModel = _authRepo.parseResendOtpResponse(response);
+
+        if (resendModel != null) {
+          startResendTimer();
+
+          Get.snackbar(
+            'Success!',
+            resendModel.message,
+            backgroundColor: AppColors.primary,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+          );
+        }
+      } else {
+        Get.snackbar(
+          'Error',
+          response.errorMessage ?? 'Failed to resend OTP',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void _startForgotResendTimer() {
@@ -444,6 +578,7 @@ class AuthController extends GetxController {
 
   Future<void> sendForgotPasswordOtp() async {
     final input = forgotPasswordInputController.text.trim();
+
     if (input.isEmpty) {
       Get.snackbar(
         'Required',
@@ -453,9 +588,11 @@ class AuthController extends GetxController {
       );
       return;
     }
+
     isSendingForgotOtp.value = true;
     await Future.delayed(const Duration(milliseconds: 800));
     isSendingForgotOtp.value = false;
+
     forgotOtpDigits.assignAll(['', '', '', '', '', '']);
     currentForgotOtpIndex.value = 0;
     _startForgotResendTimer();

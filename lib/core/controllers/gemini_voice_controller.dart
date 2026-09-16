@@ -3,7 +3,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:to_let_app_abandon/core/constants/app_colors.dart';
 import '../../routes/app_routes.dart';
 import '../../screens/filter/controllers/filter_controller.dart';
 import '../../screens/home/controllers/home_controller.dart';
@@ -86,7 +85,8 @@ class GeminiVoiceController extends GetxController {
         statusMessage.value = 'Microphone permission not granted or available.';
         CustomSnackbar.showError(
           title: 'Mic Unavailable',
-          message: 'Please enable microphone access or type your request below.',
+          message:
+              'Please enable microphone access or type your request below.',
         );
         return;
       }
@@ -142,7 +142,8 @@ class GeminiVoiceController extends GetxController {
 
     // Read API key from .env
     final apiKey = dotenv.maybeGet('GEMINI_API_KEY');
-    final hasValidKey = apiKey != null &&
+    final hasValidKey =
+        apiKey != null &&
         apiKey.isNotEmpty &&
         apiKey != 'your_gemini_api_key_here';
 
@@ -258,7 +259,9 @@ class GeminiVoiceController extends GetxController {
       }
 
       // Check results count
-      final results = homeCtrl.recommendedProperties.length + homeCtrl.featuredProperties.length;
+      final results =
+          homeCtrl.recommendedProperties.length +
+          homeCtrl.featuredProperties.length;
       final speechNotice = results > 0
           ? '$results টি বাসা পাওয়া গেছে!'
           : 'নতুন বাসা খুঁজতে ফিল্টার রেজাল্টে চলুন।';

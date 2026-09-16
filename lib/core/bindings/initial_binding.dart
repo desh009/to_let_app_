@@ -6,7 +6,6 @@ import 'package:to_let_app_abandon/data/datasources/tolet_local_datasource.dart'
 import 'package:to_let_app_abandon/data/repositories/tolet_repository_impl.dart';
 import 'package:to_let_app_abandon/domain/repositories/tolet_repository.dart';
 import 'package:to_let_app_abandon/screens/saved_screen/controllers/saved_controller.dart';
-import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
 import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
@@ -29,7 +28,9 @@ class InitialBinding extends Bindings {
     );
 
     Get.lazyPut<ToLetRepository>(
-      () => ToLetRepositoryImpl(localDataSource: Get.find<ToLetLocalDataSource>()),
+      () => ToLetRepositoryImpl(
+        localDataSource: Get.find<ToLetLocalDataSource>(),
+      ),
       fenix: true,
     );
 
@@ -41,9 +42,9 @@ class InitialBinding extends Bindings {
         ),
         permanent: true,
       );
-       if (!Get.isRegistered<SavedController>()) {
-      Get.put<SavedController>(SavedController(), permanent: true);
-    }
+      if (!Get.isRegistered<SavedController>()) {
+        Get.put<SavedController>(SavedController(), permanent: true);
+      }
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/two_factor_controller_addition.dart';
 import 'package:to_let_app_abandon/screens/auth/controllers/auth_controller.dart';
 import '../../../core/constants/app_colors.dart';
 
@@ -13,25 +12,37 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final inputBg = isDark ? const Color(0xFF1E2228) : const Color(0xFFF7F8FA);
     final textColor = isDark ? Colors.white : const Color(0xFF1E232A);
-    final subtitleColor =
-        isDark ? const Color(0xFFA0AEC0) : const Color(0xFF7E8B9B);
-
+    final subtitleColor = isDark
+        ? const Color(0xFFA0AEC0)
+        : const Color(0xFF7E8B9B);
 
     controller.fetchTwoFactorStatus();
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.backgroundDark : const Color(0xFFFAF8F5),
+      backgroundColor: isDark
+          ? AppColors.backgroundDark
+          : const Color(0xFFFAF8F5),
       body: SafeArea(
         child: Obx(
           () => controller.isTwoFactorSetupStep2.value
-              ? _buildOtpStep(context, isDark, textColor, subtitleColor, inputBg)
-              : _buildToggleStep(context, isDark, textColor, subtitleColor, inputBg),
+              ? _buildOtpStep(
+                  context,
+                  isDark,
+                  textColor,
+                  subtitleColor,
+                  inputBg,
+                )
+              : _buildToggleStep(
+                  context,
+                  isDark,
+                  textColor,
+                  subtitleColor,
+                  inputBg,
+                ),
         ),
       ),
     );
   }
-
 
   Widget _buildToggleStep(
     BuildContext context,
@@ -47,7 +58,6 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-
 
           GestureDetector(
             onTap: () => Get.back(),
@@ -67,7 +77,6 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 24.h),
 
-
           Container(
             width: 48.r,
             height: 48.r,
@@ -84,7 +93,11 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                   color: Colors.green.shade500,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Icon(Icons.security_rounded, color: Colors.white, size: 20.r),
+                child: Icon(
+                  Icons.security_rounded,
+                  color: Colors.white,
+                  size: 20.r,
+                ),
               ),
             ),
           ),
@@ -111,7 +124,6 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 28.h),
-
 
           Obx(
             () => Container(
@@ -150,19 +162,27 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                           controller.isTwoFactorEnabled.value
                               ? 'Your account is protected.'
                               : 'Turn on for better protection.',
-                          style: TextStyle(fontSize: 11.5.sp, color: subtitleColor),
+                          style: TextStyle(
+                            fontSize: 11.5.sp,
+                            color: subtitleColor,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Switch(
                     value: controller.isTwoFactorEnabled.value,
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                     onChanged: (val) {
                       if (val) {
                         controller.sendTwoFactorOtp();
                       } else {
-                        _confirmDisable(context, isDark, textColor, subtitleColor);
+                        _confirmDisable(
+                          context,
+                          isDark,
+                          textColor,
+                          subtitleColor,
+                        );
                       }
                     },
                   ),
@@ -171,7 +191,6 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 20.h),
-
 
           Obx(
             () => controller.isTwoFactorEnabled.value
@@ -196,8 +215,9 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                               height: 22.r,
                               child: const CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             )
                           : Text(
@@ -225,17 +245,16 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
     Get.dialog(
       AlertDialog(
         backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
         title: Text('Disable 2FA?', style: TextStyle(color: textColor)),
         content: Text(
           'Your account will be less secure without two-factor authentication. Continue?',
           style: TextStyle(color: subtitleColor, fontSize: 13.sp),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
@@ -247,7 +266,6 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
       ),
     );
   }
-
 
   Widget _buildOtpStep(
     BuildContext context,
@@ -302,12 +320,12 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
           ),
           SizedBox(height: 32.h),
 
-
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: List.generate(6, (i) {
-                final filled = i < controller.twoFactorOtpDigits.length &&
+                final filled =
+                    i < controller.twoFactorOtpDigits.length &&
                     controller.twoFactorOtpDigits[i].isNotEmpty;
                 final isActive = i == controller.currentTwoFactorOtpIndex.value;
                 return AnimatedContainer(
@@ -321,10 +339,10 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                       color: isActive
                           ? AppColors.primary
                           : filled
-                              ? AppColors.primary.withAlpha(100)
-                              : (isDark
-                                  ? const Color(0xFF2D3748)
-                                  : const Color(0xFFE2E8F0)),
+                          ? AppColors.primary.withAlpha(100)
+                          : (isDark
+                                ? const Color(0xFF2D3748)
+                                : const Color(0xFFE2E8F0)),
                       width: isActive ? 2 : 1.5,
                     ),
                   ),
@@ -339,8 +357,12 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                           ),
                         )
                       : (isActive
-                          ? Container(width: 2, height: 22.h, color: AppColors.primary)
-                          : const SizedBox.shrink()),
+                            ? Container(
+                                width: 2,
+                                height: 22.h,
+                                color: AppColors.primary,
+                              )
+                            : const SizedBox.shrink()),
                 );
               }),
             ),
@@ -392,8 +414,9 @@ class TwoFactorAuthScreen extends GetView<AuthController> {
                       height: 22.r,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.primary,
+                        ),
                       ),
                     ),
                   )

@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
 import '../controllers/auth_controller.dart';
 
-class ForgotPasswordOtpScreen extends GetView<AuthController> {
-  const ForgotPasswordOtpScreen({super.key});
+class RegistrationOtpScreen extends GetView<AuthController> {
+  const RegistrationOtpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
             children: [
               SizedBox(height: 10.h),
 
+              // Back button
               GestureDetector(
                 onTap: () => Get.back(),
                 child: Container(
@@ -47,6 +48,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
+              // Icon
               Container(
                 width: 48.r,
                 height: 48.r,
@@ -78,6 +80,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 24.h),
 
+              // Title
               Text(
                 'Check Your Email',
                 style: TextStyle(
@@ -88,7 +91,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 6.h),
               Text(
-                'We\'ve sent a 6-digit OTP to\n${controller.forgotPasswordInputController.text.trim()}',
+                'We\'ve sent a 6-digit OTP to\n${controller.regEmailController.text.trim().isNotEmpty ? controller.regEmailController.text.trim() : 'your email'}',
                 style: TextStyle(
                   fontSize: 13.5.sp,
                   fontWeight: FontWeight.w500,
@@ -102,9 +105,8 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(6, (i) {
-                    final filled = controller.forgotOtpDigits[i].isNotEmpty;
-                    final isActive =
-                        i == controller.currentForgotOtpIndex.value;
+                    final filled = controller.otpDigits[i].isNotEmpty;
+                    final isActive = i == controller.currentOtpIndex.value;
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       width: 44.r,
@@ -148,14 +150,16 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 28.h),
 
+              // Numpad
               _buildNumpad(textColor, subtitleColor, inputBg),
               SizedBox(height: 20.h),
 
+              // Resend OTP
               Obx(
                 () => Center(
-                  child: controller.canResendForgotOtp.value
+                  child: controller.canResend.value
                       ? GestureDetector(
-                          onTap: controller.resendForgotOtp,
+                          onTap: controller.resendOtp,
                           child: Text(
                             'Resend OTP',
                             style: TextStyle(
@@ -175,7 +179,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
                             ),
                             children: [
                               TextSpan(
-                                text: controller.formattedForgotTimer,
+                                text: controller.formattedTimer,
                                 style: TextStyle(
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w800,
@@ -195,17 +199,18 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
                   width: double.infinity,
                   height: 52.h,
                   child: ElevatedButton(
-                    onPressed: controller.isVerifyingForgotOtp.value
+                    onPressed: controller.isVerifyingOtp.value
                         ? null
-                        : controller.verifyForgotOtp,
+                        : controller.verifyOtp,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(26.r),
                       ),
                       elevation: 0,
+                      disabledBackgroundColor: AppColors.primary.withAlpha(120),
                     ),
-                    child: controller.isVerifyingForgotOtp.value
+                    child: controller.isVerifyingOtp.value
                         ? SizedBox(
                             width: 22.r,
                             height: 22.r,
@@ -255,7 +260,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               if (key == 'del') {
                 return Expanded(
                   child: GestureDetector(
-                    onTap: controller.deleteForgotOtpDigit,
+                    onTap: controller.deleteOtpDigit,
                     child: Container(
                       height: 52.h,
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -274,7 +279,7 @@ class ForgotPasswordOtpScreen extends GetView<AuthController> {
               }
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => controller.inputForgotOtpDigit(key),
+                  onTap: () => controller.inputOtpDigit(key),
                   child: Container(
                     height: 52.h,
                     margin: EdgeInsets.symmetric(horizontal: 4.w),

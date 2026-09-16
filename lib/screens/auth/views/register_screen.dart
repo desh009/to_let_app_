@@ -73,7 +73,7 @@ class RegisterScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 22.h),
 
-              _buildLabel('full_name'.tr, textColor),
+              _buildLabel('name'.tr, textColor),
               SizedBox(height: 8.h),
               _buildInputField(
                 controller: controller.regFullNameController,

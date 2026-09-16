@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -7,8 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/constants/app_colors.dart';
 import 'package:to_let_app_abandon/domain/entities/tolet_item.dart';
-import 'package:to_let_app_abandon/domain/repositories/tolet_repository.dart';
-import 'package:to_let_app_abandon/core/services/storage_service.dart';
 import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 
 class AnimatedFavoriteButton extends StatefulWidget {
@@ -29,15 +26,12 @@ class AnimatedFavoriteButton extends StatefulWidget {
 
 class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
     with TickerProviderStateMixin {
-
   late AnimationController _bounceController;
   late Animation<double> _bounceScale;
-
 
   late AnimationController _rippleController;
   late Animation<double> _rippleScale;
   late Animation<double> _rippleOpacity;
-
 
   late AnimationController _burstController;
 
@@ -55,23 +49,31 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
     );
     _bounceScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.7)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.7,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 12,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.7, end: 1.35)
-            .chain(CurveTween(curve: Curves.easeOutBack)),
+        tween: Tween(
+          begin: 0.7,
+          end: 1.35,
+        ).chain(CurveTween(curve: Curves.easeOutBack)),
         weight: 38,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.35, end: 0.92)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: 1.35,
+          end: 0.92,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 25,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.92, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeOutBack)),
+        tween: Tween(
+          begin: 0.92,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeOutBack)),
         weight: 25,
       ),
     ]).animate(_bounceController);
@@ -141,7 +143,6 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
-
               AnimatedBuilder(
                 animation: _rippleController,
                 builder: (context, _) {
@@ -165,7 +166,6 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                 },
               ),
 
-
               AnimatedBuilder(
                 animation: _burstController,
                 builder: (context, _) {
@@ -173,8 +173,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                     return const SizedBox.shrink();
                   }
                   final t = Curves.easeOut.transform(_burstController.value);
-                  final fadeT =
-                      Curves.easeIn.transform(_burstController.value);
+                  final fadeT = Curves.easeIn.transform(_burstController.value);
                   return Stack(
                     alignment: Alignment.center,
                     children: _particles.map((p) {
@@ -193,8 +192,9 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                                 shape: p.isCircle
                                     ? BoxShape.circle
                                     : BoxShape.rectangle,
-                                borderRadius:
-                                    p.isCircle ? null : BorderRadius.circular(1),
+                                borderRadius: p.isCircle
+                                    ? null
+                                    : BorderRadius.circular(1),
                                 color: p.color,
                               ),
                             ),
@@ -205,7 +205,6 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                   );
                 },
               ),
-
 
               AnimatedBuilder(
                 animation: _bounceController,
@@ -218,13 +217,15 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
                   );
                 },
                 child: Icon(
-                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  isFav
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
                   size: widget.size.r,
                   color: isFav
                       ? AppColors.error
                       : (isDark
-                          ? AppColors.textSecondaryDark
-                          : AppColors.textSecondaryLight),
+                            ? AppColors.textSecondaryDark
+                            : AppColors.textSecondaryLight),
                 ),
               ),
             ],
@@ -234,7 +235,6 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
     });
   }
 }
-
 
 class _ParticleSpec {
   final double angle;

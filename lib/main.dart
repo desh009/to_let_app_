@@ -6,6 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'core/services/fcm_service.dart';
+import 'core/services/api_service.dart';
+import 'core/services/network_service.dart';
+import 'core/config/app_config.dart';
 import 'core/controllers/gemini_voice_controller.dart';
 import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
 import 'package:to_let_app_abandon/widgets/custom_floating_action button/custom_floating_action_button.dart';
@@ -18,48 +21,43 @@ import 'core/theme/app_theme.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
-
-
 import 'widgets/custom_snackbar.dart';
 
-
 final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('');
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
   // Load .env file
   await dotenv.load(fileName: '.env');
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
-
 
   final storageService = await Get.putAsync<StorageService>(
     () => StorageService().init(),
     permanent: true,
   );
 
+  // Print app configuration in debug mode
+  if (AppConfig.isDevelopment) {
+    AppConfig.printConfig();
+  }
+
+  // Initialize API Service (Old - for reference)
+  // Get.put(ApiService(), permanent: true);
+
+  // Initialize Network Service (New Pattern)
+  Get.put(NetworkService(), permanent: true);
 
   final isDarkMode = storageService.getBool(StorageKeys.isDarkMode) ?? false;
-
 
   final savedLang = storageService.getString(StorageKeys.language) ?? 'en';
 
   runApp(MyApp(isDarkMode: isDarkMode, savedLang: savedLang));
 
-
-  Get.putAsync<FcmService>(
-    () => FcmService().init(),
-    permanent: true,
-  );
+  Get.putAsync<FcmService>(() => FcmService().init(), permanent: true);
 
   // Register Gemini Voice Controller globally
   Get.put(GeminiVoiceController(), permanent: true);
@@ -69,11 +67,7 @@ class MyApp extends StatelessWidget {
   final bool isDarkMode;
   final String savedLang;
 
-  const MyApp({
-    super.key,
-    this.isDarkMode = false,
-    this.savedLang = 'en',
-  });
+  const MyApp({super.key, this.isDarkMode = false, this.savedLang = 'en'});
 
   @override
   Widget build(BuildContext context) {

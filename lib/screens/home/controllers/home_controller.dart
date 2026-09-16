@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/data/models/listing_model.dart';
+import 'package:to_let_app_abandon/data/repositories/listings_repo.dart';
 import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../domain/entities/tolet_item.dart';
@@ -12,6 +15,7 @@ import '../../../domain/repositories/tolet_repository.dart';
 class HomeController extends GetxController {
   final ToLetRepository repository;
   final StorageService storageService;
+  final ListingsRepo _listingsRepo = ListingsRepo();
 
   NavController get navController => Get.find<NavController>();
   FavoriteController get favoriteController => Get.find<FavoriteController>();
@@ -19,9 +23,13 @@ class HomeController extends GetxController {
   HomeController({required this.repository, required this.storageService});
 
   final RxList<ToLetItem> allProperties = <ToLetItem>[].obs;
+  final RxList<ListingModel> apiListings = <ListingModel>[].obs;
   final RxList<ToLetItem> featuredProperties = <ToLetItem>[].obs;
   final RxList<ToLetItem> recommendedProperties = <ToLetItem>[].obs;
   final RxBool isLoading = false.obs;
+  final RxBool isLoadingMore = false.obs;
+
+  final Rx<PaginationModel?> pagination = Rx<PaginationModel?>(null);
 
   final RxString selectedLocation = 'Khulna, Bangladesh'.obs;
   final RxString selectedCategory = ''.obs;
@@ -114,16 +122,113 @@ class HomeController extends GetxController {
   Future<void> loadProperties() async {
     try {
       isLoading.value = true;
-      final properties = await repository.getProperties();
-      allProperties.assignAll(properties);
 
-      await favoriteController.loadFavorites();
-      _applyFilters();
+      // Fetch from API - using /api/listings
+      final response = await _listingsRepo.getAllListings(offset: 0, limit: 20);
+
+      if (response.isSuccess) {
+        final listingsResponse = _listingsRepo.parseListingsResponse(response);
+
+        if (listingsResponse != null) {
+          apiListings.assignAll(listingsResponse.data);
+          pagination.value = listingsResponse.pagination;
+
+          // Convert API listings to ToLetItem format for existing UI
+          allProperties.assignAll(_convertToToLetItems(listingsResponse.data));
+
+          await favoriteController.loadFavorites();
+          _applyFilters();
+        }
+      } else {
+        // Fallback to local repository if API fails
+        final properties = await repository.getProperties();
+        allProperties.assignAll(properties);
+        await favoriteController.loadFavorites();
+        _applyFilters();
+
+        Get.snackbar(
+          'Notice',
+          'Using cached data. ${response.errorMessage ?? "API unavailable"}',
+          backgroundColor: AppColors.secondary,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      }
     } catch (e) {
       debugPrint('Error loading properties: $e');
+      // Fallback to local data
+      try {
+        final properties = await repository.getProperties();
+        allProperties.assignAll(properties);
+        await favoriteController.loadFavorites();
+        _applyFilters();
+      } catch (localError) {
+        debugPrint('Error loading local properties: $localError');
+      }
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // Load more listings (pagination)
+  Future<void> loadMoreProperties() async {
+    if (isLoadingMore.value ||
+        pagination.value == null ||
+        !pagination.value!.hasMore) {
+      return;
+    }
+
+    try {
+      isLoadingMore.value = true;
+
+      final response = await _listingsRepo.getAllListings(
+        offset: pagination.value!.offset + pagination.value!.limit,
+        limit: 20,
+      );
+
+      if (response.isSuccess) {
+        final listingsResponse = _listingsRepo.parseListingsResponse(response);
+
+        if (listingsResponse != null) {
+          apiListings.addAll(listingsResponse.data);
+          pagination.value = listingsResponse.pagination;
+
+          allProperties.addAll(_convertToToLetItems(listingsResponse.data));
+          _applyFilters();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading more properties: $e');
+    } finally {
+      isLoadingMore.value = false;
+    }
+  }
+
+  // Convert API ListingModel to ToLetItem
+  List<ToLetItem> _convertToToLetItems(List<ListingModel> listings) {
+    return listings.map((listing) {
+      return ToLetItem(
+        id: listing.id.toString(),
+        title: listing.title,
+        location: listing.location,
+        price: listing.price.toDouble(),
+        bedrooms: listing.bedrooms,
+        bathrooms: listing.bathrooms,
+        squareFeet: (listing.squareFeet ?? 1000).toDouble(),
+        description: listing.description ?? '',
+        contactNumber: listing.contactNumber,
+        ownerName: listing.ownerName ?? 'Owner',
+        images: listing.images.isNotEmpty
+            ? listing.images
+            : [listing.imageUrl ?? 'https://via.placeholder.com/400'],
+        category: listing.category,
+        badgeText: listing.availability,
+        isVerified: listing.isDirectOwner,
+        isAvailable: listing.availability == 'Available now',
+        isFeatured: listing.id <= 5, // First 5 are featured
+      );
+    }).toList();
   }
 
   void _filterSections() {

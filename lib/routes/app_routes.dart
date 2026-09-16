@@ -11,6 +11,7 @@ abstract class Routes {
   static const String LOGIN = _Paths.LOGIN;
   static const String REGISTER = _Paths.REGISTER;
   static const String VERIFY_OTP = _Paths.VERIFY_OTP;
+  static const String REGISTRATION_OTP = _Paths.REGISTRATION_OTP;
   static const String FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const String FORGOT_PASSWORD_OTP = _Paths.FORGOT_PASSWORD_OTP;
   static const String RESET_PASSWORD = _Paths.RESET_PASSWORD;
@@ -60,6 +61,7 @@ abstract class _Paths {
   static const String LOGIN = '/login';
   static const String REGISTER = '/register';
   static const String VERIFY_OTP = '/verify-otp';
+  static const String REGISTRATION_OTP = '/registration-otp';
   static const String FORGOT_PASSWORD = '/forgot-password';
   static const String FORGOT_PASSWORD_OTP = '/forgot-password-otp';
   static const String RESET_PASSWORD = '/reset-password';
