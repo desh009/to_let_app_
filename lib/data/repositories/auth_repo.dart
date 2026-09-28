@@ -38,10 +38,17 @@ class AuthRepo {
   Future<NetworkResponse> registerVerifyOtp({
     required String email,
     required String otp,
+    required String name,
+    required String password,
   }) async {
     return await _networkService.post(
       Urls.registerVerifyOtp,
-      body: {'email': email, 'otp': otp},
+      body: {
+        'email': email,
+        'otp': otp,
+        'name': name,
+        'password': password,
+      },
     );
   }
 
@@ -99,15 +106,19 @@ class AuthRepo {
     );
   }
 
-  // Reset Password
-  Future<NetworkResponse> resetPassword({
+  // Forgot Password - Reset Password using Token
+  Future<NetworkResponse> forgotPasswordReset({
     required String email,
-    required String otp,
+    required String resetToken,
     required String newPassword,
   }) async {
     return await _networkService.post(
-      Urls.resetPassword,
-      body: {'email': email, 'otp': otp, 'new_password': newPassword},
+      Urls.forgotPasswordReset,
+      body: {
+        'identifier': email,
+        'resetToken': resetToken,
+        'newPassword': newPassword,
+      },
     );
   }
 
@@ -118,5 +129,18 @@ class AuthRepo {
       _networkService.clearAuthToken();
     }
     return response;
+  }
+
+  // Get current session user (/me)
+  Future<NetworkResponse> getMe() async {
+    return await _networkService.get(Urls.me);
+  }
+
+  // Refresh token
+  Future<NetworkResponse> refreshToken(String refreshToken) async {
+    return await _networkService.post(
+      Urls.refreshToken,
+      body: {'refreshToken': refreshToken},
+    );
   }
 }

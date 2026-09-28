@@ -13,4 +13,15 @@ class StorageKeys {
   static const String savedSearchQuery = 'saved_search_query';
   static const String language = 'language';
   static const String isLoggedIn = 'is_logged_in';
+
+  // Biometric Authentication
+  static const String biometricEnabled = 'biometric_enabled';
+  static const String biometricEmail = 'biometric_email';
+  static const String biometricDeviceId = 'biometric_device_id';
+  static const String biometricRegisteredAt = 'biometric_registered_at';
+  static const String biometricAuthToken = 'biometric_auth_token';
+  static const String biometricRefreshToken = 'biometric_refresh_token';
+  static const String biometricUserName = 'biometric_user_name';
+  static const String biometricUserId = 'biometric_user_id';
+  static const String biometricUserPhone = 'biometric_user_phone';
 }

@@ -82,7 +82,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
                                   : controller.sendEmail,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
+                                disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(26.r),
                                 ),
@@ -241,7 +241,7 @@ class EmailSupportScreen extends GetView<EmailSupportController> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.grey.shade100.withOpacity(0.6),
+        color: isDark ? AppColors.surfaceDark : Colors.grey.shade100.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(

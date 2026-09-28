@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/routes/app_routes.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
@@ -24,6 +25,11 @@ class MessagesScreen extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           bottomNavigationBar: navController.bottomNavBar,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => Get.toNamed(Routes.USER_SEARCH),
+            backgroundColor: AppColors.primary,
+            child: const Icon(Icons.message_rounded, color: Colors.white),
+          ),
           backgroundColor: isDark
               ? AppColors.backgroundDark
               : AppColors.scaffoldBg,
@@ -90,8 +96,12 @@ class MessagesScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               _buildFilterChips(controller, isDark),
               SizedBox(height: 16.h),
-              ...controller.filteredMessages.map(
-                (message) => _buildMessageTile(controller, message, isDark),
+              Obx(
+                () => Column(
+                  children: controller.filteredMessages
+                      .map((message) => _buildMessageTile(controller, message, isDark))
+                      .toList(),
+                ),
               ),
               SizedBox(height: 8.h),
               _buildSupportCard(controller, isDark),

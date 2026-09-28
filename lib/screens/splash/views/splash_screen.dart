@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../widgets/loading_indicator.dart';
 import '../controllers/splash_controller.dart';
 
 class SplashScreen extends GetView<SplashController> {
@@ -31,7 +30,7 @@ class SplashScreen extends GetView<SplashController> {
                 ? [
                     AppColors.primaryDark,
                     AppColors.primary,
-                    AppColors.primary.withOpacity(0.8),
+                    AppColors.primary.withValues(alpha: 0.8),
                   ]
                 : [
                     AppColors.primaryDark,
@@ -45,33 +44,18 @@ class SplashScreen extends GetView<SplashController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  padding: EdgeInsets.all(20.r),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.surfaceDark : Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(40),
-                        blurRadius: 20.r,
-                        offset: Offset(0, 10.h),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.home_work_rounded,
-                    size: 64.r,
-                    color: AppColors.primary,
-                  ),
-                ),
+                SizedBox(height: 100.h), // Adjust spacing after removing icon
                 SizedBox(height: 24.h),
-                Text(
-                  AppStrings.appName,
-                  style: TextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
+                ScaleTransition(
+                  scale: controller.scaleAnimation,
+                  child: Text(
+                    AppStrings.appName,
+                    style: TextStyle(
+                      fontSize: 32.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -85,7 +69,6 @@ class SplashScreen extends GetView<SplashController> {
                   ),
                 ),
                 SizedBox(height: 48.h),
-                LoadingIndicator(color: Colors.white, size: 28.r),
               ],
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../routes/app_routes.dart';
+import '../../../widgets/shimmer/custom_shimmer.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginScreen extends GetView<AuthController> {
@@ -46,17 +47,20 @@ class LoginScreen extends GetView<AuthController> {
                   ),
                 ),
                 child: Center(
-                  child: Container(
-                    width: 32.r,
-                    height: 32.r,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Icon(
-                      Icons.home_rounded,
-                      color: Colors.white,
-                      size: 20.r,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.r),
+                    child: Image.asset(
+                      'assets/images/app_icon.png',
+                      width: 32.r,
+                      height: 32.r,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.home_rounded,
+                          color: Colors.white,
+                          size: 20.r,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -219,16 +223,7 @@ class LoginScreen extends GetView<AuthController> {
                       elevation: 0,
                     ),
                     child: controller.isLoggingIn.value
-                        ? SizedBox(
-                            width: 22.r,
-                            height: 22.r,
-                            child: const CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
+                        ? CircularShimmerLoader(size: 22.r)
                         : Text(
                             'log_in_btn'.tr,
                             style: TextStyle(
@@ -303,14 +298,35 @@ class LoginScreen extends GetView<AuthController> {
                   ),
                   SizedBox(width: 14.w),
 
+                  // ✅ BIOMETRIC LOGIN (Apple login এর জায়গায়)
                   Expanded(
-                    child: _buildSocialButton(
-                      context,
-                      icon: Icon(Icons.apple, size: 20.r, color: textColor),
-                      label: 'apple'.tr,
-                      onTap: () => controller.socialLogin('Apple'),
-                      isDark: isDark,
-                    ),
+                    child: Obx(() {
+                      // Show only if biometric is available
+                      if (!controller.isBiometricAvailable.value) {
+                        return _buildSocialButton(
+                          context,
+                          icon: Icon(Icons.apple, size: 20.r, color: textColor),
+                          label: 'apple'.tr,
+                          onTap: () => controller.socialLogin('Apple'),
+                          isDark: isDark,
+                        );
+                      }
+
+                      final isEnabled = controller.isBiometricEnabled.value;
+                      return _buildSocialButton(
+                        context,
+                        icon: Icon(
+                          controller.biometricIcon,
+                          size: 20.r,
+                          color: isEnabled
+                              ? AppColors.primary
+                              : (isDark ? Colors.white70 : Colors.black54),
+                        ),
+                        label: controller.biometricText,
+                        onTap: () => controller.loginWithBiometric(),
+                        isDark: isDark,
+                      );
+                    }),
                   ),
                 ],
               ),

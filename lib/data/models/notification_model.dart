@@ -20,4 +20,31 @@ class AppNotificationModel {
     this.property,
     this.type = 'listing',
   });
+
+  factory AppNotificationModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>? ?? {};
+
+    return AppNotificationModel(
+      id: json['id']?.toString() ?? '',
+      title: json['title'] ?? 'Notification',
+      body: json['body'] ?? '',
+      timestamp: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+      isRead: json['is_read'] ?? false,
+      propertyId: data['propertyId']?.toString() ?? data['listingId']?.toString(),
+      type: json['type'] ?? 'general',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'is_read': isRead,
+      'type': type,
+      'created_at': timestamp.toIso8601String(),
+    };
+  }
 }

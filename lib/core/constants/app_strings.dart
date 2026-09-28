@@ -2,8 +2,8 @@ abstract class AppStrings {
   AppStrings._();
 
   // ==================== App Level ====================
-  static const String appName = 'To-Let App';
-  static const String splashTagline = 'Find Your Dream Home Easily';
+  static const String appName = 'To Let Khulna';
+  static const String splashTagline = 'Find Your Home in Khulna';
 
   // ==================== Home Screen ====================
   // Header

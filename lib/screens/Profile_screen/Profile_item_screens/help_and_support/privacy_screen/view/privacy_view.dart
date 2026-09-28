@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../widgets/shimmer_loading.dart';
+import '../controller/privacy_controller.dart';
+
+class PrivacyView extends StatelessWidget {
+  const PrivacyView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(PrivacyController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+      appBar: AppBar(
+        backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
+        elevation: 0,
+        title: Text(
+          'Privacy Policy',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
+          onPressed: () => Get.back(),
+        ),
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return ListView.builder(
+            padding: EdgeInsets.all(16.r),
+            itemCount: 4,
+            itemBuilder: (_, __) => Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
+              child: const ShimmerLoading(width: double.infinity, height: 100, borderRadius: 16),
+            ),
+          );
+        }
+
+        if (controller.privacyList.isEmpty) {
+          return const Center(child: Text('No privacy policy found'));
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          itemCount: controller.privacyList.length,
+          itemBuilder: (context, index) {
+            final priv = controller.privacyList[index];
+            final title = priv['title'] ?? '';
+            final content = priv['content'] ?? priv['description'] ?? '';
+
+            return Container(
+              margin: EdgeInsets.only(bottom: 14.h),
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.surfaceDark : Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }),
+    );
+  }
+}

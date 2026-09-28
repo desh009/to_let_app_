@@ -1,5 +1,10 @@
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/app/two_factor_contoller_addtion/screen/two_factor_auth_screen.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/faqs_screen/view/faqs_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/safety_tips_screen/view/safety_tips_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/terms_screen/view/terms_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/privacy_screen/view/privacy_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/help_and_support/my_reports_screen/view/my_reports_view.dart';
 
 import '../screens/filter/views/filter_results_screen.dart';
 import '../screens/notifications/views/notifications_screen.dart';
@@ -14,6 +19,11 @@ import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/r
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/report_problem_screen/view/report_problem_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/terms_and_services_screen/binder/terms_and_controller_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/terms_and_services_screen/view/terms_and_services_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/my_listings/binding/my_listings_binding.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/my_listings/view/my_listings_view.dart';
+import 'package:to_let_app_abandon/screens/Profile_screen/Profile_item_screens/edit_profile/view/edit_profile_view.dart';
+import 'package:to_let_app_abandon/screens/masaage/user_search/binding/user_search_binding.dart';
+import 'package:to_let_app_abandon/screens/masaage/user_search/view/user_search_view.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/binder/profile_binder.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/view/profile_view.dart';
 import 'package:to_let_app_abandon/screens/auth/controllers/auth_controller.dart';
@@ -167,9 +177,28 @@ class AppPages {
       transition: Transition.rightToLeft,
     ),
     GetPage(
+      name: Routes.FAQS,
+      page: () => const FaqsScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.SAFETY_TIPS,
+      page: () => const SafetyTipsScreen(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.TERMS_AND_SERVICES,
+      page: () => const TermsView(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
       name: Routes.PRIVACY_AND_POLICY,
-      page: () => const PrivacyPolicyScreen(),
-      binding: PrivacyPolicyBinding(),
+      page: () => const PrivacyView(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.MY_REPORTS,
+      page: () => const MyReportsScreen(),
       transition: Transition.rightToLeft,
     ),
     GetPage(
@@ -180,7 +209,24 @@ class AppPages {
       }),
       transition: Transition.rightToLeft,
     ),
-
+    GetPage(
+      name: Routes.MY_LISTINGS,
+      page: () => const MyListingsScreen(),
+      binding: MyListingsBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.EDIT_PROFILE,
+      page: () => const EditProfileScreen(),
+      binding: ProfileBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.USER_SEARCH,
+      page: () => const UserSearchScreen(),
+      binding: UserSearchBinding(),
+      transition: Transition.cupertino,
+    ),
     GetPage(
       name: Routes.TWO_FACTOR_AUTH,
       page: () => const TwoFactorAuthScreen(),

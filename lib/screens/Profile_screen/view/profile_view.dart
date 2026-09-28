@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:to_let_app_abandon/core/utils/helper/action_helper.dart';
+import 'package:to_let_app_abandon/routes/app_routes.dart';
 import 'package:to_let_app_abandon/screens/Profile_screen/controller/profile-controller.dart';
+import 'package:to_let_app_abandon/screens/auth/controllers/auth_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -18,7 +20,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final ProfileController controller;
 
-
   bool _isSettingsExpanded = false;
   bool _isHelpSupportExpanded = false;
 
@@ -27,11 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     controller = Get.isRegistered<ProfileController>()
         ? Get.find<ProfileController>()
-        : Get.put(
-            ProfileController(
-              storageService: Get.find(),
-            ),
-          );
+        : Get.put(ProfileController(storageService: Get.find()));
   }
 
   @override
@@ -72,7 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildHeader(BuildContext context, bool isDark) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -94,7 +90,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildProfileCard(bool isDark) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -105,105 +100,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
         ),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 64.r,
-            height: 64.r,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(20.r),
+      child: Obx(
+        () => Row(
+          children: [
+            Container(
+              width: 64.r,
+              height: 64.r,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(20.r),
+                image: controller.avatarUrl.value.isNotEmpty
+                    ? DecorationImage(
+                        image: NetworkImage(controller.avatarUrl.value),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              alignment: Alignment.center,
+              child: controller.avatarUrl.value.isEmpty
+                  ? Text(
+                      controller.userName.value.isNotEmpty
+                          ? controller.userName.value[0].toUpperCase()
+                          : 'U',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 26.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : null,
             ),
-            alignment: Alignment.center,
-            child: Text(
-              AppStrings.userName[0],
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26.sp,
-                fontWeight: FontWeight.bold,
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.userName.value,
+                    style: TextStyle(
+                      color: isDark
+                          ? AppColors.textPrimaryDark
+                          : AppColors.textPrimaryLight,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    controller.userEmail.value,
+                    style: TextStyle(
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.backgroundDark
+                          : AppColors.scaffoldBg,
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6.r,
+                          height: 6.r,
+                          decoration: const BoxDecoration(
+                            color: AppColors.success,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        Text(
+                          controller.userRole.value.toUpperCase(),
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.textPrimaryDark
+                                : AppColors.textPrimaryLight,
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppStrings.userName,
-                  style: TextStyle(
-                    color: isDark
-                        ? AppColors.textPrimaryDark
-                        : AppColors.textPrimaryLight,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.sp,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  AppStrings.userEmail,
-                  style: TextStyle(
-                    color: isDark
-                        ? AppColors.textSecondaryDark
-                        : AppColors.textSecondaryLight,
-                    fontSize: 12.sp,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 4.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.backgroundDark
-                        : AppColors.scaffoldBg,
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6.r,
-                        height: 6.r,
-                        decoration: const BoxDecoration(
-                          color: AppColors.success,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        AppStrings.verifiedDhaka,
-                        style: TextStyle(
-                          color: isDark
-                              ? AppColors.textPrimaryDark
-                              : AppColors.textPrimaryLight,
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _buildProfileMenuButton(isDark),
-        ],
+            _buildProfileMenuButton(isDark),
+          ],
+        ),
       ),
     );
   }
 
-
   Widget _buildProfileMenuButton(bool isDark) {
     return PopupMenuButton<String>(
-
       elevation: 6,
       offset: Offset(0, 40.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       color: isDark ? AppColors.surfaceDark : Colors.white,
       icon: Container(
         width: 32.r,
@@ -215,12 +218,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Icon(
           Icons.more_vert,
           size: 18.r,
-          color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+          color: isDark
+              ? AppColors.textPrimaryDark
+              : AppColors.textPrimaryLight,
         ),
       ),
       onSelected: (value) {
         if (value == 'edit') {
-          Get.toNamed('/edit-profile');
+          Get.toNamed(Routes.EDIT_PROFILE);
         } else if (value == 'delete') {
           _confirmDeleteAccount(isDark);
         }
@@ -270,11 +275,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Get.dialog(
       AlertDialog(
         backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
         title: Text(
           'Delete Account?',
           style: TextStyle(
-            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+            color: isDark
+                ? AppColors.textPrimaryDark
+                : AppColors.textPrimaryLight,
           ),
         ),
         content: Text(
@@ -287,15 +296,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
-
-
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -303,7 +307,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 
   Widget _buildMenuSection(bool isDark) {
     return Container(
@@ -316,25 +319,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            icon: Icons.apartment_outlined,
-            title: AppStrings.myListings,
-            badgeText: AppStrings.oneActive,
-            isDark: isDark,
+          // 🔐 BIOMETRIC LOGIN (Replaces My Listings)
+          Builder(
+            builder: (context) {
+              try {
+                final authController = Get.find<AuthController>();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  authController.loadBiometricSettings();
+                });
+                return Obx(() {
+                  // Only show if biometric is available
+                  if (!authController.isBiometricAvailable.value) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    children: [
+                      _buildMenuItem(
+                        icon: authController.biometricIcon,
+                        title: '${authController.biometricText} Login',
+                        trailingWidget: Switch(
+                          value: authController.isBiometricEnabled.value,
+                          onChanged: (value) async {
+                            await authController.toggleBiometricLogin();
+                          },
+                          activeThumbColor: AppColors.primary,
+                        ),
+                        isDark: isDark,
+                        onTap: () async {
+                          await authController.toggleBiometricLogin();
+                        },
+                      ),
+                      _buildDivider(isDark),
+                    ],
+                  );
+                });
+              } catch (e) {
+                // AuthController not found, hide biometric option
+                return const SizedBox.shrink();
+              }
+            },
           ),
-          _buildDivider(isDark),
           _buildMenuItem(
             icon: Icons.language_outlined,
             title: AppStrings.language,
             trailingWidget: Row(
               children: [
-                Text(
-                  AppStrings.english,
-                  style: TextStyle(
-                    color: isDark
-                        ? AppColors.textSecondaryDark
-                        : AppColors.textSecondaryLight,
-                    fontSize: 13.sp,
+                Obx(
+                  () => Text(
+                    controller.selectedLanguage.value == 'bn'
+                        ? 'বাংলা'
+                        : 'English',
+                    style: TextStyle(
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
+                      fontSize: 13.sp,
+                    ),
                   ),
                 ),
                 SizedBox(width: 4.w),
@@ -348,6 +389,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
             isDark: isDark,
+            onTap: () {
+              // Show language selector
+              _showLanguageBottomSheet(context, isDark);
+            },
           ),
           _buildDivider(isDark),
           _buildMenuItem(
@@ -357,18 +402,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               () => Switch(
                 value: controller.isDarkMode.value,
                 onChanged: (val) => controller.toggleDarkMode(val),
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
               ),
             ),
             isDark: isDark,
           ),
           _buildDivider(isDark),
 
+          Obx(
+            () => _buildMenuItem(
+              icon: Icons.favorite_border_rounded,
+              title: 'Saved Properties',
+              badgeText: controller.savedCount.value.toString(),
+              isDark: isDark,
+              onTap: () => controller.navigateToSavedProperties(),
+            ),
+          ),
+          _buildDivider(isDark),
 
           _buildExpandableSettings(isDark),
 
           _buildDivider(isDark),
-
 
           _buildExpandableHelpSupport(isDark),
         ],
@@ -376,6 +430,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _showLanguageBottomSheet(BuildContext context, bool isDark) {
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.all(20.r),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.surfaceDark : Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Select Language',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+            SizedBox(height: 20.h),
+            ListTile(
+              title: const Text('English'),
+              trailing: controller.selectedLanguage.value == 'en'
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                controller.changeLanguage('en');
+                Get.back();
+              },
+            ),
+            ListTile(
+              title: const Text('বাংলা'),
+              trailing: controller.selectedLanguage.value == 'bn'
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                controller.changeLanguage('bn');
+                Get.back();
+              },
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildExpandableSettings(bool isDark) {
     return Column(
@@ -481,7 +581,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildExpandableHelpSupport(bool isDark) {
     return Column(
       children: [
@@ -551,7 +650,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 SizedBox(height: 16.h),
 
                 _buildSectionHeader(AppStrings.contactUs, isDark),
@@ -572,7 +670,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-
                 _buildSectionHeader(AppStrings.helpTopics, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -592,7 +689,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-
                 _buildSectionHeader(AppStrings.feedbackIssues, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -611,7 +707,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 14.h),
 
-
                 _buildSectionHeader(AppStrings.legal, isDark),
                 SizedBox(height: 8.h),
                 _buildHelpItem(
@@ -628,7 +723,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
 
                 SizedBox(height: 16.h),
-
 
                 Center(
                   child: Column(
@@ -665,7 +759,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildSectionHeader(String title, bool isDark) {
     return Text(
       title,
@@ -677,7 +770,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 
   Widget _buildHelpItem({
     required IconData icon,
@@ -701,7 +793,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             CircleAvatar(
               radius: 14.r,
-              backgroundColor: Colors.red.withOpacity(0.06),
+              backgroundColor: Colors.red.withValues(alpha: 0.06),
               child: Icon(
                 icon,
                 size: 14.r,
@@ -753,7 +845,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 
   Widget _buildSubMenuItem({
     required IconData icon,
@@ -858,7 +949,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.backgroundDark : AppColors.scaffoldBg,
+                  color: isDark
+                      ? AppColors.backgroundDark
+                      : AppColors.scaffoldBg,
                   borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(
                     color: isDark

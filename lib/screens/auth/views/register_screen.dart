@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../widgets/shimmer/custom_shimmer.dart';
 import '../controllers/auth_controller.dart';
 
 class RegisterScreen extends GetView<AuthController> {
@@ -17,7 +18,6 @@ class RegisterScreen extends GetView<AuthController> {
     final subtitleColor = isDark
         ? const Color(0xFFA0AEC0)
         : const Color(0xFF7E8B9B);
-
 
     return Scaffold(
       backgroundColor: isDark
@@ -88,74 +88,74 @@ class RegisterScreen extends GetView<AuthController> {
               ),
               SizedBox(height: 16.h),
 
-             _buildLabel('phone_number'.tr, textColor),
-SizedBox(height: 8.h),
+              _buildLabel('phone_number'.tr, textColor),
+              SizedBox(height: 8.h),
 
-TextField(
-  controller: controller.regPhoneController,
-  keyboardType: TextInputType.phone,
-  decoration: InputDecoration(
-    prefixIcon: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '+880',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-              color: textColor,
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Icon(
-            Icons.phone_android_rounded,
-            size: 18.r,
-            color: subtitleColor,
-          ),
-        ],
-      ),
-    ),
-    prefixIconConstraints: const BoxConstraints(
-      minWidth: 0,
-      minHeight: 0,
-    ),
+              TextField(
+                controller: controller.regPhoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '+880',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            color: textColor,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Icon(
+                          Icons.phone_android_rounded,
+                          size: 18.r,
+                          color: subtitleColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 0,
+                    minHeight: 0,
+                  ),
 
-    filled: true,
-    fillColor: inputBg,
+                  filled: true,
+                  fillColor: inputBg,
 
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16.r),
-      borderSide: const BorderSide(
-        color: AppColors.primary,
-        width: 1.5,
-      ),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16.r),
-      borderSide: const BorderSide(
-        color: AppColors.primary,
-        width: 1.5,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16.r),
-      borderSide: const BorderSide(
-        color: AppColors.primary,
-        width: 2.0,
-      ),
-    ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 2.0,
+                    ),
+                  ),
 
-    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
-    isDense: true,
-  ),
-  style: TextStyle(
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w600,
-    color: textColor,
-  ),
-),
+                  contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+                  isDense: true,
+                ),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
               SizedBox(height: 16.h),
 
               _buildLabel('email_address'.tr, textColor),
@@ -307,7 +307,6 @@ TextField(
               ),
               SizedBox(height: 24.h),
 
-
               Obx(
                 () => SizedBox(
                   width: double.infinity,
@@ -324,16 +323,7 @@ TextField(
                       elevation: 0,
                     ),
                     child: controller.isRegistering.value
-                        ? SizedBox(
-                            width: 22.r,
-                            height: 22.r,
-                            child: const CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
+                        ? CircularShimmerLoader(size: 22.r)
                         : Text(
                             'create_account_btn'.tr,
                             style: TextStyle(
@@ -346,7 +336,6 @@ TextField(
                 ),
               ),
               SizedBox(height: 22.h),
-
 
               Center(
                 child: GestureDetector(

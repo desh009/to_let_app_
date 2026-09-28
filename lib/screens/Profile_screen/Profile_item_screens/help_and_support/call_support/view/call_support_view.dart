@@ -35,7 +35,7 @@ class CallUsScreen extends GetView<CallUsController> {
                           width: 100.r,
                           height: 100.r,
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.06),
+                            color: Colors.red.withValues(alpha: 0.06),
                             borderRadius: BorderRadius.circular(28.r),
                           ),
                           child: Icon(
@@ -83,7 +83,7 @@ class CallUsScreen extends GetView<CallUsController> {
                                   : () => controller.dialNumber(AppStrings.helplineNumber),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
+                                disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(26.r),
                                 ),
@@ -255,7 +255,7 @@ class CallUsScreen extends GetView<CallUsController> {
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.grey.shade50.withOpacity(0.8),
+        color: isDark ? AppColors.surfaceDark : Colors.grey.shade50.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: isDark ? AppColors.dividerDark : Colors.grey.shade200,

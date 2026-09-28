@@ -70,34 +70,54 @@ class FcmService extends GetxService {
   }
 
   Future<void> _initLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    try {
+      const AndroidInitializationSettings androidSettings =
+          AndroidInitializationSettings('ic_launcher');
 
-    const DarwinInitializationSettings iosSettings =
-        DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
+      const DarwinInitializationSettings iosSettings =
+          DarwinInitializationSettings(
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          );
+
+      const InitializationSettings initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
+
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(_channel);
+
+      await _localNotifications.initialize(
+        settings: initSettings,
+        onDidReceiveNotificationResponse: (NotificationResponse response) {
+          log('Local Notification Tapped with payload: ${response.payload}');
+          _handleNotificationPayload(response.payload);
+        },
+      );
+    } catch (e) {
+      log('Error initializing local notifications: $e');
+      // Try fallback with default icon if app_icon fails
+      try {
+        const fallbackSettings = InitializationSettings(
+          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+          iOS: DarwinInitializationSettings(),
         );
-
-    const InitializationSettings initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(_channel);
-
-    await _localNotifications.initialize(
-      settings: initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        log('Local Notification Tapped with payload: ${response.payload}');
-        _handleNotificationPayload(response.payload);
-      },
-    );
+        await _localNotifications.initialize(
+          settings: fallbackSettings,
+          onDidReceiveNotificationResponse: (NotificationResponse response) {
+            log('Local Notification Tapped with payload: ${response.payload}');
+            _handleNotificationPayload(response.payload);
+          },
+        );
+      } catch (err) {
+        log('Critical error: Local notifications could not initialize at all.');
+      }
+    }
   }
 
   Future<void> _getToken() async {
@@ -161,7 +181,7 @@ class FcmService extends GetxService {
             _channel.id,
             _channel.name,
             channelDescription: _channel.description,
-            icon: android?.smallIcon ?? '@mipmap/ic_launcher',
+            icon: android?.smallIcon ?? 'ic_launcher',
             importance: Importance.max,
             priority: Priority.high,
           ),
@@ -177,20 +197,26 @@ class FcmService extends GetxService {
   }
 
   void _handleNotificationPayload(String? payload) {
-    if (Get.isRegistered<NotificationsController>()) {
-      final sample =
-          ToLetModel.sampleData.firstWhereOrNull((p) => p.id == payload) ??
-          ToLetModel.sampleData.first;
-      Get.toNamed(Routes.DETAILS, arguments: sample);
+    if (payload != null && payload.isNotEmpty) {
+      final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == payload);
+      if (sample != null) {
+        Get.toNamed(Routes.DETAILS, arguments: sample);
+      } else {
+        log('Notification payload property not found: $payload');
+      }
     }
   }
 
   void _handleMessageData(Map<String, dynamic> data) {
     final propertyId = data['listingId'] ?? data['propertyId'];
-    final sample =
-        ToLetModel.sampleData.firstWhereOrNull((p) => p.id == propertyId) ??
-        ToLetModel.sampleData.first;
-    Get.toNamed(Routes.DETAILS, arguments: sample);
+    if (propertyId != null && propertyId.toString().isNotEmpty) {
+      final sample = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == propertyId.toString());
+      if (sample != null) {
+        Get.toNamed(Routes.DETAILS, arguments: sample);
+      } else {
+        log('Message data property not found: $propertyId');
+      }
+    }
   }
 
   Future<void> subscribeToTopic(String topic) async {

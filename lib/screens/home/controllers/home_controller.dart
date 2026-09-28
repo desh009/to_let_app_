@@ -45,24 +45,28 @@ class HomeController extends GetxController {
   final List<String> availableLocations = [
     'Khulna, Bangladesh',
     'Sonadanga, Khulna',
-    'Khalishpur, Khulna',
     'Boyra, Khulna',
-    'Nirala, Khulna',
+    'Khalishpur, Khulna',
     'Daulatpur, Khulna',
-    'Shiromoni, Khulna',
-    'KUET Area, Khulna',
-    'Fulbarigate, Khulna',
-    'Moylapota, Khulna',
-    'Shibbari, Khulna',
     'Gollamari, Khulna',
-    'Rupsha, Khulna',
-    'Tutpara, Khulna',
-    'KDA Avenue, Khulna',
+    'Nirala, Khulna',
+    'Gallamari, Khulna',
+    'Mujgunni, Khulna',
+    'Shibbari, Khulna',
+    'Moylapota, Khulna',
     'Royal Mor, Khulna',
     'Dakbangla, Khulna',
+    'KDA Avenue, Khulna',
+    'Tutpara, Khulna',
+    'Rupsha, Khulna',
+    'Labonchora, Khulna',
+    'Banorgati, Khulna',
+    'Mistripara, Khulna',
+    'Phulbarigate, Khulna',
     'Teligati, Khulna',
-    'Gilatala, Khulna',
-    'Khulna Sadar, Khulna',
+    'KUET Area, Khulna',
+    'Zero Point, Khulna',
+    'Sheikh para, Khulna',
   ];
 
   @override
@@ -123,8 +127,35 @@ class HomeController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Fetch from API - using /api/listings
-      final response = await _listingsRepo.getAllListings(offset: 0, limit: 20);
+      // Parse location for API filtering
+      String? city;
+      String? area;
+      
+      final loc = selectedLocation.value.trim();
+      if (loc.isNotEmpty) {
+        List<String> parts = loc.split(',').map((e) => e.trim()).toList();
+        if (parts.length >= 2) {
+          String lastPart = parts.last;
+          if (lastPart.toLowerCase() == 'bangladesh') {
+            city = parts.first;
+            area = null;
+          } else {
+            city = lastPart;
+            area = parts.first;
+          }
+        } else {
+          city = loc;
+          area = null;
+        }
+      }
+
+      // Fetch from API with current location context
+      final response = await _listingsRepo.getAllListings(
+        offset: 0, 
+        limit: 50,
+        city: city,
+        area: area,
+      );
 
       if (response.isSuccess) {
         final listingsResponse = _listingsRepo.parseListingsResponse(response);
@@ -140,34 +171,32 @@ class HomeController extends GetxController {
           _applyFilters();
         }
       } else {
-        // Fallback to local repository if API fails
-        final properties = await repository.getProperties();
-        allProperties.assignAll(properties);
-        await favoriteController.loadFavorites();
-        _applyFilters();
-
-        Get.snackbar(
-          'Notice',
-          'Using cached data. ${response.errorMessage ?? "API unavailable"}',
-          backgroundColor: AppColors.secondary,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 2),
-        );
+        if (response.statusCode != -1) { // Don't show for connection errors during dev
+          Get.snackbar(
+            'Notice',
+            'Failed to load listings. ${response.errorMessage ?? "API unavailable"}',
+            backgroundColor: AppColors.error,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 2),
+          );
+        }
       }
     } catch (e) {
       debugPrint('Error loading properties: $e');
-      // Fallback to local data
-      try {
-        final properties = await repository.getProperties();
-        allProperties.assignAll(properties);
-        await favoriteController.loadFavorites();
-        _applyFilters();
-      } catch (localError) {
-        debugPrint('Error loading local properties: $localError');
-      }
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> _loadFallbackData() async {
+    try {
+      final properties = await repository.getProperties();
+      allProperties.assignAll(properties);
+      await favoriteController.loadFavorites();
+      _applyFilters();
+    } catch (e) {
+      debugPrint('Fallback error: $e');
     }
   }
 
@@ -207,40 +236,23 @@ class HomeController extends GetxController {
 
   // Convert API ListingModel to ToLetItem
   List<ToLetItem> _convertToToLetItems(List<ListingModel> listings) {
-    return listings.map((listing) {
-      return ToLetItem(
-        id: listing.id.toString(),
-        title: listing.title,
-        location: listing.location,
-        price: listing.price.toDouble(),
-        bedrooms: listing.bedrooms,
-        bathrooms: listing.bathrooms,
-        squareFeet: (listing.squareFeet ?? 1000).toDouble(),
-        description: listing.description ?? '',
-        contactNumber: listing.contactNumber,
-        ownerName: listing.ownerName ?? 'Owner',
-        images: listing.images.isNotEmpty
-            ? listing.images
-            : [listing.imageUrl ?? 'https://via.placeholder.com/400'],
-        category: listing.category,
-        badgeText: listing.availability,
-        isVerified: listing.isDirectOwner,
-        isAvailable: listing.availability == 'Available now',
-        isFeatured: listing.id <= 5, // First 5 are featured
-      );
-    }).toList();
+    return listings.map((listing) => listing.toToLetItem()).toList();
   }
 
   void _filterSections() {
     final featured = allProperties.where((p) => p.isFeatured).toList();
     featuredProperties.assignAll(
-      featured.isNotEmpty ? featured : allProperties.take(4).toList(),
+      featured.isNotEmpty ? featured : allProperties.take(5).toList(),
     );
 
     final recommended = allProperties.where((p) => !p.isFeatured).toList();
     recommendedProperties.assignAll(
-      recommended.isNotEmpty ? recommended : allProperties.skip(4).toList(),
+      recommended.isNotEmpty ? recommended : allProperties.skip(5).toList(),
     );
+
+    if (recommendedProperties.isEmpty && allProperties.isNotEmpty) {
+      recommendedProperties.assignAll(allProperties);
+    }
   }
 
   void selectCategory(String category) {
@@ -290,6 +302,7 @@ class HomeController extends GetxController {
 
   void updateLocation(String location) {
     selectedLocation.value = location;
+    loadProperties(); // Reload data for the new location
   }
 
   void changeNavTab(int index) {

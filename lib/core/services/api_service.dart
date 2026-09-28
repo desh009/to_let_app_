@@ -27,7 +27,7 @@ class ApiService extends GetxService {
 
   // Load auth token from storage
   Future<void> _loadAuthToken() async {
-    _authToken = await _storageService.getString(StorageKeys.authToken);
+    _authToken = _storageService.getString(StorageKeys.authToken);
   }
 
   // Set auth token
@@ -305,7 +305,7 @@ class ApiException implements Exception {
 }
 
 class NetworkException extends ApiException {
-  NetworkException(String message) : super(message);
+  NetworkException(super.message);
 }
 
 class BadRequestException extends ApiException {

@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/core/config/urls.dart';
 import '../constants/storage_keys.dart';
 import '../network/network_client.dart';
 import '../network/network_response.dart';
@@ -19,19 +21,28 @@ class NetworkService extends GetxService {
     _networkClient = NetworkClient(
       onUnAuthorize: _onUnAuthorize,
       commonHeaders: _getCommonHeaders,
+      onRefreshToken: refreshToken,
     );
   }
 
   /// Common Headers for all requests
-  Map<String, String> _getCommonHeaders() {
-    final token = _storageService.getString(StorageKeys.authToken);
+Map<String, String> _getCommonHeaders() {
+  final token = _storageService.getString(StorageKeys.authToken);
 
-    return {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
-    };
-  }
+  debugPrint('========== AUTH HEADER ==========');
+  debugPrint('Token exists: ${token != null && token.isNotEmpty}');
+  debugPrint(
+    'Token preview: ${token == null || token.isEmpty ? 'NULL' : '${token.substring(0, token.length > 20 ? 20 : token.length)}...'}',
+  );
+  debugPrint('=================================');
+
+  return {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    if (token != null && token.isNotEmpty)
+      'Authorization': 'Bearer $token',
+  };
+}
 
   /// Handle Unauthorized (401) Response
   void _onUnAuthorize() {
@@ -124,5 +135,35 @@ class NetworkService extends GetxService {
   /// Get Auth Token
   String? getAuthToken() {
     return _storageService.getString(StorageKeys.authToken);
+  }
+
+  /// Attempt to refresh token using the refresh token
+  Future<bool> refreshToken() async {
+    final refresh = _storageService.getString(StorageKeys.refreshToken);
+    if (refresh == null || refresh.isEmpty) return false;
+
+    try {
+      final response = await _networkClient.postRequest(
+        Urls.refreshToken,
+        body: {'refreshToken': refresh},
+      );
+
+      if (response.isSuccess && response.responseData?['data'] != null) {
+        final data = response.responseData!['data'];
+        final newToken = data['idToken']?.toString();
+        final newRefresh = data['refreshToken']?.toString();
+
+        if (newToken != null && newToken.isNotEmpty) {
+          setAuthToken(newToken);
+          if (newRefresh != null && newRefresh.isNotEmpty) {
+            await _storageService.setString(StorageKeys.refreshToken, newRefresh);
+          }
+          return true;
+        }
+      }
+    } catch (e) {
+      debugPrint('Token refresh failed: $e');
+    }
+    return false;
   }
 }

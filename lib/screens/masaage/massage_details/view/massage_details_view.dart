@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:to_let_app_abandon/core/constants/app_colors.dart';
 import 'package:to_let_app_abandon/core/constants/app_strings.dart';
 import 'package:to_let_app_abandon/screens/masaage/controller/massage_controller.dart';
 
+
+import 'package:to_let_app_abandon/core/constants/storage_keys.dart';
+import 'package:to_let_app_abandon/core/services/storage_service.dart';
+import 'package:to_let_app_abandon/data/repositories/messages_repo.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final MessageTileData message;
@@ -46,7 +51,7 @@ class _ChatBubbleData {
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  late final List<_ChatBubbleData> _messages;
+  late List<_ChatBubbleData> _messages;
   int _nextId = 0;
 
   @override
@@ -59,19 +64,42 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         time: widget.message.time,
         isSent: false,
       ),
-      _ChatBubbleData(
-        id: _nextId++,
-        text: "Hello, is it available for tomorrow? I'd love to check it out.",
-        time: "10:26 AM",
-        isSent: true,
-      ),
-      _ChatBubbleData(
-        id: _nextId++,
-        text: "Yes, available for visit tomorrow? Let me know time that works for you.",
-        time: "",
-        isSent: false,
-      ),
     ];
+    _loadConversationMessages();
+  }
+
+  void _loadConversationMessages() async {
+    if (widget.message.conversationId == null) return;
+    try {
+      final messagesRepo = Get.isRegistered<MessagesRepo>()
+          ? Get.find<MessagesRepo>()
+          : MessagesRepo();
+      final res =
+          await messagesRepo.getMessages(widget.message.conversationId!);
+      if (res.isSuccess) {
+        final apiMessages = messagesRepo.parseMessages(res);
+        if (apiMessages.isNotEmpty && mounted) {
+          final storage = Get.isRegistered<StorageService>()
+              ? Get.find<StorageService>()
+              : null;
+          final currentUserId = storage?.getString(StorageKeys.userId);
+
+          setState(() {
+            _messages = apiMessages
+                .map((m) {
+                  final isSent = m.isMine(currentUserId, widget.message.otherUserId);
+                  return _ChatBubbleData(
+                    id: _nextId++,
+                    text: m.messageText,
+                    time: m.time,
+                    isSent: isSent,
+                  );
+                })
+                .toList();
+          });
+        }
+      }
+    } catch (_) {}
   }
 
   @override
@@ -98,6 +126,33 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       );
       _textController.clear();
     });
+
+    try {
+      final messagesRepo = Get.isRegistered<MessagesRepo>()
+          ? Get.find<MessagesRepo>()
+          : MessagesRepo();
+      if (widget.message.conversationId != null &&
+          widget.message.otherUserId != null) {
+        messagesRepo.sendMessage(
+          conversationId: widget.message.conversationId!,
+          receiverId: widget.message.otherUserId!,
+          messageText: text,
+        );
+      } else if (widget.message.otherUserId != null) {
+        messagesRepo.startConversation(otherUserId: widget.message.otherUserId).then((res) {
+          if (res.isSuccess && res.responseData != null) {
+            final convId = res.responseData!['data']?['id']?.toString();
+            if (convId != null) {
+              messagesRepo.sendMessage(
+                conversationId: convId,
+                receiverId: widget.message.otherUserId!,
+                messageText: text,
+              );
+            }
+          }
+        });
+      }
+    } catch (_) {}
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -688,7 +743,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   Text(
                     '(edited) ',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 10.sp,
                       fontStyle: FontStyle.italic,
                     ),
@@ -697,14 +752,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 Text(
                   time,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                     fontSize: 10.sp,
                   ),
                 ),
                 SizedBox(width: 4.w),
                 Icon(
                   Icons.done_all,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   size: 14.r,
                 ),
               ],

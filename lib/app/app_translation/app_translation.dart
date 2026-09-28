@@ -6,21 +6,16 @@ class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'en': {
-
       'app_name': 'To-Let App',
       'splash_tagline': 'Find Your Dream Home Easily',
-
-
       'greeting_morning': 'Good Morning',
       'greeting_afternoon': 'Good Afternoon',
       'greeting_evening': 'Good Evening',
       'greeting_night': 'Good Night',
       'welcome_back': 'Welcome Back!',
       'find_your_dream_home': 'Find Your Dream Home',
-
       'search_hint': 'Search by area, location, or budget...',
       'filter': 'Filter',
-
       'all_categories': 'All',
       'family': 'Family',
       'bachelor': 'Bachelor',
@@ -29,7 +24,6 @@ class AppTranslations extends Translations {
       'seat': 'Seat',
       'quick_search': 'Quick search',
       'see_all': 'See all',
-
       'featured_properties': 'Featured properties',
       'recommended_for_you': 'Recommended for you',
       'view_all': 'View all',
@@ -37,27 +31,21 @@ class AppTranslations extends Translations {
       'no_properties_found': 'No properties found',
       'loading_featured': 'Loading featured listings...',
       'loading_recommendations': 'Loading recommendations...',
-
       'home': 'Home',
       'explore': 'Explore',
       'favorites': 'Favorites',
       'messages': 'Messages',
       'profile': 'Profile',
-
       'post_listing': 'Post a listing',
       'map_view': 'Map View',
       'redirecting_to_form': 'Redirecting to property submission form...',
       'interactive_map': 'Interactive Dhaka Map will open here...',
-
-
       'details_title': 'Property Details',
       'share': 'Share',
       'sharing_property': 'Sharing property...',
-
       'available_now': 'Available now',
       'no_brokerage': 'No brokerage',
       'verified': 'Verified',
-
       'per_month': '/ month',
       'location_label': 'Location',
       'bedrooms': 'Bedrooms',
@@ -66,10 +54,8 @@ class AppTranslations extends Translations {
       'beds': 'Beds',
       'baths': 'Baths',
       'sqft': 'sqft',
-
       'property_description': 'Property description',
       'amenities_and_features': 'Amenities & features',
-
       'twenty_four_hour_water': '24hr Water',
       'generator': 'Generator',
       'security_guard': 'Security Guard',
@@ -78,14 +64,11 @@ class AppTranslations extends Translations {
       'balcony': 'Balcony',
       'wifi_ready': 'WiFi Ready',
       'kitchen': 'Kitchen',
-
       'contact_owner': 'Contact Owner',
       'book_visit': 'Book a Visit',
       'calling_owner': 'Calling owner...',
       'favorite_added': 'Added to favorites',
       'favorite_removed': 'Removed from favorites',
-
-
       'no_data_found': 'No data found',
       'error_occurred': 'An error occurred',
       'retry': 'Retry',
@@ -94,21 +77,15 @@ class AppTranslations extends Translations {
       'failed': 'Failed',
       'cancel': 'Cancel',
       'confirm': 'Confirm',
-
-
       'guest_user': 'Guest User',
       'login': 'Login',
       'logout': 'Logout',
       'profile_title': 'Profile',
       'settings': 'Settings',
-
-
       'dark_mode': 'Dark Mode',
       'notifications': 'Notifications',
       'language': 'Language',
       'saved_searches': 'Saved Preferences',
-
-
       'saved_listings': 'Saved Listings',
       'saved': 'Saved',
       'saved_subtitle': 'properties saved for later',
@@ -123,12 +100,9 @@ class AppTranslations extends Translations {
       'removed_from_saved': 'Removed from saved',
       'added_to_saved': 'Added to saved',
       'filter_all': 'All',
-
-
       'post_listing_title': 'Post Listing',
       'property_photos': 'PROPERTY PHOTOS',
       'min_photos_hint': 'Min 3 photos',
-
       'post_location_label': 'LOCATION',
       'location_hint': 'Road 11, Banani, Dhaka',
       'tenant_type_label': 'TENANT TYPE',
@@ -160,8 +134,6 @@ class AppTranslations extends Translations {
       'listing_submitted_msg':
           'Your listing is under review and will be live within 2 hours.',
       'done': 'Done',
-
-
       'login_title': 'Login',
       'login_subtitle': 'Login to find your next place',
       'phone_or_email': 'Phone / Email',
@@ -195,8 +167,6 @@ class AppTranslations extends Translations {
       'verify_continue_btn': 'Verify & Continue',
       'otp_security_note': 'OTP is encrypted • Expires in 5 min',
       'auth_security_note': 'Secure • No brokerage • Verified owners',
-
-
       'verified_dhaka': 'Verified • Dhaka',
       'listing_stat': 'LISTING',
       'visits_stat': 'VISITS',
@@ -208,21 +178,16 @@ class AppTranslations extends Translations {
       'help_support': 'Help & Support',
     },
     'bn': {
-
       'app_name': 'টু-লেট অ্যাপ',
       'splash_tagline': 'সহজে আপনার স্বপ্নের বাসা খুঁজুন',
-
-
       'greeting_morning': 'শুভ সকাল',
       'greeting_afternoon': 'শুভ দুপুর',
       'greeting_evening': 'শুভ সন্ধ্যা',
       'greeting_night': 'শুভ রাত্রি',
       'welcome_back': 'আবার স্বাগতম!',
       'find_your_dream_home': 'আপনার স্বপ্নের বাসা খুঁজুন',
-
       'search_hint': 'এলাকা, লোকেশন বা বাজেট দিয়ে খুঁজুন...',
       'filter': 'ফিল্টার',
-
       'all_categories': 'সব',
       'family': 'ফ্যামিলি',
       'bachelor': 'ব্যাচেলর',
@@ -231,7 +196,6 @@ class AppTranslations extends Translations {
       'seat': 'সিট',
       'quick_search': 'কুইক সার্চ',
       'see_all': 'সব দেখুন',
-
       'featured_properties': 'ফিচার্ড প্রপার্টি',
       'recommended_for_you': 'আপনার জন্য সুপারিশকৃত',
       'view_all': 'সব দেখুন',
@@ -239,27 +203,21 @@ class AppTranslations extends Translations {
       'no_properties_found': 'কোনো প্রপার্টি পাওয়া যায়নি',
       'loading_featured': 'ফিচার্ড লিস্টিং লোড হচ্ছে...',
       'loading_recommendations': 'সুপারিশ লোড হচ্ছে...',
-
       'home': 'হোম',
       'explore': 'এক্সপ্লোর',
       'favorites': 'ফেভারিট',
       'messages': 'মেসেজ',
       'profile': 'প্রোফাইল',
-
       'post_listing': 'বিজ্ঞাপন দিন',
       'map_view': 'ম্যাপ ভিউ',
       'redirecting_to_form': 'প্রপার্টি সাবমিশন ফর্মে নিয়ে যাওয়া হচ্ছে...',
       'interactive_map': 'ইন্টারেক্টিভ ঢাকা ম্যাপ এখানে খুলবে...',
-
-
       'details_title': 'প্রপার্টির বিস্তারিত',
       'share': 'শেয়ার',
       'sharing_property': 'প্রপার্টি শেয়ার হচ্ছে...',
-
       'available_now': 'এখনই available',
       'no_brokerage': 'কোনো দালালি নেই',
       'verified': 'ভেরিফায়েড',
-
       'per_month': '/ মাস',
       'location_label': 'লোকেশন',
       'bedrooms': 'বেডরুম',
@@ -268,10 +226,8 @@ class AppTranslations extends Translations {
       'beds': 'বেড',
       'baths': 'বাথ',
       'sqft': 'বর্গফুট',
-
       'property_description': 'প্রপার্টির বিবরণ',
       'amenities_and_features': 'সুযোগ-সুবিধা ও বৈশিষ্ট্য',
-
       'twenty_four_hour_water': '২৪ ঘন্টা পানি',
       'generator': 'জেনারেটর',
       'security_guard': 'নিরাপত্তা প্রহরী',
@@ -280,14 +236,11 @@ class AppTranslations extends Translations {
       'balcony': 'বারান্দা',
       'wifi_ready': 'ওয়াইফাই রেডি',
       'kitchen': 'রান্নাঘর',
-
       'contact_owner': 'মালিকের সাথে যোগাযোগ',
       'book_visit': 'ভিজিট বুক করুন',
       'calling_owner': 'মালিককে কল করা হচ্ছে...',
       'favorite_added': 'ফেভারিটে যোগ হয়েছে',
       'favorite_removed': 'ফেভারিট থেকে সরানো হয়েছে',
-
-
       'no_data_found': 'কোনো তথ্য পাওয়া যায়নি',
       'error_occurred': 'একটি সমস্যা হয়েছে',
       'retry': 'আবার চেষ্টা করুন',
@@ -296,21 +249,15 @@ class AppTranslations extends Translations {
       'failed': 'ব্যর্থ',
       'cancel': 'বাতিল',
       'confirm': 'নিশ্চিত করুন',
-
-
       'guest_user': 'অতিথি ব্যবহারকারী',
       'login': 'লগইন',
       'logout': 'লগআউট',
       'profile_title': 'প্রোফাইল',
       'settings': 'সেটিংস',
-
-
       'dark_mode': 'ডার্ক মোড',
       'notifications': 'নোটিফিকেশন',
       'language': 'ভাষা',
       'saved_searches': 'সেভড প্রেফারেন্স',
-
-
       'saved_listings': 'সেভড লিস্টিং',
       'saved': 'সেভড',
       'saved_subtitle': 'টি প্রপার্টি পরে দেখার জন্য সেভ করা আছে',
@@ -325,15 +272,12 @@ class AppTranslations extends Translations {
       'removed_from_saved': 'সেভ থেকে সরানো হয়েছে',
       'added_to_saved': 'সেভে যোগ হয়েছে',
       'filter_all': 'সব',
-
-
       'post_listing_title': 'বিজ্ঞাপন দিন',
       'property_photos': 'প্রপার্টির ছবি',
       'min_photos_hint': 'কমপক্ষে ৩টি ছবি',
       'cover': 'কভার',
       'add_photo': 'ছবি যোগ করুন',
       'tenant_type_label': 'ভাড়াটিয়ার ধরন',
-
       'upload_photo_title': 'প্রপার্টির ছবি আপলোড করুন',
       'camera': 'ক্যামেরা',
       'gallery': 'গ্যালারি',
@@ -362,8 +306,6 @@ class AppTranslations extends Translations {
       'listing_submitted_msg':
           'আপনার লিস্টিং পর্যালোচনায় রয়েছে এবং ২ ঘণ্টার মধ্যে লাইভ হবে।',
       'done': 'সম্পন্ন',
-
-
       'login_title': 'লগইন',
       'login_subtitle': 'আপনার পছন্দের বাসা খুঁজতে লগইন করুন',
       'phone_or_email': 'ফোন / ইমেইল',
@@ -397,8 +339,6 @@ class AppTranslations extends Translations {
       'verify_continue_btn': 'যাচাই করে এগিয়ে যান',
       'otp_security_note': 'ওটিপি এনক্রিপ্টেড • মেয়াদ ৫ মিনিট',
       'auth_security_note': 'নিরাপদ • কোনো ব্রোকারেজ নেই • ভেরিফায়েড মালিক',
-
-
       'verified_dhaka': 'ভেরিফায়েড • ঢাকা',
       'listing_stat': 'লিস্টিং',
       'visits_stat': 'ভিজিট',

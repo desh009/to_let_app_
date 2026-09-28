@@ -7,6 +7,13 @@ import 'package:to_let_app_abandon/data/repositories/tolet_repository_impl.dart'
 import 'package:to_let_app_abandon/domain/repositories/tolet_repository.dart';
 import 'package:to_let_app_abandon/screens/saved_screen/controllers/saved_controller.dart';
 import 'package:to_let_app_abandon/widgets/favourite/controller/favourite_controller.dart';
+import 'package:to_let_app_abandon/data/repositories/auth_repo.dart';
+import 'package:to_let_app_abandon/data/repositories/listings_repo.dart';
+import 'package:to_let_app_abandon/data/repositories/user_repo.dart';
+import 'package:to_let_app_abandon/data/repositories/favorites_repo.dart';
+import 'package:to_let_app_abandon/data/repositories/notifications_repo.dart';
+import 'package:to_let_app_abandon/data/repositories/messages_repo.dart';
+import 'package:to_let_app_abandon/screens/auth/controllers/auth_controller.dart';
 import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 
 class InitialBinding extends Bindings {
@@ -34,6 +41,26 @@ class InitialBinding extends Bindings {
       fenix: true,
     );
 
+    // Repositories
+    if (!Get.isRegistered<AuthRepo>()) {
+      Get.put<AuthRepo>(AuthRepo(), permanent: true);
+    }
+    if (!Get.isRegistered<ListingsRepo>()) {
+      Get.put<ListingsRepo>(ListingsRepo(), permanent: true);
+    }
+    if (!Get.isRegistered<UserRepo>()) {
+      Get.put<UserRepo>(UserRepo(), permanent: true);
+    }
+    if (!Get.isRegistered<FavoritesRepo>()) {
+      Get.put<FavoritesRepo>(FavoritesRepo(), permanent: true);
+    }
+    if (!Get.isRegistered<NotificationsRepo>()) {
+      Get.put<NotificationsRepo>(NotificationsRepo(), permanent: true);
+    }
+    if (!Get.isRegistered<MessagesRepo>()) {
+      Get.put<MessagesRepo>(MessagesRepo(), permanent: true);
+    }
+
     if (!Get.isRegistered<FavoriteController>()) {
       Get.put<FavoriteController>(
         FavoriteController(
@@ -45,6 +72,10 @@ class InitialBinding extends Bindings {
       if (!Get.isRegistered<SavedController>()) {
         Get.put<SavedController>(SavedController(), permanent: true);
       }
+    }
+
+    if (!Get.isRegistered<AuthController>()) {
+      Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
     }
   }
 }

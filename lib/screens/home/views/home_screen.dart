@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/screens/filter/controllers/filter_controller.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/featured_property_card.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/floating_action_pills.dart';
 import 'package:to_let_app_abandon/screens/home/LayOut/items/Items/home_header.dart';
@@ -13,7 +14,7 @@ import 'package:to_let_app_abandon/widgets/nav/nav_controller.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../routes/app_routes.dart';
 import '../../../widgets/custom_snackbar.dart';
-import '../../../widgets/loading_indicator.dart';
+import '../../../widgets/shimmer_widgets.dart';
 import '../controllers/home_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -77,7 +78,21 @@ class HomeScreen extends GetView<HomeController> {
                           InkWell(
                             onTap: () {
                               controller.selectCategory('');
+                              
+                              // Reset filters in FilterController if registered
+                              if (Get.isRegistered<FilterController>()) {
+                                final filterCtrl = Get.find<FilterController>();
+                                filterCtrl.resetFilters();
+                              }
+                              
                               Get.toNamed(Routes.FILTER_RESULTS);
+                              
+                              // After navigation, sync location and load data
+                              Future.delayed(Duration.zero, () {
+                                if (Get.isRegistered<FilterController>()) {
+                                  Get.find<FilterController>().syncAndLoad();
+                                }
+                              });
                             },
                             child: Row(
                               children: [
@@ -106,11 +121,8 @@ class HomeScreen extends GetView<HomeController> {
 
                     Obx(() {
                       if (controller.isLoading.value) {
-                        return SizedBox(
-                          height: 180.h,
-                          child: LoadingIndicator(
-                            message: 'loading_featured'.tr,
-                          ),
+                        return FeaturedListShimmer(
+                          isDark: Theme.of(context).brightness == Brightness.dark,
                         );
                       }
 
@@ -198,10 +210,8 @@ class HomeScreen extends GetView<HomeController> {
 
                     Obx(() {
                       if (controller.isLoading.value) {
-                        return Center(
-                          child: LoadingIndicator(
-                            message: 'loading_recommendations'.tr,
-                          ),
+                        return RecommendedListShimmer(
+                          isDark: Theme.of(context).brightness == Brightness.dark,
                         );
                       }
 

@@ -206,7 +206,7 @@ class TermsOfServiceScreen extends GetView<TermsOfServiceController> {
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.surfaceDark
-            : Colors.grey.shade100.withOpacity(0.8),
+            : Colors.grey.shade100.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Text(

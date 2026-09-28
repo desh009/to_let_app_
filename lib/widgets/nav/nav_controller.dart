@@ -73,8 +73,4 @@ class NavController extends GetxController {
     Get.offAllNamed(Routes.HOME);
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }

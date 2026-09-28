@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:to_let_app_abandon/data/models/listing_model.dart';
+import 'package:to_let_app_abandon/data/repositories/listings_repo.dart';
 import '../../../data/models/notification_model.dart';
-import '../../../data/models/tolet_model.dart';
+import '../../../data/repositories/notifications_repo.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../../routes/app_routes.dart';
 
@@ -12,62 +15,42 @@ class NotificationsController extends GetxController {
     return Get.find<NotificationsController>();
   }
 
+  late final NotificationsRepo _notificationsRepo;
   final RxList<AppNotificationModel> notifications = <AppNotificationModel>[].obs;
+  final RxBool isLoading = false.obs;
+
+  NotificationsController({NotificationsRepo? notificationsRepo}) {
+    _notificationsRepo = notificationsRepo ??
+        (Get.isRegistered<NotificationsRepo>()
+            ? Get.find<NotificationsRepo>()
+            : NotificationsRepo());
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _loadSampleNotifications();
+    fetchNotifications();
   }
 
-  void _loadSampleNotifications() {
-    final samples = ToLetModel.sampleData;
-    if (samples.isEmpty) return;
-
-    notifications.assignAll([
-      AppNotificationModel(
-        id: '1',
-        title: '🏠 New Family Flat in Sonadanga',
-        body: 'A 3 BHK Luxury Apartment is now available for rent in Sonadanga, Khulna.',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 15)),
-        isRead: false,
-        propertyId: samples[0].id,
-        property: samples[0],
-        type: 'listing',
-      ),
-      AppNotificationModel(
-        id: '2',
-        title: '🔥 Price Drop in Khalishpur!',
-        body: 'Rent reduced to ৳18,000/month for Modern Family House in Khalishpur.',
-        timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-        isRead: false,
-        propertyId: samples.length > 1 ? samples[1].id : samples[0].id,
-        property: samples.length > 1 ? samples[1] : samples[0],
-        type: 'price',
-      ),
-      AppNotificationModel(
-        id: '3',
-        title: '👤 New Bachelor Room near Boyra',
-        body: 'Single seat available for student/jobholder near Boyra Main Road.',
-        timestamp: DateTime.now().subtract(const Duration(hours: 5)),
-        isRead: true,
-        propertyId: samples.length > 2 ? samples[2].id : samples[0].id,
-        property: samples.length > 2 ? samples[2] : samples[0],
-        type: 'listing',
-      ),
-      AppNotificationModel(
-        id: '4',
-        title: '✨ Exclusive Sublet in Nirala',
-        body: '1 Room Sublet available from next month in Nirala Residential Area.',
-        timestamp: DateTime.now().subtract(const Duration(days: 1)),
-        isRead: true,
-        propertyId: samples.length > 3 ? samples[3].id : samples[0].id,
-        property: samples.length > 3 ? samples[3] : samples[0],
-        type: 'listing',
-      ),
-    ]);
+  Future<void> fetchNotifications() async {
+    try {
+      isLoading.value = true;
+      final response = await _notificationsRepo.getNotifications();
+      if (response.isSuccess) {
+        final list = _notificationsRepo.parseNotifications(response);
+        if (list.isNotEmpty) {
+          notifications.assignAll(list);
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading notifications: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
+ 
   void addNotification({
     required String title,
     required String body,
@@ -82,7 +65,7 @@ class NotificationsController extends GetxController {
       timestamp: DateTime.now(),
       isRead: false,
       propertyId: propertyId,
-      property: property ?? (ToLetModel.sampleData.isNotEmpty ? ToLetModel.sampleData.first : null),
+      property: property,
       type: type,
     );
     notifications.insert(0, newNotif);
@@ -93,6 +76,7 @@ class NotificationsController extends GetxController {
     if (index != -1) {
       notifications[index].isRead = true;
       notifications.refresh();
+      _notificationsRepo.markAsRead(id);
     }
   }
 
@@ -101,24 +85,39 @@ class NotificationsController extends GetxController {
       n.isRead = true;
     }
     notifications.refresh();
+    _notificationsRepo.markAllAsRead();
   }
 
   void deleteNotification(String id) {
     notifications.removeWhere((n) => n.id == id);
   }
 
-  void onNotificationTap(AppNotificationModel item) {
+  void onNotificationTap(AppNotificationModel item) async {
     markAsRead(item.id);
 
-
-    ToLetItem? targetItem = item.property;
-    if (targetItem == null && item.propertyId != null) {
-      targetItem = ToLetModel.sampleData.firstWhereOrNull((p) => p.id == item.propertyId);
+    if (item.property != null) {
+      Get.toNamed(Routes.DETAILS, arguments: item.property);
+      return;
     }
-    targetItem ??= ToLetModel.sampleData.isNotEmpty ? ToLetModel.sampleData.first : null;
 
-    if (targetItem != null) {
-      Get.toNamed(Routes.DETAILS, arguments: targetItem);
+    if (item.propertyId != null) {
+      // Fetch the real property from API
+      try {
+        final listingsRepo = Get.isRegistered<ListingsRepo>() 
+            ? Get.find<ListingsRepo>() 
+            : ListingsRepo();
+        
+        final response = await listingsRepo.getListingDetails(item.propertyId!);
+        if (response.isSuccess && response.responseData?['data'] != null) {
+          final listingModel = ListingModel.fromJson(response.responseData!['data']);
+          final toLetItem = listingModel.toToLetItem();
+          Get.toNamed(Routes.DETAILS, arguments: toLetItem);
+        } else {
+          Get.snackbar('Error', 'Property details not found');
+        }
+      } catch (e) {
+        debugPrint('Error fetching notification property: $e');
+      }
     }
   }
 

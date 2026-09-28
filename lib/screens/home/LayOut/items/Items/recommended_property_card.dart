@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:to_let_app_abandon/widgets/favourite/button/animated_favourite_button.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../domain/entities/tolet_item.dart';
+import '../../../../../widgets/shimmer_widgets.dart';
 
 class RecommendedPropertyCard extends StatelessWidget {
   final ToLetItem item;
@@ -69,16 +69,7 @@ class RecommendedPropertyCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return Center(
-                            child: SizedBox(
-                              width: 20.r,
-                              height: 20.r,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          );
+                          return ImageShimmer(isDark: isDark, width: 98.r);
                         },
                         errorBuilder: (context, error, stackTrace) {
                           return Container(

@@ -4,11 +4,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
 import 'core/services/fcm_service.dart';
 import 'core/services/api_service.dart';
 import 'core/services/network_service.dart';
 import 'core/config/app_config.dart';
+import 'core/config/supabase_config.dart';
 import 'core/controllers/gemini_voice_controller.dart';
 import 'package:to_let_app_abandon/app/app_translation/app_translation.dart';
 import 'package:to_let_app_abandon/widgets/custom_floating_action button/custom_floating_action_button.dart';
@@ -31,7 +33,14 @@ Future<void> main() async {
   // Load .env file
   await dotenv.load(fileName: '.env');
 
+  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: SupabaseConfig.supabaseUrl,
+    anonKey: SupabaseConfig.supabaseAnonKey,
+  );
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 

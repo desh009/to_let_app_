@@ -18,9 +18,7 @@ class FilterScreen extends GetView<FilterController> {
       body: SafeArea(
         child: Column(
           children: [
-
             _buildAppBar(context, isDark),
-
 
             Expanded(
               child: SingleChildScrollView(
@@ -29,21 +27,17 @@ class FilterScreen extends GetView<FilterController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     _buildSubLocationChip(context, isDark),
 
                     SizedBox(height: 20.h),
-
 
                     _buildPriceRangeSection(isDark),
 
                     SizedBox(height: 24.h),
 
-
                     _buildPropertyTypeSection(isDark),
 
                     SizedBox(height: 24.h),
-
 
                     Obx(() {
                       if (controller.selectedPropertyType.value == 'Bachelor') {
@@ -57,11 +51,9 @@ class FilterScreen extends GetView<FilterController> {
                       return const SizedBox.shrink();
                     }),
 
-
                     _buildBedroomsSection(isDark),
 
                     SizedBox(height: 24.h),
-
 
                     Obx(() {
                       if (controller.selectedPropertyType.value == 'Family') {
@@ -78,7 +70,6 @@ class FilterScreen extends GetView<FilterController> {
                       return const SizedBox.shrink();
                     }),
 
-
                     _buildAvailabilitySection(isDark),
 
                     SizedBox(height: 30.h),
@@ -87,14 +78,12 @@ class FilterScreen extends GetView<FilterController> {
               ),
             ),
 
-
             _buildBottomActionBar(isDark),
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildAppBar(BuildContext context, bool isDark) {
     return Padding(
@@ -111,7 +100,9 @@ class FilterScreen extends GetView<FilterController> {
                 color: isDark ? AppColors.surfaceDark : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isDark ? AppColors.dividerDark : AppColors.borderSubtle,
+                  color: isDark
+                      ? AppColors.dividerDark
+                      : AppColors.borderSubtle,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -123,7 +114,9 @@ class FilterScreen extends GetView<FilterController> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 20.r,
-                color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : const Color(0xFF1E232A),
               ),
             ),
           ),
@@ -135,7 +128,9 @@ class FilterScreen extends GetView<FilterController> {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                  color: isDark
+                      ? AppColors.textPrimaryDark
+                      : const Color(0xFF1E232A),
                 ),
               ),
             ),
@@ -145,7 +140,6 @@ class FilterScreen extends GetView<FilterController> {
       ),
     );
   }
-
 
   Widget _buildSubLocationChip(BuildContext context, bool isDark) {
     return Obx(() {
@@ -200,11 +194,7 @@ class FilterScreen extends GetView<FilterController> {
                       color: Colors.white24,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.close,
-                      size: 12.r,
-                      color: Colors.white,
-                    ),
+                    child: Icon(Icons.close, size: 12.r, color: Colors.white),
                   ),
                 )
               else
@@ -219,7 +209,6 @@ class FilterScreen extends GetView<FilterController> {
       );
     });
   }
-
 
   Widget _buildPriceRangeSection(bool isDark) {
     return Container(
@@ -239,11 +228,12 @@ class FilterScreen extends GetView<FilterController> {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : const Color(0xFF1E232A),
             ),
           ),
           SizedBox(height: 14.h),
-
 
           Row(
             children: [
@@ -278,12 +268,13 @@ class FilterScreen extends GetView<FilterController> {
           ),
           SizedBox(height: 12.h),
 
-
           Obx(
             () => SliderTheme(
               data: SliderThemeData(
                 activeTrackColor: AppColors.primary,
-                inactiveTrackColor: isDark ? Colors.white24 : AppColors.primaryLight,
+                inactiveTrackColor: isDark
+                    ? Colors.white24
+                    : AppColors.primaryLight,
                 thumbColor: AppColors.primary,
                 overlayColor: AppColors.primary.withAlpha(30),
                 rangeThumbShape: const RoundRangeSliderThumbShape(
@@ -294,32 +285,43 @@ class FilterScreen extends GetView<FilterController> {
               ),
               child: RangeSlider(
                 values: controller.priceRange.value,
-                min: controller.minPriceLimit,
-                max: controller.maxPriceLimit,
-                divisions: 99,
+                min: controller.minPriceLimit.value,
+                max: controller.maxPriceLimit.value,
+                divisions: 198, // (100,000 - 1,000) / 500 = 198 steps
                 onChanged: controller.updatePriceRange,
               ),
             ),
           ),
-
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '৳1,000',
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                  ),
-                ),
-                Text(
-                  '৳1,00,000',
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '৳${controller.minPriceLimit.value.round().toString()}',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
+                        ),
+                      ),
+
+                      Text(
+                        '৳${controller.maxPriceLimit.value.round().toString()}',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -353,7 +355,9 @@ class FilterScreen extends GetView<FilterController> {
             style: TextStyle(
               fontSize: 9.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
               letterSpacing: 0.8,
             ),
           ),
@@ -365,7 +369,9 @@ class FilterScreen extends GetView<FilterController> {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : const Color(0xFF1E232A),
             ),
             decoration: const InputDecoration(
               isDense: true,
@@ -382,7 +388,6 @@ class FilterScreen extends GetView<FilterController> {
       ),
     );
   }
-
 
   Widget _buildPropertyTypeSection(bool isDark) {
     return Column(
@@ -401,7 +406,7 @@ class FilterScreen extends GetView<FilterController> {
           () => Wrap(
             spacing: 10.w,
             runSpacing: 10.h,
-            children: controller.propertyTypes.map((item) {
+            children: controller.propertyTypeOptions.map((item) {
               final title = item['title'] as String;
               final icon = item['icon'] as IconData;
               final isSelected = controller.selectedPropertyType.value == title;
@@ -411,7 +416,10 @@ class FilterScreen extends GetView<FilterController> {
                 borderRadius: BorderRadius.circular(20.r),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 12.h,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primary
@@ -420,7 +428,9 @@ class FilterScreen extends GetView<FilterController> {
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
-                          : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                          : (isDark
+                                ? AppColors.dividerDark
+                                : AppColors.borderSubtle),
                     ),
                     boxShadow: isSelected
                         ? [
@@ -440,17 +450,23 @@ class FilterScreen extends GetView<FilterController> {
                         size: 18.r,
                         color: isSelected
                             ? Colors.white
-                            : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                            : (isDark
+                                  ? AppColors.textPrimaryDark
+                                  : const Color(0xFF1E232A)),
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         title,
                         style: TextStyle(
                           fontSize: 14.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              : (isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A)),
                         ),
                       ),
                     ],
@@ -463,7 +479,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildBachelorGenderSection(bool isDark) {
     return Column(
@@ -481,7 +496,8 @@ class FilterScreen extends GetView<FilterController> {
         Obx(
           () => Row(
             children: controller.bachelorGenderOptions.map((option) {
-              final isSelected = controller.selectedBachelorGender.value == option;
+              final isSelected =
+                  controller.selectedBachelorGender.value == option;
               IconData icon = Icons.person_outline_rounded;
               if (option == 'Male') icon = Icons.male_rounded;
               if (option == 'Female') icon = Icons.female_rounded;
@@ -490,7 +506,9 @@ class FilterScreen extends GetView<FilterController> {
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                    right: option == controller.bachelorGenderOptions.last ? 0 : 10.w,
+                    right: option == controller.bachelorGenderOptions.last
+                        ? 0
+                        : 10.w,
                   ),
                   child: InkWell(
                     onTap: () => controller.selectBachelorGender(option),
@@ -507,7 +525,9 @@ class FilterScreen extends GetView<FilterController> {
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                              : (isDark
+                                    ? AppColors.dividerDark
+                                    : AppColors.borderSubtle),
                         ),
                       ),
                       child: Row(
@@ -518,17 +538,23 @@ class FilterScreen extends GetView<FilterController> {
                             size: 18.r,
                             color: isSelected
                                 ? Colors.white
-                                : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                                : (isDark
+                                      ? AppColors.textPrimaryDark
+                                      : const Color(0xFF1E232A)),
                           ),
                           SizedBox(width: 6.w),
                           Text(
                             option,
                             style: TextStyle(
                               fontSize: 13.sp,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
                               color: isSelected
                                   ? Colors.white
-                                  : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                                  : (isDark
+                                        ? AppColors.textPrimaryDark
+                                        : const Color(0xFF1E232A)),
                             ),
                           ),
                         ],
@@ -543,7 +569,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildBedroomsSection(bool isDark) {
     return Column(
@@ -565,7 +590,9 @@ class FilterScreen extends GetView<FilterController> {
 
               return Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(right: option == '4+' ? 0 : 10.w),
+                  padding: EdgeInsets.only(
+                    right: option == controller.bedroomOptions.last ? 0 : 10.w,
+                  ),
                   child: InkWell(
                     onTap: () => controller.selectBedrooms(option),
                     borderRadius: BorderRadius.circular(20.r),
@@ -581,7 +608,9 @@ class FilterScreen extends GetView<FilterController> {
                         border: Border.all(
                           color: isSelected
                               ? const Color(0xFF1E232A)
-                              : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                              : (isDark
+                                    ? AppColors.dividerDark
+                                    : AppColors.borderSubtle),
                         ),
                       ),
                       child: Text(
@@ -591,7 +620,9 @@ class FilterScreen extends GetView<FilterController> {
                           fontWeight: FontWeight.bold,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              : (isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A)),
                         ),
                       ),
                     ),
@@ -604,7 +635,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildFurnishingSection(bool isDark) {
     return Column(
@@ -627,7 +657,9 @@ class FilterScreen extends GetView<FilterController> {
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                    right: option == controller.furnishingOptions.last ? 0 : 10.w,
+                    right: option == controller.furnishingOptions.last
+                        ? 0
+                        : 10.w,
                   ),
                   child: InkWell(
                     onTap: () => controller.selectFurnishing(option),
@@ -644,17 +676,23 @@ class FilterScreen extends GetView<FilterController> {
                         border: Border.all(
                           color: isSelected
                               ? AppColors.primary
-                              : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                              : (isDark
+                                    ? AppColors.dividerDark
+                                    : AppColors.borderSubtle),
                         ),
                       ),
                       child: Text(
                         option,
                         style: TextStyle(
                           fontSize: 13.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              : (isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A)),
                         ),
                       ),
                     ),
@@ -667,7 +705,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildAmenitiesSection(bool isDark) {
     return Column(
@@ -686,17 +723,21 @@ class FilterScreen extends GetView<FilterController> {
           () => Wrap(
             spacing: 10.w,
             runSpacing: 10.h,
-            children: controller.amenityOptions.map((item) {
+            children: controller.dynamicAmenityOptions.map((item) {
               final title = item['title'] as String;
+              final key = item['key'] as String;
               final icon = item['icon'] as IconData;
-              final isSelected = controller.selectedAmenities.contains(title);
+              final isSelected = controller.selectedAmenities.contains(key);
 
               return InkWell(
-                onTap: () => controller.toggleAmenity(title),
+                onTap: () => controller.toggleAmenity(key),
                 borderRadius: BorderRadius.circular(20.r),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 10.h,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? const Color(0xFF1E232A)
@@ -705,7 +746,9 @@ class FilterScreen extends GetView<FilterController> {
                     border: Border.all(
                       color: isSelected
                           ? const Color(0xFF1E232A)
-                          : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                          : (isDark
+                                ? AppColors.dividerDark
+                                : AppColors.borderSubtle),
                     ),
                   ),
                   child: Row(
@@ -716,17 +759,23 @@ class FilterScreen extends GetView<FilterController> {
                         size: 16.r,
                         color: isSelected
                             ? Colors.white
-                            : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                            : (isDark
+                                  ? AppColors.textPrimaryDark
+                                  : const Color(0xFF1E232A)),
                       ),
                       SizedBox(width: 6.w),
                       Text(
                         title,
                         style: TextStyle(
                           fontSize: 13.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              : (isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A)),
                         ),
                       ),
                     ],
@@ -739,7 +788,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildAvailabilitySection(bool isDark) {
     return Column(
@@ -757,12 +805,15 @@ class FilterScreen extends GetView<FilterController> {
         Obx(
           () => Row(
             children: controller.availabilityOptions.map((option) {
-              final isSelected = controller.selectedAvailability.value == option;
+              final isSelected =
+                  controller.selectedAvailability.value == option;
 
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                    right: option == controller.availabilityOptions.last ? 0 : 10.w,
+                    right: option == controller.availabilityOptions.last
+                        ? 0
+                        : 10.w,
                   ),
                   child: InkWell(
                     onTap: () => controller.selectAvailability(option),
@@ -779,17 +830,23 @@ class FilterScreen extends GetView<FilterController> {
                         border: Border.all(
                           color: isSelected
                               ? const Color(0xFF1E232A)
-                              : (isDark ? AppColors.dividerDark : AppColors.borderSubtle),
+                              : (isDark
+                                    ? AppColors.dividerDark
+                                    : AppColors.borderSubtle),
                         ),
                       ),
                       child: Text(
                         option,
                         style: TextStyle(
                           fontSize: 13.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A)),
+                              : (isDark
+                                    ? AppColors.textPrimaryDark
+                                    : const Color(0xFF1E232A)),
                         ),
                       ),
                     ),
@@ -802,7 +859,6 @@ class FilterScreen extends GetView<FilterController> {
       ],
     );
   }
-
 
   Widget _buildBottomActionBar(bool isDark) {
     return Container(
@@ -819,7 +875,6 @@ class FilterScreen extends GetView<FilterController> {
       ),
       child: Row(
         children: [
-
           OutlinedButton(
             onPressed: controller.resetFilters,
             style: OutlinedButton.styleFrom(
@@ -836,33 +891,49 @@ class FilterScreen extends GetView<FilterController> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: isDark ? AppColors.textPrimaryDark : const Color(0xFF1E232A),
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : const Color(0xFF1E232A),
               ),
             ),
           ),
 
           SizedBox(width: 12.w),
 
-
           Expanded(
-            child: ElevatedButton(
-              onPressed: controller.applyFilters,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
+            child: Obx(
+              () => ElevatedButton(
+                onPressed: controller.isLoadingResults.value
+                    ? null
+                    : controller.applyFilters,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  elevation: 4,
+                  shadowColor: AppColors.primary.withAlpha(80),
                 ),
-                elevation: 4,
-                shadowColor: AppColors.primary.withAlpha(80),
-              ),
-              child: Text(
-                'Show Results',
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                child: controller.isLoadingResults.value
+                    ? SizedBox(
+                        height: 20.r,
+                        width: 20.r,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        'Show Results',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ),

@@ -1,21 +1,33 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/storage_keys.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/network_service.dart';
 import '../../../data/repositories/auth_repo.dart';
+import '../../../data/models/auth/login_response_model.dart';
 import '../../../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final StorageService storageService = Get.find<StorageService>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthRepo _authRepo = AuthRepo();
   final NetworkService _networkService = Get.find<NetworkService>();
+  final SupabaseClient _supabase = Supabase.instance.client;
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
 
+  // Biometric
+  final RxBool isBiometricAvailable = false.obs;
+  final RxBool isBiometricEnabled = false.obs;
+  final RxString biometricType = ''.obs; // 'fingerprint' or 'face'
+  final RxString deviceId = ''.obs; // Unique device identifier
   late final TextEditingController loginEmailController;
   late final TextEditingController loginPasswordController;
   final RxBool isLoginPasswordHidden = true.obs;
@@ -56,6 +68,7 @@ class AuthController extends GetxController {
   final RxInt currentForgotOtpIndex = 0.obs;
   final RxInt forgotResendCountdown = 45.obs;
   final RxBool canResendForgotOtp = false.obs;
+  final RxString forgotResetToken = ''.obs;
   Timer? _forgotTimer;
 
   final RxBool isTwoFactorEnabled = false.obs;
@@ -89,6 +102,11 @@ class AuthController extends GetxController {
     forgotPasswordInputController = TextEditingController();
     forgotNewPasswordController = TextEditingController();
     forgotConfirmPasswordController = TextEditingController();
+
+    // Check biometric availability
+    checkBiometricAvailability();
+    loadBiometricSettings();
+    _getDeviceId();
   }
 
   void _updatePasswordStrength() {
@@ -273,33 +291,91 @@ class AuthController extends GetxController {
     isLoggingIn.value = true;
 
     try {
-      try {
-        final userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: pass,
-        );
-        final user = userCredential.user;
-        await storageService.setBool(StorageKeys.isLoggedIn, true);
-        await storageService.setString(
-          StorageKeys.userName,
-          user?.displayName ?? email.split('@')[0],
-        );
-        Get.offAllNamed(Routes.HOME);
-        return;
-      } catch (e) {
-        debugPrint('Firebase email login exception: $e');
-      }
+      final response = await _authRepo.login(email: email, password: pass);
+      isLoggingIn.value = false;
 
+      if (response.isSuccess && response.responseData != null) {
+        final loginModel = LoginResponseModel.fromJson(response.responseData!);
+
+        if (loginModel.success && loginModel.data != null) {
+          // Save token
+          _networkService.setAuthToken(loginModel.data!.token);
+          if (loginModel.data!.refreshToken != null) {
+            await storageService.setString(
+              StorageKeys.refreshToken,
+              loginModel.data!.refreshToken!,
+            );
+          }
+
+          // Save user data
+          await storageService.setBool(StorageKeys.isLoggedIn, true);
+          final user = loginModel.data!.user;
+          await storageService.setString(StorageKeys.userName, user.name);
+          await storageService.setString(StorageKeys.userEmail, user.email);
+          await storageService.setString(StorageKeys.userId, user.id);
+          if (user.phone != null) {
+            await storageService.setString(StorageKeys.userPhone, user.phone!);
+          }
+
+          // If biometric is enabled for this email, keep token fresh
+          final bioEmail = storageService.getString(StorageKeys.biometricEmail);
+          final bioEnabled =
+              storageService.getBool(StorageKeys.biometricEnabled) ?? false;
+          if (bioEnabled &&
+              bioEmail != null &&
+              bioEmail.trim().toLowerCase() ==
+                  user.email.trim().toLowerCase()) {
+            await storageService.setString(
+              StorageKeys.biometricAuthToken,
+              loginModel.data!.token,
+            );
+            if (loginModel.data!.refreshToken != null) {
+              await storageService.setString(
+                StorageKeys.biometricRefreshToken,
+                loginModel.data!.refreshToken!,
+              );
+            }
+          }
+
+          // Navigate to home
+          Get.offAllNamed(Routes.HOME);
+
+          Get.snackbar(
+            'Success!',
+            loginModel.message,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+          );
+
+          // Removed: Auto biometric dialog (will be in profile screen instead)
+        } else {
+          Get.snackbar(
+            'Login Failed',
+            loginModel.message,
+            backgroundColor: AppColors.error,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+          );
+        }
+      } else {
+        Get.snackbar(
+          'Login Failed',
+          response.errorMessage ?? 'Your email or password is incorrect.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      isLoggingIn.value = false;
+      debugPrint('Login error: $e');
       Get.snackbar(
-        'Login Failed',
-        'Your Gmail address or password is incorrect.',
+        'Error',
+        'An unexpected error occurred',
         backgroundColor: AppColors.error,
         colorText: Colors.white,
       );
-    } catch (e) {
-      debugPrint('Login error: $e');
-    } finally {
-      isLoggingIn.value = false;
     }
   }
 
@@ -431,10 +507,12 @@ class AuthController extends GetxController {
     isVerifyingOtp.value = true;
 
     try {
-      // Call API - Verify OTP
+      // Call API - Verify OTP (Passing required fields for backend validation and account creation)
       final response = await _authRepo.registerVerifyOtp(
         email: regEmailController.text.trim(),
         otp: code,
+        name: regFullNameController.text.trim(),
+        password: regPasswordController.text.trim(),
       );
 
       isVerifyingOtp.value = false;
@@ -444,28 +522,29 @@ class AuthController extends GetxController {
         final verifyResponse = _authRepo.parseVerifyOtpResponse(response);
 
         if (verifyResponse != null && verifyResponse.data != null) {
-          // Save token
+          // Save tokens
           if (verifyResponse.data!.idToken.isNotEmpty) {
             _networkService.setAuthToken(verifyResponse.data!.idToken);
+          }
+          if (verifyResponse.data!.refreshToken.isNotEmpty) {
+            await storageService.setString(
+              StorageKeys.refreshToken,
+              verifyResponse.data!.refreshToken,
+            );
           }
 
           // Save user data
           await storageService.setBool(StorageKeys.isLoggedIn, true);
 
-          if (verifyResponse.data!.user != null) {
-            final user = verifyResponse.data!.user!;
-            await storageService.setString(StorageKeys.userName, user.name);
-            await storageService.setString(StorageKeys.userEmail, user.email);
-            await storageService.setString(
-              StorageKeys.userId,
-              user.id ?? user.uid,
-            );
-            if (user.phone != null && user.phone!.isNotEmpty) {
-              await storageService.setString(
-                StorageKeys.userPhone,
-                user.phone!,
-              );
-            }
+          final user = verifyResponse.data!.user;
+          await storageService.setString(StorageKeys.userName, user.name);
+          await storageService.setString(StorageKeys.userEmail, user.email);
+          await storageService.setString(
+            StorageKeys.userId,
+            user.id ?? user.uid,
+          );
+          if (user.phone != null && user.phone!.isNotEmpty) {
+            await storageService.setString(StorageKeys.userPhone, user.phone!);
           }
 
           // Navigate to home
@@ -590,35 +669,68 @@ class AuthController extends GetxController {
     }
 
     isSendingForgotOtp.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    isSendingForgotOtp.value = false;
+    try {
+      final response = await _authRepo.forgotPasswordSendOtp(email: input);
+      isSendingForgotOtp.value = false;
 
-    forgotOtpDigits.assignAll(['', '', '', '', '', '']);
-    currentForgotOtpIndex.value = 0;
-    _startForgotResendTimer();
+      if (response.isSuccess) {
+        forgotOtpDigits.assignAll(['', '', '', '', '', '']);
+        currentForgotOtpIndex.value = 0;
+        _startForgotResendTimer();
 
-    // Navigate to forgot password OTP screen
-    Get.toNamed(Routes.FORGOT_PASSWORD_OTP);
+        // Navigate to forgot password OTP screen
+        Get.toNamed(Routes.FORGOT_PASSWORD_OTP);
 
-    Get.snackbar(
-      'OTP Sent',
-      'A 6-digit code was sent to $input',
-      backgroundColor: AppColors.primary,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+        Get.snackbar(
+          'OTP Sent',
+          response.errorMessage ?? 'A 6-digit code was sent to $input',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        Get.snackbar(
+          'Failed',
+          response.errorMessage ?? 'Failed to send OTP. Please try again.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      isSendingForgotOtp.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
-  void resendForgotOtp() {
+  void resendForgotOtp() async {
     if (!canResendForgotOtp.value) return;
-    _startForgotResendTimer();
-    Get.snackbar(
-      'Code Resent',
-      'A new OTP has been sent.',
-      backgroundColor: AppColors.primary,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+    final input = forgotPasswordInputController.text.trim();
+    try {
+      final response = await _authRepo.forgotPasswordSendOtp(email: input);
+      if (response.isSuccess) {
+        _startForgotResendTimer();
+        Get.snackbar(
+          'Code Resent',
+          'A new OTP has been sent successfully.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        Get.snackbar(
+          'Failed',
+          response.errorMessage ?? 'Failed to resend OTP.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
+    } catch (_) {}
   }
 
   Future<void> verifyForgotOtp() async {
@@ -634,19 +746,47 @@ class AuthController extends GetxController {
     }
 
     isVerifyingForgotOtp.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    isVerifyingForgotOtp.value = false;
+    try {
+      final input = forgotPasswordInputController.text.trim();
+      final response = await _authRepo.forgotPasswordVerifyOtp(
+        email: input,
+        otp: code,
+      );
+      isVerifyingForgotOtp.value = false;
 
-    // OTP verified - navigate to reset password screen
-    Get.toNamed(Routes.RESET_PASSWORD);
+      if (response.isSuccess) {
+        // Store the reset token for the next step
+        forgotResetToken.value =
+            response.responseData?['resetToken']?.toString() ?? '';
 
-    Get.snackbar(
-      'Verified!',
-      'OTP confirmed. Please set your new password.',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+        // OTP verified - navigate to reset password screen
+        Get.toNamed(Routes.RESET_PASSWORD);
+
+        Get.snackbar(
+          'Verified!',
+          'OTP confirmed. Please set your new password.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 3),
+        );
+      } else {
+        Get.snackbar(
+          'Verification Failed',
+          response.errorMessage ?? 'Invalid OTP code. Please try again.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      isVerifyingForgotOtp.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Future<void> resetPassword() async {
@@ -673,27 +813,53 @@ class AuthController extends GetxController {
     }
 
     isResettingPassword.value = true;
-    await Future.delayed(const Duration(milliseconds: 900));
-    isResettingPassword.value = false;
+    try {
+      final input = forgotPasswordInputController.text.trim();
+      final token = forgotResetToken.value;
+      final response = await _authRepo.forgotPasswordReset(
+        email: input,
+        resetToken: token,
+        newPassword: newPass,
+      );
+      isResettingPassword.value = false;
 
-    // Clear all fields
-    forgotPasswordInputController.clear();
-    forgotNewPasswordController.clear();
-    forgotConfirmPasswordController.clear();
-    forgotOtpDigits.assignAll(['', '', '', '', '', '']);
-    currentForgotOtpIndex.value = 0;
+      if (response.isSuccess) {
+        // Clear all fields
+        forgotPasswordInputController.clear();
+        forgotNewPasswordController.clear();
+        forgotConfirmPasswordController.clear();
+        forgotOtpDigits.assignAll(['', '', '', '', '', '']);
+        currentForgotOtpIndex.value = 0;
+        forgotResetToken.value = '';
 
-    // Navigate back to login screen
-    Get.until((route) => route.settings.name == Routes.LOGIN);
+        // Navigate back to login screen
+        Get.until((route) => route.settings.name == Routes.LOGIN);
 
-    // Show success message
-    Get.snackbar(
-      'Success!',
-      'Your password has been reset. Please log in.',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+        // Show success message
+        Get.snackbar(
+          'Success!',
+          'Your password has been reset. Please log in.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        Get.snackbar(
+          'Reset Failed',
+          response.errorMessage ?? 'Failed to reset password. Try again.',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      isResettingPassword.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void socialLogin(String provider) async {
@@ -709,69 +875,105 @@ class AuthController extends GetxController {
     }
   }
 
+  /// Sign in with Supabase using Native Google Sign-In
   Future<void> signInWithGoogle() async {
     isLoggingIn.value = true;
+
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-      );
+      // Load Google Client ID from environment
+      final webClientId = dotenv.env['GOOGLE_CLIENT_ID'];
 
-      // Disconnect previous session to force Gmail account selection dialog
-      try {
-        await googleSignIn.signOut();
-      } catch (_) {}
-
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-
-      if (googleUser == null) {
-        // User cancelled Google account picker
-        isLoggingIn.value = false;
-        return;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
-      final user = userCredential.user;
-
-      await storageService.setBool(StorageKeys.isLoggedIn, true);
-      await storageService.setString(
-        StorageKeys.userName,
-        user?.displayName ?? googleUser.displayName ?? 'Google User',
-      );
-      if (user?.email != null || googleUser.email.isNotEmpty) {
-        await storageService.setString(
-          StorageKeys.userPhone,
-          user?.email ?? googleUser.email,
+      if (webClientId == null || webClientId.isEmpty) {
+        throw const AuthException(
+          'Google Client ID not configured in .env file',
         );
       }
 
-      Get.snackbar(
-        'Google Login',
-        'Logged in as ${user?.displayName ?? googleUser.displayName}!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: webClientId,
       );
-      Get.offAllNamed(Routes.HOME);
-    } catch (e) {
-      debugPrint('Google Sign-In Error details: $e');
+
+      // Google Sign-In
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        isLoggingIn.value = false;
+        return; // User cancelled
+      }
+
+      // Google authentication
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      if (idToken == null) {
+        throw const AuthException('Could not retrieve ID token from Google.');
+      }
+
+      if (accessToken == null) {
+        throw const AuthException(
+          'Could not retrieve access token from Google.',
+        );
+      }
+
+      // Supabase login
+      final AuthResponse response = await _supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+      final user = response.user;
+
+      if (user != null) {
+        await storageService.setBool(StorageKeys.isLoggedIn, true);
+
+        await storageService.setString(
+          StorageKeys.userName,
+          user.userMetadata?['full_name'] ??
+              user.userMetadata?['name'] ??
+              user.email?.split('@')[0] ??
+              'User',
+        );
+
+        await storageService.setString(StorageKeys.userEmail, user.email ?? '');
+
+        await storageService.setString(StorageKeys.userId, user.id);
+
+        Get.snackbar(
+          'Success!',
+          'Logged in with Google via Supabase',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        isLoggingIn.value = false;
+      }
+    } on AuthException catch (e) {
+      isLoggingIn.value = false;
+      debugPrint('Supabase Google Auth Error: ${e.message}');
+
       Get.snackbar(
-        'Google Sign-In Failed',
-        'Please try again. If this continues, check Firebase Google Sign-In setup.',
+        'Login Failed',
+        e.message,
         backgroundColor: AppColors.error,
         colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
       );
-    } finally {
+    } catch (e) {
       isLoggingIn.value = false;
+      debugPrint('Supabase Google login error: $e');
+
+      Get.snackbar(
+        'Login Failed',
+        'An unexpected error occurred. Please try again.',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -888,5 +1090,406 @@ class AuthController extends GetxController {
     forgotNewPasswordController.dispose();
     forgotConfirmPasswordController.dispose();
     super.onClose();
+  }
+
+  // ============================================================
+  // BIOMETRIC AUTHENTICATION
+  // ============================================================
+
+  /// Get unique device ID
+  Future<void> _getDeviceId() async {
+    try {
+      String identifier = '';
+
+      if (GetPlatform.isAndroid) {
+        final androidInfo = await _deviceInfo.androidInfo;
+        identifier = androidInfo.id; // Android ID (unique per device)
+      } else if (GetPlatform.isIOS) {
+        final iosInfo = await _deviceInfo.iosInfo;
+        identifier = iosInfo.identifierForVendor ?? ''; // iOS unique ID
+      }
+
+      deviceId.value = identifier;
+      debugPrint('Device ID: $identifier');
+    } catch (e) {
+      debugPrint('Error getting device ID: $e');
+    }
+  }
+
+  /// Check if biometric is available on device
+  Future<void> checkBiometricAvailability() async {
+    try {
+      final bool canAuthenticateWithBiometrics =
+          await _localAuth.canCheckBiometrics;
+      final bool canAuthenticate =
+          canAuthenticateWithBiometrics || await _localAuth.isDeviceSupported();
+
+      isBiometricAvailable.value = canAuthenticate;
+
+      if (canAuthenticate) {
+        final List<BiometricType> availableBiometrics = await _localAuth
+            .getAvailableBiometrics();
+
+        if (availableBiometrics.contains(BiometricType.face)) {
+          biometricType.value = 'face';
+        } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
+          biometricType.value = 'fingerprint';
+        } else {
+          biometricType.value = 'biometric';
+        }
+      }
+    } on PlatformException catch (e) {
+      debugPrint('Biometric check error: $e');
+      isBiometricAvailable.value = false;
+    }
+  }
+
+  /// Load biometric settings from storage
+  Future<void> loadBiometricSettings() async {
+    final enabled =
+        storageService.getBool(StorageKeys.biometricEnabled) ?? false;
+    final currentEmail = storageService.getString(StorageKeys.userEmail);
+    final bioEmail = storageService.getString(StorageKeys.biometricEmail);
+
+    if (enabled && bioEmail != null && bioEmail.isNotEmpty) {
+      if (currentEmail != null && currentEmail.isNotEmpty) {
+        // User is currently logged in (e.g. in Profile screen)
+        isBiometricEnabled.value =
+            (bioEmail.trim().toLowerCase() ==
+            currentEmail.trim().toLowerCase());
+      } else {
+        // No active user in session (e.g. on Login screen)
+        isBiometricEnabled.value = true;
+      }
+    } else {
+      isBiometricEnabled.value = false;
+    }
+  }
+
+  /// Enable/Disable biometric login
+  Future<void> toggleBiometricLogin() async {
+    if (!isBiometricAvailable.value) {
+      Get.snackbar(
+        'সাপোর্ট করে না',
+        'এই ডিভাইসে বায়োমেট্রিক সেন্সর পাওয়া যায়নি বা সক্রিয় নেই',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Get current logged-in user email
+    final currentEmail =
+        (storageService.getString(StorageKeys.userEmail) ??
+                loginEmailController.text.trim())
+            .trim();
+
+    if (currentEmail.isEmpty) {
+      Get.snackbar(
+        'লগইন প্রয়োজন',
+        'বায়োমেট্রিক সক্রিয় করতে অনুগ্রহ করে প্রথমে একাউন্টে লগইন করুন',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final registeredEmail = storageService.getString(
+      StorageKeys.biometricEmail,
+    );
+    final isAlreadyEnabled =
+        storageService.getBool(StorageKeys.biometricEnabled) ?? false;
+
+    // RULE: "akta finger print diye ektar besi account khola jabe na"
+    // Check if device fingerprint is already registered with another account
+    if (isAlreadyEnabled &&
+        registeredEmail != null &&
+        registeredEmail.isNotEmpty &&
+        registeredEmail.trim().toLowerCase() != currentEmail.toLowerCase()) {
+      Get.defaultDialog(
+        title: 'এক ডিভাইসে একটি অ্যাকাউন্ট',
+        middleText:
+            'এই ডিভাইসের ফিঙ্গারপ্রিন্ট ইতিমধ্যে "$registeredEmail" অ্যাকাউন্টের সাথে যুক্ত রয়েছে।\n\nএকটি ফিঙ্গারপ্রিন্ট কেবল একটি অ্যাকাউন্টের জন্য ব্যবহার করা যাবে। নতুন অ্যাকাউন্টে যুক্ত করতে হলে প্রথমে পূর্বের অ্যাকাউন্ট থেকে ফিঙ্গারপ্রিন্ট বন্ধ করুন।',
+        textConfirm: 'ঠিক আছে',
+        confirmTextColor: Colors.white,
+        buttonColor: AppColors.primary,
+        onConfirm: () => Get.back(),
+      );
+      return;
+    }
+
+    if (!isBiometricEnabled.value) {
+      // 1. Immediately open the biometric sensor prompt!
+      final authenticated = await authenticateWithBiometric(
+        reason:
+            'বায়োমেট্রিক ফিঙ্গারপ্রিন্ট চালু করতে আপনার আঙ্গুল স্ক্যান করুন',
+      );
+
+      if (authenticated) {
+        // Retrieve current active session data
+        final authToken = storageService.getString(StorageKeys.authToken) ?? '';
+        final refreshToken =
+            storageService.getString(StorageKeys.refreshToken) ?? '';
+        final userName = storageService.getString(StorageKeys.userName) ?? '';
+        final userId = storageService.getString(StorageKeys.userId) ?? '';
+        final userPhone = storageService.getString(StorageKeys.userPhone) ?? '';
+
+        // Save biometric data for this account
+        await storageService.setString(
+          StorageKeys.biometricEmail,
+          currentEmail,
+        );
+        await storageService.setString(
+          StorageKeys.biometricAuthToken,
+          authToken,
+        );
+        await storageService.setString(
+          StorageKeys.biometricRefreshToken,
+          refreshToken,
+        );
+        await storageService.setString(StorageKeys.biometricUserName, userName);
+        await storageService.setString(StorageKeys.biometricUserId, userId);
+        await storageService.setString(
+          StorageKeys.biometricUserPhone,
+          userPhone,
+        );
+        await storageService.setString(
+          StorageKeys.biometricDeviceId,
+          deviceId.value,
+        );
+        await storageService.setString(
+          StorageKeys.biometricRegisteredAt,
+          DateTime.now().toIso8601String(),
+        );
+        await storageService.setBool(StorageKeys.biometricEnabled, true);
+        isBiometricEnabled.value = true;
+
+        Get.snackbar(
+          'সফল হয়েছে!',
+          'বায়োমেট্রিক ফিঙ্গারপ্রিন্ট সফলভাবে যুক্ত হয়েছে। এখন লগইন স্ক্রিন থেকে সরাসরি ফিঙ্গারপ্রিন্ট দিয়ে লগইন করতে পারবেন।',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+      } else {
+        isBiometricEnabled.value = false;
+      }
+    } else {
+      // User is disabling biometric - authenticate first
+      final authenticated = await authenticateWithBiometric(
+        reason: 'বায়োমেট্রিক ফিঙ্গারপ্রিন্ট বন্ধ করতে স্ক্যান করুন',
+      );
+
+      if (authenticated) {
+        await storageService.setBool(StorageKeys.biometricEnabled, false);
+        await storageService.remove(StorageKeys.biometricEmail);
+        await storageService.remove(StorageKeys.biometricAuthToken);
+        await storageService.remove(StorageKeys.biometricRefreshToken);
+        await storageService.remove(StorageKeys.biometricUserName);
+        await storageService.remove(StorageKeys.biometricUserId);
+        await storageService.remove(StorageKeys.biometricUserPhone);
+        await storageService.remove(StorageKeys.biometricDeviceId);
+        await storageService.remove(StorageKeys.biometricRegisteredAt);
+        isBiometricEnabled.value = false;
+
+        Get.snackbar(
+          'নিষ্ক্রিয় করা হয়েছে',
+          'বায়োমেট্রিক লগইন বন্ধ করা হয়েছে।',
+          backgroundColor: AppColors.primary,
+          colorText: Colors.white,
+        );
+      }
+    }
+  }
+
+  /// Authenticate with biometric
+  Future<bool> authenticateWithBiometric({
+    String reason = 'Authenticate to login',
+  }) async {
+    try {
+      final bool didAuthenticate = await _localAuth.authenticate(
+        localizedReason: reason,
+        biometricOnly: true,
+        persistAcrossBackgrounding: true,
+      );
+
+      return didAuthenticate;
+    } on PlatformException catch (e) {
+      debugPrint('Biometric authentication error: $e');
+
+      if (e.code == 'NotAvailable') {
+        Get.snackbar(
+          'Not Available',
+          'Biometric authentication is not available',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      } else if (e.code == 'NotEnrolled') {
+        Get.snackbar(
+          'Not Enrolled',
+          'Please enroll biometric authentication in device settings',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
+
+      return false;
+    }
+  }
+
+  /// Login with biometric (For users who already enabled it)
+  Future<void> loginWithBiometric() async {
+    if (!isBiometricAvailable.value) {
+      Get.snackbar(
+        'Not Avaailable',
+        'এই ডিভাইসে বায়োমেট্রিক অথেনটিকেশন সক্রিয় নেই',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final isEnabled =
+        storageService.getBool(StorageKeys.biometricEnabled) ?? false;
+    final savedEmail = storageService.getString(StorageKeys.biometricEmail);
+    final savedToken = storageService.getString(StorageKeys.biometricAuthToken);
+
+    if (!isEnabled || savedEmail == null || savedEmail.isEmpty) {
+      Get.defaultDialog(
+        title: 'Biometric Not Enabled',
+        middleText:
+            'এই ডিভাইসে কোনো অ্যাকাউন্টের বায়োমেট্রিক ফিঙ্গারপ্রিন্ট চালু করা নেই।\n\nঅনুগ্রহ করে প্রথমে ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করে প্রোফাইল থেকে ফিঙ্গারপ্রিন্ট চালু করুন।',
+        textConfirm: 'OK',
+        confirmTextColor: Colors.white,
+        buttonColor: AppColors.primary,
+        onConfirm: () => Get.back(),
+      );
+      return;
+    }
+
+    // Verify device ID if set
+    final savedDeviceId = storageService.getString(
+      StorageKeys.biometricDeviceId,
+    );
+    if (savedDeviceId != null &&
+        savedDeviceId.isNotEmpty &&
+        deviceId.value.isNotEmpty &&
+        savedDeviceId != deviceId.value) {
+      Get.snackbar(
+        'নিরাপত্তা সতর্কতা',
+        'এই ফিঙ্গারপ্রিন্টটি ভিন্ন ডিভাইসের জন্য নিবন্ধিত। অনুগ্রহ করে পাসওয়ার্ড দিয়ে লগইন করুন।',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+      return;
+    }
+
+    // Open biometric sensor prompt!
+    final authenticated = await authenticateWithBiometric(
+      reason: 'আপনার অ্যাকাউন্টে ($savedEmail) লগইন করতে ফিঙ্গারপ্রিন্ট দিন',
+    );
+
+    if (authenticated) {
+      // 1. Restore auth token if we have it
+      if (savedToken != null && savedToken.isNotEmpty) {
+        _networkService.setAuthToken(savedToken);
+        await storageService.setString(StorageKeys.authToken, savedToken);
+      }
+
+      // 2. Restore refresh token
+      final savedRefreshToken = storageService.getString(
+        StorageKeys.biometricRefreshToken,
+      );
+      if (savedRefreshToken != null && savedRefreshToken.isNotEmpty) {
+        await storageService.setString(
+          StorageKeys.refreshToken,
+          savedRefreshToken,
+        );
+      }
+
+      // 3. Restore user profile data
+      final savedName =
+          storageService.getString(StorageKeys.biometricUserName) ?? 'User';
+      final savedId =
+          storageService.getString(StorageKeys.biometricUserId) ?? '';
+      final savedPhone =
+          storageService.getString(StorageKeys.biometricUserPhone) ?? '';
+
+      await storageService.setString(StorageKeys.userEmail, savedEmail);
+      await storageService.setString(StorageKeys.userName, savedName);
+      await storageService.setString(StorageKeys.userId, savedId);
+      if (savedPhone.isNotEmpty) {
+        await storageService.setString(StorageKeys.userPhone, savedPhone);
+      }
+      await storageService.setBool(StorageKeys.isLoggedIn, true);
+
+      // 4. Try refreshing token in background if possible
+      // _networkService.refreshToken();
+
+      // 5. Navigate to Home
+      Get.offAllNamed(Routes.HOME);
+
+      Get.snackbar(
+        'স্বাগতম!',
+        '$savedName, ফিঙ্গারপ্রিন্ট দিয়ে সফলভাবে লগইন করা হয়েছে।',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 3),
+      );
+    }
+  }
+
+  /// Get biometric icon based on type
+  IconData get biometricIcon {
+    switch (biometricType.value) {
+      case 'face':
+        return Icons.face;
+      case 'fingerprint':
+        return Icons.fingerprint;
+      default:
+        return Icons.lock;
+    }
+  }
+
+  /// Get biometric text
+  String get biometricText {
+    switch (biometricType.value) {
+      case 'face':
+        return 'Face ID';
+      case 'fingerprint':
+        return 'Fingerprint';
+      default:
+        return 'Biometric';
+    }
+  }
+
+  /// Test biometric (for debugging/setup)
+  Future<bool> testBiometric() async {
+    if (!isBiometricAvailable.value) {
+      Get.snackbar(
+        'Not Available',
+        'Biometric is not available on this device',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+
+    final result = await authenticateWithBiometric(
+      reason: 'Test your ${biometricText.toLowerCase()}',
+    );
+
+    if (result) {
+      Get.snackbar(
+        'Success!',
+        '$biometricText is working! ✓',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    }
+
+    return result;
   }
 }

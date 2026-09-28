@@ -1,16 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:to_let_app_abandon/app/data/services/notification/notification_service.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/config/urls.dart';
+import '../../../data/repositories/listings_repo.dart';
 import '../../../domain/entities/tolet_item.dart';
 import '../../home/controllers/home_controller.dart';
 import '../../notifications/controllers/notifications_controller.dart';
 
 class PostListingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
+  final ListingsRepo _listingsRepo = ListingsRepo();
 
   late final TextEditingController titleController;
   late final TextEditingController locationController;
@@ -312,145 +316,618 @@ class PostListingController extends GetxController {
     }
 
     isSubmitting.value = true;
-    await Future.delayed(const Duration(milliseconds: 900));
-    isSubmitting.value = false;
 
-    final newItem = ToLetItem(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      location: location,
-      price: rent,
-      bedrooms: bedrooms.value,
-      bathrooms: bathrooms.value,
-      squareFeet: 950,
-      description: descriptionController.text.trim(),
-      contactNumber: '+8801700000000',
-      ownerName: 'Property Owner',
-      images: List<String>.from(propertyPhotos),
-      category: selectedTenantType.value,
-      badgeText: 'Featured',
-      isVerified: true,
-      isAvailable: true,
-      isFeatured: true,
-    );
+    // ============================================================
+    // EXTRACT CITY AND AREA FROM LOCATION
+    // ============================================================
+    String city = 'Khulna';
+    String? area;
 
-    if (Get.isRegistered<HomeController>()) {
-      final homeController = Get.find<HomeController>();
-      homeController.featuredProperties.insert(0, newItem);
-      homeController.allProperties.insert(0, newItem);
+    if (location.contains(',')) {
+      final parts = location.split(',');
+      area = parts[0].trim();
+      city = parts.length > 1 ? parts[1].trim() : 'Khulna';
+    } else {
+      area = location;
     }
 
-    // Save listing to Cloud Firestore
+    // ============================================================
+    // PROCESS AND UPLOAD PHOTOS
+    // ============================================================
+    final List<String> finalImageUrls = [];
+    final List<String> localBase64Images = [];
+
+    for (final photo in propertyPhotos) {
+      if (photo.startsWith('http://') || photo.startsWith('https://')) {
+        finalImageUrls.add(photo);
+      } else {
+        try {
+          final file = File(photo);
+          if (file.existsSync()) {
+            final bytes = await file.readAsBytes();
+            localBase64Images.add(base64Encode(bytes));
+          }
+        } catch (e) {
+          debugPrint('Error reading photo: $e');
+        }
+      }
+    }
+
+    if (localBase64Images.isNotEmpty) {
+      try {
+        final uploadRes = await _listingsRepo.uploadPropertyImages(localBase64Images);
+        if (uploadRes.isSuccess && uploadRes.responseData?['data']?['urls'] != null) {
+          final urls = (uploadRes.responseData!['data']['urls'] as List)
+              .map((e) => e.toString());
+          finalImageUrls.addAll(urls);
+        }
+      } catch (e) {
+        debugPrint('Upload error: $e');
+      }
+    }
+
+    if (finalImageUrls.isEmpty) {
+      finalImageUrls.add('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800');
+    }
+
+    // ============================================================
+    // PREPARE API REQUEST BODY
+    // ============================================================
+    final requestBody = {
+      'title': title,
+      'location': location,
+      'city': city,
+      'area': area,
+      'price': rent.toInt(),
+      'bedrooms': bedrooms.value,
+      'bathrooms': bathrooms.value,
+      'square_feet': 950,
+      'description': descriptionController.text.trim(),
+      'contact_number': '+8801700000000',
+      'images': finalImageUrls,
+      'category': selectedTenantType.value,
+      'furnishing': 'Unfurnished',
+      'amenities': {
+        'lift': hasLift.value,
+        'parking': hasParking.value,
+        'gasLine': hasGasLine.value,
+        'wifi': hasWifi.value,
+        'generator': false,
+        'water24_7': true,
+      },
+      'availability': 'Available now',
+      'is_direct_owner': isDirectOwner.value,
+    };
+
+    debugPrint('========== POST LISTING API REQUEST ==========');
+    debugPrint('URL: ${Urls.allListings}');
+    debugPrint('Body: $requestBody');
+    debugPrint('==============================================');
+
+    // ============================================================
+    // CALL API TO SAVE TO SUPABASE
+    // ============================================================
     try {
-      await FirebaseFirestore.instance
-          .collection('properties')
-          .doc(newItem.id)
-          .set({
-            'id': newItem.id,
-            'title': newItem.title,
-            'location': newItem.location,
-            'price': newItem.price,
-            'bedrooms': newItem.bedrooms,
-            'bathrooms': newItem.bathrooms,
-            'squareFeet': newItem.squareFeet,
-            'description': newItem.description,
-            'contactNumber': newItem.contactNumber,
-            'ownerName': newItem.ownerName,
-            'ownerAvatar': newItem.ownerAvatar,
-            'images': newItem.images,
-            'category': newItem.category,
-            'badgeText': newItem.badgeText,
-            'isVerified': newItem.isVerified,
-            'isAvailable': newItem.isAvailable,
-            'isFeatured': newItem.isFeatured,
-            'createdAt': FieldValue.serverTimestamp(),
-          });
-    } catch (e) {
-      debugPrint('Firestore save property exception: $e');
-    }
+      final response = await _listingsRepo.createListing(requestBody);
 
-    NotificationsController.to.addNotification(
-      title: '✨ Listing Published: $title',
-      body:
-          'Your property listing in $location has been successfully published!',
-      propertyId: newItem.id,
-      property: newItem,
-      type: 'listing',
-    );
+      debugPrint('========== POST LISTING API RESPONSE ==========');
+      debugPrint('Success: ${response.isSuccess}');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Data: ${response.responseData}');
+      debugPrint('Error: ${response.errorMessage}');
+      debugPrint('==============================================');
 
-    NotificationApiService.notifyNewListing(
-      listingTitle: title,
-      listingId: newItem.id,
-    );
+      if (!response.isSuccess) {
+        isSubmitting.value = false;
+        Get.snackbar(
+          'Error',
+          response.errorMessage ?? 'Failed to create listing',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  color: AppColors.primaryLight,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check_circle_rounded,
-                  color: AppColors.primary,
-                  size: 40,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'listing_submitted'.tr,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'listing_submitted_msg'.tr,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+      // ============================================================
+      // GET LISTING ID FROM RESPONSE
+      // ============================================================
+      final listingId =
+          response.responseData?['data']?['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString();
+
+      final newItem = ToLetItem(
+        id: listingId,
+        title: title,
+        location: location,
+        price: rent,
+        bedrooms: bedrooms.value,
+        bathrooms: bathrooms.value,
+        squareFeet: 950,
+        description: descriptionController.text.trim(),
+        contactNumber: '+8801700000000',
+        ownerName: 'Property Owner',
+        images: List<String>.from(propertyPhotos),
+        category: selectedTenantType.value,
+        badgeText: 'Featured',
+        isVerified: true,
+        isAvailable: true,
+        isFeatured: true,
+      );
+
+      // ============================================================
+      // UPDATE LOCAL HOME CONTROLLER
+      // ============================================================
+      if (Get.isRegistered<HomeController>()) {
+        final homeController = Get.find<HomeController>();
+        homeController.featuredProperties.insert(0, newItem);
+        homeController.allProperties.insert(0, newItem);
+      }
+
+      // ============================================================
+      // NOTIFICATIONS
+      // ============================================================
+      NotificationsController.to.addNotification(
+        title: '✨ Listing Published: $title',
+        body:
+            'Your property listing in $location has been successfully published!',
+        propertyId: newItem.id,
+        property: newItem,
+        type: 'listing',
+      );
+
+      NotificationApiService.notifyNewListing(
+        listingTitle: title,
+        listingId: newItem.id,
+      );
+
+      isSubmitting.value = false;
+
+      // ============================================================
+      // SUCCESS DIALOG
+      // ============================================================
+      Get.dialog(
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryLight,
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: () {
-                    Get.back();
-                    Get.back();
-                  },
-                  child: Text(
-                    'done'.tr,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.primary,
+                    size: 40,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  'listing_submitted'.tr,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'listing_submitted_msg'.tr,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondaryLight,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () {
+                      Get.back();
+                      Get.back();
+                      resetForm();
+                    },
+                    child: Text(
+                      'done'.tr,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+        barrierDismissible: false,
+      );
+    } catch (e) {
+      isSubmitting.value = false;
+      debugPrint('Error publishing listing: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to publish listing: $e',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  // ============================================================
+  // UPDATE LISTING
+  // ============================================================
+
+  Future<void> updateListing(String listingId) async {
+    // Validation
+    if (titleController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Required',
+        'Please enter property title',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (locationController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Required',
+        'Please enter location',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (rentController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Required',
+        'Please enter rent amount',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (propertyPhotos.isEmpty) {
+      Get.snackbar(
+        'Required',
+        'Please add at least one photo',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    isSubmitting.value = true;
+
+    final location = locationController.text.trim();
+    String city = 'Khulna';
+    String area = location;
+    if (location.contains(',')) {
+      final parts = location.split(',');
+      area = parts[0].trim();
+      city = parts.length > 1 ? parts[1].trim() : 'Khulna';
+    }
+
+    // Process and upload photos
+    final List<String> finalImageUrls = [];
+    final List<String> localBase64Images = [];
+
+    for (final photo in propertyPhotos) {
+      if (photo.startsWith('http://') || photo.startsWith('https://')) {
+        finalImageUrls.add(photo);
+      } else {
+        try {
+          final file = File(photo);
+          if (file.existsSync()) {
+            final bytes = await file.readAsBytes();
+            localBase64Images.add(base64Encode(bytes));
+          }
+        } catch (e) {
+          debugPrint('Error reading photo: $e');
+        }
+      }
+    }
+
+    if (localBase64Images.isNotEmpty) {
+      try {
+        final uploadRes = await _listingsRepo.uploadPropertyImages(localBase64Images);
+        if (uploadRes.isSuccess && uploadRes.responseData?['data']?['urls'] != null) {
+          final urls = (uploadRes.responseData!['data']['urls'] as List)
+              .map((e) => e.toString());
+          finalImageUrls.addAll(urls);
+        }
+      } catch (e) {
+        debugPrint('Upload error: $e');
+      }
+    }
+
+    if (finalImageUrls.isEmpty) {
+      finalImageUrls.add('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800');
+    }
+
+    final requestBody = {
+      'title': titleController.text.trim(),
+      'location': location,
+      'city': city,
+      'area': area,
+      'price': int.parse(rentController.text.trim()),
+      'bedrooms': bedrooms.value,
+      'bathrooms': bathrooms.value,
+      'description': descriptionController.text.trim(),
+      'contact_number': '+8801700000000',
+      'images': finalImageUrls,
+      'category': selectedTenantType.value,
+      'furnishing': 'Unfurnished',
+      'amenities': {
+        'lift': hasLift.value,
+        'parking': hasParking.value,
+        'gasLine': hasGasLine.value,
+        'wifi': hasWifi.value,
+        'generator': false,
+        'water24_7': true,
+      },
+      'availability': 'Available now',
+      'is_direct_owner': isDirectOwner.value,
+    };
+
+    debugPrint('========== UPDATE LISTING API REQUEST ==========');
+    debugPrint('Listing ID: $listingId');
+    debugPrint('URL: ${Urls.allListings}/$listingId');
+    debugPrint('Body: $requestBody');
+    debugPrint('==============================================');
+
+    try {
+      final response = await _listingsRepo.updateListing(
+        listingId,
+        requestBody,
+      );
+
+      debugPrint('========== UPDATE LISTING API RESPONSE ==========');
+      debugPrint('Success: ${response.isSuccess}');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Data: ${response.responseData}');
+      debugPrint('Error: ${response.errorMessage}');
+      debugPrint('==============================================');
+
+      if (!response.isSuccess) {
+        isSubmitting.value = false;
+        Get.snackbar(
+          'Error',
+          response.errorMessage ?? 'Failed to update listing',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      // Update local data
+      if (Get.isRegistered<HomeController>()) {
+        final homeController = Get.find<HomeController>();
+
+        // Find and update in all properties
+        final index = homeController.allProperties.indexWhere(
+          (item) => item.id == listingId,
+        );
+
+        if (index != -1) {
+          // Create updated item
+          final updatedItem = ToLetItem(
+            id: listingId,
+            title: titleController.text.trim(),
+            location: locationController.text.trim(),
+            price: double.parse(rentController.text.trim()),
+            bedrooms: bedrooms.value,
+            bathrooms: bathrooms.value,
+            squareFeet: 950.0,
+            description: descriptionController.text.trim(),
+            contactNumber: '+8801700000000',
+            ownerName: 'Updated Owner',
+            ownerAvatar: 'https://ui-avatars.com/api/?name=Owner',
+            images: finalImageUrls,
+            category: selectedTenantType.value,
+            badgeText: 'Available now',
+            isVerified: true,
+            isAvailable: true,
+            isFeatured: false,
+          );
+
+          homeController.allProperties[index] = updatedItem;
+
+          // Also update in featured if exists
+          final featuredIndex = homeController.featuredProperties.indexWhere(
+            (item) => item.id == listingId,
+          );
+          if (featuredIndex != -1) {
+            homeController.featuredProperties[featuredIndex] = updatedItem;
+          }
+        }
+      }
+
+      isSubmitting.value = false;
+
+      // Success dialog
+      Get.dialog(
+        barrierDismissible: false,
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80.w,
+                  height: 80.w,
+                  decoration: BoxDecoration(
+                    color: Colors.green.withAlpha(25),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.check_circle_outline,
+                    size: 48.sp,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  'Listing Updated!',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimaryLight,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Your property listing has been updated successfully.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: AppColors.textSecondaryLight,
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () {
+                      Get.back(); // Close dialog
+                      Get.back(); // Go back to previous screen
+                    },
+                    child: const Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Update listing error: $e');
+      isSubmitting.value = false;
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  // ============================================================
+  // DELETE LISTING
+  // ============================================================
+
+  Future<void> deleteListing(String listingId) async {
+    // Show confirmation dialog
+    final confirm = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Delete Listing'),
+        content: const Text(
+          'Are you sure you want to delete this listing? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
-      barrierDismissible: false,
     );
+
+    if (confirm != true) return;
+
+    try {
+      final response = await _listingsRepo.deleteListing(listingId);
+
+      debugPrint('========== DELETE LISTING API RESPONSE ==========');
+      debugPrint('Success: ${response.isSuccess}');
+      debugPrint('Status Code: ${response.statusCode}');
+      debugPrint('Error: ${response.errorMessage}');
+      debugPrint('==============================================');
+
+      if (!response.isSuccess) {
+        Get.snackbar(
+          'Error',
+          response.errorMessage ?? 'Failed to delete listing',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      // Remove from local list
+      if (Get.isRegistered<HomeController>()) {
+        final homeController = Get.find<HomeController>();
+        homeController.allProperties.removeWhere(
+          (item) => item.id == listingId,
+        );
+        homeController.featuredProperties.removeWhere(
+          (item) => item.id == listingId,
+        );
+      }
+
+      Get.snackbar(
+        'Success!',
+        'Listing deleted successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+
+      Get.back(); // Go back to previous screen
+    } catch (e) {
+      debugPrint('Delete listing error: $e');
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    }
   }
 
   @override

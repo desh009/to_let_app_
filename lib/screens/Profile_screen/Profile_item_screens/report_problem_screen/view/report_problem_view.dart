@@ -97,7 +97,7 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
                                 disabledBackgroundColor:
-                                    AppColors.primary.withOpacity(0.5),
+                                    AppColors.primary.withValues(alpha: 0.5),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(26.r),
                                 ),
@@ -190,10 +190,10 @@ class ReportProblemScreen extends GetView<ReportProblemController> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFEBEE).withOpacity(isDark ? 0.15 : 0.7),
+        color: const Color(0xFFFFEBEE).withValues(alpha: isDark ? 0.15 : 0.7),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: const Color(0xFFFFCDD2).withOpacity(isDark ? 0.3 : 0.6),
+          color: const Color(0xFFFFCDD2).withValues(alpha: isDark ? 0.3 : 0.6),
         ),
       ),
       child: Row(

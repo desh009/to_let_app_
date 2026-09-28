@@ -1,3 +1,5 @@
+import '../../domain/entities/tolet_item.dart';
+
 class ListingsResponse {
   final List<ListingModel> data;
   final PaginationModel pagination;
@@ -73,37 +75,71 @@ class ListingModel {
 
   factory ListingModel.fromJson(Map<String, dynamic> json) {
     return ListingModel(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      location: json['location'] ?? '',
-      city: json['city'] ?? '',
-      area: json['area'],
-      price: json['price'] ?? 0,
-      bedrooms: json['bedrooms'] ?? 0,
-      bathrooms: json['bathrooms'] ?? 0,
-      imageUrl: json['image_url'],
-      squareFeet: json['square_feet'],
-      description: json['description'],
-      contactNumber: json['contact_number'] ?? '',
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      title: json['title']?.toString() ?? '',
+      location: json['location']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      area: json['area']?.toString(),
+      price: (json['price'] as num?)?.toInt() ?? 0,
+      bedrooms: (json['bedrooms'] as num?)?.toInt() ?? 0,
+      bathrooms: (json['bathrooms'] as num?)?.toInt() ?? 0,
+      imageUrl: json['image_url']?.toString(),
+      squareFeet: (json['square_feet'] as num?)?.toInt(),
+      description: json['description']?.toString(),
+      contactNumber: json['contact_number']?.toString() ?? '',
       images: (json['images'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      category: json['category'] ?? '',
-      furnishing: json['furnishing'] ?? '',
-      amenities: AmenitiesModel.fromJson(json['amenities'] ?? {}),
-      availability: json['availability'] ?? '',
-      availableFrom: json['available_from'],
-      isDirectOwner: json['is_direct_owner'] ?? false,
-      ownerId: json['owner_id'],
-      ownerName: json['owner_name'],
-      ownerEmail: json['owner_email'],
+      category: json['category']?.toString() ?? '',
+      furnishing: json['furnishing']?.toString() ?? '',
+      amenities: AmenitiesModel.fromJson(json['amenities']),
+      availability: json['availability']?.toString() ?? '',
+      availableFrom: json['available_from']?.toString(),
+      isDirectOwner: json['is_direct_owner'] == true,
+      ownerId: json['owner_id']?.toString(),
+      ownerName: json['owner_name']?.toString(),
+      ownerEmail: json['owner_email']?.toString(),
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now()
           : DateTime.now(),
       updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+          ? DateTime.tryParse(json['updated_at'].toString()) ?? DateTime.now()
           : DateTime.now(),
+    );
+  }
+
+  ToLetItem toToLetItem() {
+    String displayLocation = location;
+    if (area != null && area!.isNotEmpty) {
+      displayLocation = '$area, $city';
+    } else if (displayLocation.isEmpty) {
+      displayLocation = city;
+    }
+
+    final imagesList = images.isNotEmpty
+        ? images
+        : (imageUrl != null && imageUrl!.isNotEmpty
+            ? [imageUrl!]
+            : ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800']);
+
+    return ToLetItem(
+      id: id.toString(),
+      title: title,
+      location: displayLocation,
+      price: price.toDouble(),
+      bedrooms: bedrooms,
+      bathrooms: bathrooms,
+      squareFeet: (squareFeet ?? 1000).toDouble(),
+      description: description ?? '',
+      contactNumber: contactNumber,
+      ownerName: ownerName ?? 'Property Owner',
+      images: imagesList,
+      category: category.isNotEmpty ? category : 'Family',
+      badgeText: availability.isNotEmpty ? availability : 'Available now',
+      isVerified: isDirectOwner,
+      isAvailable: availability == 'Available now',
+      isFeatured: isDirectOwner || id <= 15,
     );
   }
 }
@@ -125,14 +161,17 @@ class AmenitiesModel {
     this.water247 = false,
   });
 
-  factory AmenitiesModel.fromJson(Map<String, dynamic> json) {
+  factory AmenitiesModel.fromJson(dynamic json) {
+    if (json is! Map) {
+      return AmenitiesModel();
+    }
     return AmenitiesModel(
-      lift: json['lift'] ?? false,
-      wifi: json['wifi'] ?? false,
-      gasLine: json['gasLine'] ?? false,
-      parking: json['parking'] ?? false,
-      generator: json['generator'] ?? false,
-      water247: json['water24_7'] ?? false,
+      lift: json['lift'] == true,
+      wifi: json['wifi'] == true,
+      gasLine: json['gasLine'] == true || json['gas_line'] == true,
+      parking: json['parking'] == true,
+      generator: json['generator'] == true,
+      water247: json['water24_7'] == true || json['water247'] == true,
     );
   }
 

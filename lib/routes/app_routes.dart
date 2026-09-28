@@ -24,6 +24,12 @@ abstract class Routes {
   static const String FILTER = _Paths.FILTER;
   static const String FILTER_RESULTS = _Paths.FILTER_RESULTS;
   static const String NOTIFICATIONS = _Paths.NOTIFICATIONS;
+  static const String MY_LISTINGS = _Paths.MY_LISTINGS;
+  static const String EDIT_PROFILE = _Paths.EDIT_PROFILE;
+  static const String USER_SEARCH = _Paths.USER_SEARCH;
+  static const String FAQS = _Paths.FAQS;
+  static const String SAFETY_TIPS = _Paths.SAFETY_TIPS;
+  static const String MY_REPORTS = _Paths.MY_REPORTS;
 
   static const String splash = _Paths.SPLASH;
   static const String home = _Paths.HOME;
@@ -74,4 +80,10 @@ abstract class _Paths {
   static const String FILTER = '/filter';
   static const String FILTER_RESULTS = '/filter-results';
   static const String NOTIFICATIONS = '/notifications';
+  static const String MY_LISTINGS = '/my-listings';
+  static const String EDIT_PROFILE = '/edit-profile';
+  static const String USER_SEARCH = '/user-search';
+  static const String FAQS = '/faqs';
+  static const String SAFETY_TIPS = '/safety-tips';
+  static const String MY_REPORTS = '/my-reports';
 }

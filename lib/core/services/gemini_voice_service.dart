@@ -311,7 +311,7 @@ Return strictly a valid JSON object without markdown formatting:
       final locText = matchedLocation != null ? '$matchedLocation-এ ' : '';
       final catText = category != null ? '$category ' : '';
       final roomText = bedrooms != null ? '$bedrooms রুমের ' : '';
-      final reply = '${locText}${catText}${roomText}বাসা খোঁজা হচ্ছে...';
+      final reply = '$locText$catText$roomTextবাসা খোঁজা হচ্ছে...';
 
       return GeminiVoiceIntent(
         action: VoiceIntentAction.search,
